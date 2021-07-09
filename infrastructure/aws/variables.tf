@@ -1,6 +1,6 @@
 variable "aws-region" {
   type    = string
-  default = "eu-north-1"
+  default = "eu-west-3"
 }
 
 variable "codename" {
@@ -21,5 +21,9 @@ variable "database-username" {
 }
 
 variable "database-password" {
+  type = string
+}
+
+variable "certificate-arn" {
   type = string
 }
