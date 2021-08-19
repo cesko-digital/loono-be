@@ -12,7 +12,7 @@ internal class BearerTokenAuthenticatorTest {
 
     @Test
     fun `missing authorization returns 401`() {
-        val authenticator = BearerTokenAuthenticator { JwtAuthService.VerificationResult.Error("") }
+        val authenticator = BearerTokenAuthenticator { fail("Auth service must not be called with missing auth header.") }
         val request = MockHttpServletRequest()
         val response = MockHttpServletResponse()
 
@@ -38,7 +38,7 @@ internal class BearerTokenAuthenticatorTest {
         ]
     )
     fun `invalid token format returns 400`(header: String) {
-        val authenticator = BearerTokenAuthenticator { JwtAuthService.VerificationResult.Error("") }
+        val authenticator = BearerTokenAuthenticator { fail("Auth service must not be called with invalid token format.") }
         val request = MockHttpServletRequest().apply {
             addHeader("Authorization", header)
         }
@@ -53,7 +53,7 @@ internal class BearerTokenAuthenticatorTest {
     }
 
     @Test
-    fun `authenticator error reason is reported back with 401`() {
+    fun `AuthService error reason is reported back with 401`() {
         val expectedReason = "Failure reason"
         val authenticator = BearerTokenAuthenticator { JwtAuthService.VerificationResult.Error(expectedReason) }
         val request = MockHttpServletRequest().apply {
