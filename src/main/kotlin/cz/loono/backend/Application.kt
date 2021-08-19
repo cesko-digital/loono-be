@@ -22,9 +22,12 @@ fun main(args: Array<String>) {
 
 @Configuration
 class Config(private val authenticator: BearerTokenAuthenticator) : WebMvcConfigurer {
+    val publicEndpoints = listOf(
+        "/v3/api-docs",
+    )
 
     override fun addInterceptors(registry: InterceptorRegistry) {
-        registry.addInterceptor(authenticator)
+        registry.addInterceptor(authenticator).excludePathPatterns(publicEndpoints)
     }
 
 }
