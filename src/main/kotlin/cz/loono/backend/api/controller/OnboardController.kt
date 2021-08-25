@@ -4,6 +4,7 @@ import cz.loono.backend.api.Attributes
 import cz.loono.backend.api.dto.OnboardDTO
 import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.api.service.OnboardService
+import cz.loono.backend.data.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PostMapping
@@ -12,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class OnboardController {
-
-    @Autowired
-    private lateinit var onboardService: OnboardService
+class OnboardController @Autowired constructor(
+    private val userRepository: UserRepository,
+    private val onboardService: OnboardService
+) {
 
     @PostMapping(value = ["/onboard"])
     fun onboard(
@@ -26,7 +27,7 @@ class OnboardController {
             throw LoonoBackendException(HttpStatus.FORBIDDEN, null, null)
         }
 
-        if (onboardService.userUidExists(onboard.user.uid)) {
+        if (userRepository.doesUserExist(onboard.user.uid)) {
            throw AccountAlreadyExistsException()
         }
 
