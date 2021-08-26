@@ -39,7 +39,7 @@ class Config(
 
         registry.addInterceptor(onboardRequiredInterceptor)
             .excludePathPatterns(unauthenticatedEndpoints)
-            .excludePathPatterns(OnboardController.path)
+            .excludePathPatterns(OnboardController.PATH)
             .order(1)
     }
 

@@ -18,7 +18,7 @@ class OnboardController @Autowired constructor(
     private val onboardService: OnboardService
 ) {
 
-    @PostMapping(value = [path])
+    @PostMapping(value = [PATH])
     fun onboard(
         @RequestBody onboard: OnboardDTO,
         @RequestAttribute(name = Attributes.ATTR_UID) uid: String,
@@ -35,7 +35,7 @@ class OnboardController @Autowired constructor(
     }
 
     companion object {
-        const val path = "/onboard"
+        const val PATH = "/onboard"
         const val ACCOUNT_ALREADY_EXISTS_CODE = "ACCOUNT_ALREADY_EXISTS"
         const val ACCOUNT_ALREADY_EXISTS_MSG = "Onboard can only be performed once per account."
     }
