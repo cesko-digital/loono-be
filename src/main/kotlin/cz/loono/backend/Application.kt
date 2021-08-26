@@ -2,6 +2,7 @@ package cz.loono.backend
 
 import cz.loono.backend.api.BearerTokenAuthenticator
 import cz.loono.backend.api.OnboardRequiredInterceptor
+import cz.loono.backend.api.controller.OnboardController
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.boot.runApplication
@@ -38,6 +39,7 @@ class Config(
 
         registry.addInterceptor(onboardRequiredInterceptor)
             .excludePathPatterns(unauthenticatedEndpoints)
+            .excludePathPatterns(OnboardController.path)
             .order(1)
     }
 
