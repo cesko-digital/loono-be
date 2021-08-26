@@ -51,7 +51,7 @@ class OnboardControllerTest : ApiTest() {
 
     @Test
     fun completeOnboard() {
-        whenever(userRepository.doesUserExist(any())).thenReturn(false)
+        whenever(userRepository.existsByUid(any())).thenReturn(false)
         val onboardDto = createOnboardDTO()
 
         onboardController.onboard(onboardDto, onboardDto.user.uid)
@@ -61,7 +61,7 @@ class OnboardControllerTest : ApiTest() {
 
     @Test
     fun `existing uid returns 403`() {
-        whenever(userRepository.doesUserExist(any())).thenReturn(true)
+        whenever(userRepository.existsByUid(any())).thenReturn(true)
         val onboardDto = createOnboardDTO()
 
         val error = assertThrows<AccountAlreadyExistsException> {

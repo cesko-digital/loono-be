@@ -27,7 +27,7 @@ class OnboardController @Autowired constructor(
             throw LoonoBackendException(HttpStatus.FORBIDDEN, null, null)
         }
 
-        if (userRepository.doesUserExist(onboard.user.uid)) {
+        if (userRepository.existsByUid(onboard.user.uid)) {
            throw AccountAlreadyExistsException()
         }
 

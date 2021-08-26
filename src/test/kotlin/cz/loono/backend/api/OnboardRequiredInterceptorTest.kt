@@ -15,7 +15,7 @@ internal class OnboardRequiredInterceptorTest {
     @Test
     fun `missing onboard throws Onboard Required`() {
         val repo = mock<UserRepository>()
-        whenever(repo.doesUserExist(any())).thenReturn(false)
+        whenever(repo.existsByUid(any())).thenReturn(false)
         val handler = OnboardRequiredInterceptor(repo)
         val request = MockHttpServletRequest().apply {
             setAttribute(Attributes.ATTR_UID, "uid")
@@ -28,7 +28,7 @@ internal class OnboardRequiredInterceptorTest {
     @Test
     fun `onboarded user lets request pass`() {
         val repo = mock<UserRepository>()
-        whenever(repo.doesUserExist(any())).thenReturn(true)
+        whenever(repo.existsByUid(any())).thenReturn(true)
         val handler = OnboardRequiredInterceptor(repo)
         val request = MockHttpServletRequest().apply {
             setAttribute(Attributes.ATTR_UID, "uid")
