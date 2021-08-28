@@ -41,5 +41,4 @@ internal class OnboardRequiredInterceptorTest {
         assertFalse(response.isCommitted)
         assertNull(response.errorMessage)
     }
-
 }

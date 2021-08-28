@@ -92,5 +92,4 @@ internal class BearerTokenAuthenticatorTest {
         assertFalse { response.isCommitted }
         assertEquals(decodedUid, request.getAttribute(Attributes.ATTR_UID))
     }
-
 }
