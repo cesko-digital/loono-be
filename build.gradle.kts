@@ -58,7 +58,3 @@ tasks.jacocoTestReport {
         csv.required.set(true)
     }
 }
-
-ktlint {
-    disabledRules.add("no-wildcard-imports")
-}
