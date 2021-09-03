@@ -3,7 +3,7 @@ package cz.loono.backend.api.controller
 import cz.loono.backend.api.ApiTest
 import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.api.service.OnboardService
-import cz.loono.backend.data.repository.UserRepository
+import cz.loono.backend.db.repository.UserRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach

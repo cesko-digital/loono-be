@@ -1,4 +1,4 @@
-package cz.loono.backend.data.model
+package cz.loono.backend.db.model
 
 import java.time.LocalDate
 import javax.persistence.Column

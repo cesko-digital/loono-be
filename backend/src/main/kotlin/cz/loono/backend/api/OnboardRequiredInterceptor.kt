@@ -1,7 +1,7 @@
 package cz.loono.backend.api
 
 import cz.loono.backend.api.exception.LoonoBackendException
-import cz.loono.backend.data.repository.UserRepository
+import cz.loono.backend.db.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component

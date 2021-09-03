@@ -3,23 +3,20 @@ package cz.loono.backend.api.service
 import cz.loono.backend.api.dto.ExaminationDTO
 import cz.loono.backend.api.dto.OnboardDTO
 import cz.loono.backend.api.dto.UserDTO
-import cz.loono.backend.data.model.Examination
-import cz.loono.backend.data.model.User
-import cz.loono.backend.data.repository.ExaminationRepository
-import cz.loono.backend.data.repository.UserRepository
+import cz.loono.backend.db.model.Examination
+import cz.loono.backend.db.model.User
+import cz.loono.backend.db.repository.ExaminationRepository
+import cz.loono.backend.db.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 @Service
-class OnboardService {
-
-    @Autowired
-    private lateinit var userRepository: UserRepository
-
-    @Autowired
-    private lateinit var examinationRepository: ExaminationRepository
+class OnboardService @Autowired constructor(
+    private val userRepository: UserRepository,
+    private val examinationRepository: ExaminationRepository
+) {
 
     @Transactional(rollbackFor = [Exception::class])
     fun onboard(onboard: OnboardDTO) {

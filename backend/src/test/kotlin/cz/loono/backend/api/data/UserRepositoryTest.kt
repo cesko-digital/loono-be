@@ -1,7 +1,7 @@
 package cz.loono.backend.api.data
 
-import cz.loono.backend.data.model.User
-import cz.loono.backend.data.repository.UserRepository
+import cz.loono.backend.db.model.User
+import cz.loono.backend.db.repository.UserRepository
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

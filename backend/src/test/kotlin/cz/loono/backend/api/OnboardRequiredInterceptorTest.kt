@@ -1,6 +1,6 @@
 package cz.loono.backend.api
 
-import cz.loono.backend.data.repository.UserRepository
+import cz.loono.backend.db.repository.UserRepository
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue

@@ -4,7 +4,7 @@ import cz.loono.backend.api.Attributes
 import cz.loono.backend.api.dto.OnboardDTO
 import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.api.service.OnboardService
-import cz.loono.backend.data.repository.UserRepository
+import cz.loono.backend.db.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PostMapping

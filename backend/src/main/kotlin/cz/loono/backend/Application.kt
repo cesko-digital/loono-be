@@ -13,8 +13,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @SpringBootApplication
-@EntityScan(basePackages = ["cz.loono.backend.data.model"])
-@EnableJpaRepositories(basePackages = ["cz.loono.backend.data.repository"])
+@EntityScan(basePackages = ["cz.loono.backend.db.model"])
+@EnableJpaRepositories(basePackages = ["cz.loono.backend.db.repository"])
 @EnableTransactionManagement
 class Application
 
@@ -30,6 +30,7 @@ class Config(
     val unauthenticatedEndpoints = listOf(
         "/v3/api-docs",
         "/error",
+        "/doctors/update"
     )
 
     override fun addInterceptors(registry: InterceptorRegistry) {

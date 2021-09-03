@@ -4,10 +4,10 @@ import cz.loono.backend.api.ApiTest
 import cz.loono.backend.api.dto.ExaminationTypeDTO
 import cz.loono.backend.api.dto.LastVisitDTO
 import cz.loono.backend.api.dto.OnboardDTO
-import cz.loono.backend.data.model.Examination
-import cz.loono.backend.data.model.User
-import cz.loono.backend.data.repository.ExaminationRepository
-import cz.loono.backend.data.repository.UserRepository
+import cz.loono.backend.db.model.Examination
+import cz.loono.backend.db.model.User
+import cz.loono.backend.db.repository.ExaminationRepository
+import cz.loono.backend.db.repository.UserRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.InjectMocks
