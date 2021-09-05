@@ -26,7 +26,7 @@ class BearerTokenAuthenticator @Autowired constructor(
 
         when (val result = authService.verifyToken(token)) {
             is JwtAuthService.VerificationResult.Success -> {
-                request.setAttribute(Attributes.ATTR_UID, result.uid)
+                request.setAttribute(Attributes.ATTR_BASIC_USER, result.basicUser)
                 return true
             }
             is JwtAuthService.VerificationResult.Error -> {
@@ -35,6 +35,9 @@ class BearerTokenAuthenticator @Autowired constructor(
                     errorCode = null,
                     errorMessage = result.reason
                 )
+            }
+            JwtAuthService.VerificationResult.MissingPrimaryEmail -> {
+                throw MissingPrimaryEmailException()
             }
         }
     }
@@ -53,4 +56,18 @@ class BearerTokenAuthenticator @Autowired constructor(
             errorMessage = "Invalid format of Bearer token."
         )
     }
+
+    companion object {
+        const val MISSING_PRIMARY_EMAIL_CODE = "MISSING_PRIMARY_EMAIL"
+        const val MISSING_PRIMARY_EMAIL_MSG = "The primary email address of the Firebase user is not filled in. " +
+            "Loono only permits login providers with email address. (Social OAuth, Email + Password). " +
+            "It is possible that you allowed another type of login, such as Phone or Anonymous. " +
+            "Please update the primary email address in Firebase."
+    }
 }
+
+class MissingPrimaryEmailException : LoonoBackendException(
+    HttpStatus.BAD_REQUEST,
+    BearerTokenAuthenticator.MISSING_PRIMARY_EMAIL_CODE,
+    BearerTokenAuthenticator.MISSING_PRIMARY_EMAIL_MSG
+)
