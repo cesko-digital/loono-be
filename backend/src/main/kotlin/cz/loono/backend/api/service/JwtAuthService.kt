@@ -13,5 +13,6 @@ fun interface JwtAuthService {
         data class Success(val basicUser: BasicUser) : VerificationResult()
         data class Error(val reason: String) : VerificationResult()
         object MissingPrimaryEmail : VerificationResult()
+        object MissingUserName : VerificationResult()
     }
 }

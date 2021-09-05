@@ -39,6 +39,9 @@ class BearerTokenAuthenticator @Autowired constructor(
             JwtAuthService.VerificationResult.MissingPrimaryEmail -> {
                 throw MissingPrimaryEmailException()
             }
+            JwtAuthService.VerificationResult.MissingUserName -> {
+                throw MissingUserNameException()
+            }
         }
     }
 
@@ -59,10 +62,16 @@ class BearerTokenAuthenticator @Autowired constructor(
 
     companion object {
         const val MISSING_PRIMARY_EMAIL_CODE = "MISSING_PRIMARY_EMAIL"
-        const val MISSING_PRIMARY_EMAIL_MSG = "The primary email address of the Firebase user is not filled in. " +
+        const val MISSING_PRIMARY_EMAIL_MSG = "The 'email' property of the Firebase user is not filled in. " +
             "Loono only permits login providers with email address. (Social OAuth, Email + Password). " +
             "It is possible that you allowed another type of login, such as Phone or Anonymous. " +
             "Please update the primary email address in Firebase."
+
+        const val MISSING_USER_NAME_CODE = "MISSING_USER_NAME"
+        const val MISSING_USER_NAME_MSG = "The 'name' property of the Firebase user is not filled in. " +
+        "Loono applications must ensure that the name is properly filled in before making requests. " +
+        "This is especially important for Email + Password method. " +
+        "Please update the user name in Firebase."
     }
 }
 
@@ -70,4 +79,10 @@ class MissingPrimaryEmailException : LoonoBackendException(
     HttpStatus.BAD_REQUEST,
     BearerTokenAuthenticator.MISSING_PRIMARY_EMAIL_CODE,
     BearerTokenAuthenticator.MISSING_PRIMARY_EMAIL_MSG
+)
+
+class MissingUserNameException : LoonoBackendException(
+    HttpStatus.BAD_REQUEST,
+    BearerTokenAuthenticator.MISSING_USER_NAME_CODE,
+    BearerTokenAuthenticator.MISSING_USER_NAME_MSG
 )

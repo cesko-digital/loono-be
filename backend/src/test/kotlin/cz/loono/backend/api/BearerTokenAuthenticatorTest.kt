@@ -49,6 +49,19 @@ internal class BearerTokenAuthenticatorTest {
         }
     }
 
+    @Test
+    fun `missing username throws`() {
+        val response = mock<HttpServletResponse>(defaultAnswer = { fail("Shouldn't touch the response.") })
+        val authenticator = BearerTokenAuthenticator { JwtAuthService.VerificationResult.MissingUserName }
+        val request = MockHttpServletRequest().apply {
+            addHeader("Authorization", "Bearer token")
+        }
+
+        assertThrows<MissingUserNameException> {
+            authenticator.preHandle(request, response, Any())
+        }
+    }
+
     @ParameterizedTest
     @ValueSource(
         strings = [
