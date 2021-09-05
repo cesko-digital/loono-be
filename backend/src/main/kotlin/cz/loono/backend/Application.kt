@@ -1,8 +1,6 @@
 package cz.loono.backend
 
 import cz.loono.backend.api.BearerTokenAuthenticator
-import cz.loono.backend.api.OnboardRequiredInterceptor
-import cz.loono.backend.api.controller.OnboardController
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.boot.runApplication
@@ -25,7 +23,6 @@ fun main(args: Array<String>) {
 @Configuration
 class Config(
     private val authenticator: BearerTokenAuthenticator,
-    private val onboardRequiredInterceptor: OnboardRequiredInterceptor
 ) : WebMvcConfigurer {
     val unauthenticatedEndpoints = listOf(
         "/v3/api-docs",
@@ -36,10 +33,5 @@ class Config(
         registry.addInterceptor(authenticator)
             .excludePathPatterns(unauthenticatedEndpoints)
             .order(0)
-
-        registry.addInterceptor(onboardRequiredInterceptor)
-            .excludePathPatterns(unauthenticatedEndpoints)
-            .excludePathPatterns(OnboardController.PATH)
-            .order(1)
     }
 }
