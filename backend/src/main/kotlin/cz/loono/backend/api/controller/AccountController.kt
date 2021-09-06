@@ -28,12 +28,12 @@ import java.time.LocalDate
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("/account")
+@RequestMapping("/account", produces = [MediaType.APPLICATION_JSON_VALUE])
 class AccountController @Autowired constructor(
     private val accountService: AccountService,
     private val accountRepository: AccountRepository,
 ) {
-    @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping
     fun getAccount(
         @RequestAttribute(name = Attributes.ATTR_BASIC_USER)
         basicUser: BasicUser
