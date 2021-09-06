@@ -69,9 +69,9 @@ class BearerTokenAuthenticator @Autowired constructor(
 
         const val MISSING_USER_NAME_CODE = "MISSING_USER_NAME"
         const val MISSING_USER_NAME_MSG = "The 'name' property of the Firebase user is not filled in. " +
-        "Loono applications must ensure that the name is properly filled in before making requests. " +
-        "This is especially important for Email + Password method. " +
-        "Please update the user name in Firebase."
+            "Loono applications must ensure that the name is properly filled in before making requests. " +
+            "This is especially important for Email + Password method. " +
+            "Please update the user name in Firebase."
     }
 }
 

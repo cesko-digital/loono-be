@@ -37,6 +37,7 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
 }
 
 val artifactFinalName = "$name.jar"

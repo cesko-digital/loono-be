@@ -97,63 +97,6 @@
                 "parameters": []
             }
         },
-        "/account/create": {
-            "post": {
-                "summary": "Create Account",
-                "description": "Creates a new user account. It is expected that this endpoint be called right after the user is created with the Firebase SDK as a single atomic unit of work.\n\nSpecific error codes:\n\n|HTTP Status|code |description|\n|--- |--- | --- |\n|403|`ACCOUNT_ALREADY_EXISTS`| The account, as identified by its `uid`, already exists and is available at `/account`. Trying to create an account multiple times is an error. Account creation is generally not considered an idempotent operation, therefore we return an error instead of the preexisting account. TODO: Do we want to make this operation idempotent, returning the existing data for repeated requests? Review. |\n",
-                "operationId": "onboardUsingPOST",
-                "parameters": [],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Onboard"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Account created. Returns the newly created Account.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Account"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error"
-                                }
-                            }
-                        }
-                    },
-                    "default": {
-                        "description": "Error Response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "Bearer_Auth": []
-                    }
-                ],
-                "tags": [
-                    "Account"
-                ]
-            }
-        },
         "/leaderboard": {
             "get": {
                 "summary": "GET Leaderboard",
@@ -276,12 +219,12 @@
                 }
             }
         },
-        "/account/examinations/{type}/complete": {
+        "/examinations/{type}/complete": {
             "post": {
                 "summary": "Complete Examination",
                 "operationId": "completeExamination",
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Returns the updated list of examination records.\n\nTODO: Co vracet?  Account? All the records? Just the one record?",
                         "content": {
                             "application/json": {
@@ -296,8 +239,7 @@
                     }
                 },
                 "tags": [
-                    "Examinations",
-                    "Account"
+                    "Examinations"
                 ],
                 "description": "Notify the API that an examination has been performed.",
                 "security": [
@@ -309,7 +251,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/CompletedExamination"
+                                "$ref": "#/components/schemas/ExaminationCompletion"
                             }
                         }
                     },
@@ -323,12 +265,12 @@
                     },
                     "name": "type",
                     "in": "path",
-                    "description": "The examination type enum",
-                    "required": true
+                    "required": true,
+                    "description": "One of the `ExaminationTypeEnum` values"
                 }
             ]
         },
-        "/account/examinations/{type}/delete": {
+        "/examinations/reset": {
             "post": {
                 "summary": "Delete Examination Record",
                 "operationId": "deleteExamination",
@@ -368,17 +310,7 @@
                     "description": "Empty object"
                 }
             },
-            "parameters": [
-                {
-                    "schema": {
-                        "type": "string"
-                    },
-                    "name": "type",
-                    "in": "path",
-                    "description": "The examination type enum",
-                    "required": true
-                }
-            ]
+            "parameters": []
         }
     },
     "components": {
@@ -394,25 +326,17 @@
                     "settings": {
                         "$ref": "#/components/schemas/Settings"
                     },
-                    "pointsEarned": {
+                    "points": {
                         "type": "integer",
                         "description": "The total amount of points earned by the user from gamification features.",
                         "format": "int32",
-                        "minimum": 0,
-                        "readOnly": true
-                    },
-                    "examinations": {
-                        "type": "array",
-                        "description": "The aggregate examination records.",
-                        "items": {
-                            "$ref": "#/components/schemas/ExaminationRecord"
-                        }
+                        "minimum": 0
                     }
                 },
                 "required": [
                     "user",
                     "settings",
-                    "pointsEarned"
+                    "points"
                 ],
                 "readOnly": true
             },
@@ -433,58 +357,44 @@
                     }
                 }
             },
-            "CompletedExamination": {
-                "title": "CompletedExamination",
+            "ExaminationCompletion": {
+                "title": "ExaminationCompletion",
                 "type": "object",
-                "description": "A completed medical examination.",
+                "description": "A completed medical examination.\n\n`month` and `year` are optional and nullable. If they are missing or `null`, API defaults to `LocalDate.now()` - the current year and month.\n\nEither both `month` and `year` must be filled or none of them.",
                 "properties": {
-                    "type": {
-                        "$ref": "#/components/schemas/ExaminationTypeEnum"
-                    },
                     "month": {
                         "type": "integer",
                         "description": "",
                         "format": "int32",
-                        "minimum": 1,
-                        "maximum": 12
+                        "nullable": true
                     },
                     "year": {
                         "type": "integer",
                         "description": "Must not be in the future",
-                        "format": "int32"
-                    }
-                },
-                "required": [
-                    "type",
-                    "month",
-                    "year"
-                ]
-            },
-            "Onboard": {
-                "title": "Onboard data",
-                "description": "All the necessary data for the onboarding process",
-                "type": "object",
-                "properties": {
-                    "checkups": {
-                        "type": "array",
-                        "description": "Check-ups from the starting questionnaire",
-                        "items": {
-                            "$ref": "#/components/schemas/CompletedExamination"
-                        }
-                    },
-                    "userPatch": {
-                        "$ref": "#/components/schemas/UserPatch"
+                        "format": "int32",
+                        "nullable": true
                     }
                 }
             },
             "User": {
                 "title": "User",
-                "description": "Encapsulates basic user information: `uid, email, name` etc.\n\nReturned as part of Account.",
+                "description": "Encapsulates basic user profile information: `uid, email, name` etc.\n\nReturned as part of Account.",
                 "type": "object",
                 "properties": {
                     "uid": {
                         "type": "string",
                         "description": "unique user identifier"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "The primary registration email."
+                    },
+                    "nickname": {
+                        "type": "string",
+                        "description": ""
+                    },
+                    "sex": {
+                        "$ref": "#/components/schemas/Sex"
                     },
                     "birthdateMonth": {
                         "type": "integer",
@@ -498,37 +408,16 @@
                         "description": "birthdate year of user",
                         "format": "int32"
                     },
-                    "email": {
-                        "type": "string",
-                        "description": "The primary registration email."
-                    },
                     "preferredEmail": {
-                        "$ref": "#/components/schemas/PreferredEmail"
-                    },
-                    "name": {
                         "type": "string",
-                        "description": "user salutation"
-                    },
-                    "sex": {
-                        "$ref": "#/components/schemas/SexEnum"
+                        "format": "email"
                     }
                 },
                 "required": [
                     "uid",
                     "email",
-                    "sex"
+                    "nickname"
                 ]
-            },
-            "Settings": {
-                "title": "Account Settings",
-                "description": "Various account-related settings. Newsletter opt in, leaderboard visibility opt in etc.",
-                "type": "object",
-                "properties": {
-                    "leaderboardAnonymization": {
-                        "description": "Whether the name and profile picture is anonymous when displayed on the leaderboard.",
-                        "type": "boolean"
-                    }
-                }
             },
             "LeaderboardUser": {
                 "title": "Leaderboard user",
@@ -585,32 +474,35 @@
             "UserPatch": {
                 "type": "object",
                 "title": "UserPatch",
-                "description": "Used for onboarding and for PATCH requests to change user information.\n\nAll fields are nullable and optional to allow fine grained account updates.\n\nSpecial case: The onboarding process may declare certain fields to be required for the initial account creation.",
+                "description": "All fields are always updated, so beware of defaults.",
                 "properties": {
                     "sex": {
-                        "$ref": "#/components/schemas/SexEnum"
+                        "$ref": "#/components/schemas/Sex"
                     },
                     "birthdateMonth": {
                         "type": "integer",
                         "description": "birthdate month of user",
                         "format": "int32",
-                        "minimum": 1,
-                        "maximum": 12,
+                        "nullable": true,
                         "writeOnly": true
                     },
                     "birthdateYear": {
                         "type": "integer",
                         "description": "birthdate year of user",
                         "format": "int32",
+                        "nullable": true,
                         "writeOnly": true
                     },
                     "preferredEmail": {
-                        "$ref": "#/components/schemas/PreferredEmail"
+                        "type": "string",
+                        "format": "email",
+                        "nullable": true,
+                        "writeOnly": true
                     }
                 },
                 "writeOnly": true
             },
-            "SexEnum": {
+            "Sex": {
                 "type": "string",
                 "title": "Sex",
                 "description": "Sex enum",
@@ -661,6 +553,9 @@
                     },
                     "streak": {
                         "$ref": "#/components/schemas/Streak"
+                    },
+                    "visit": {
+                        "type": "string"
                     }
                 },
                 "required": [
@@ -690,6 +585,58 @@
                         "minimum": 0
                     }
                 }
+            },
+            "Appointment": {
+                "title": "Appointment",
+                "type": "object",
+                "description": "A planned visit to the doctor.",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "provider": {
+                        "$ref": "#/components/schemas/SimpleHealthcareProvider"
+                    },
+                    "datetime": {
+                        "type": "string",
+                        "description": "**ZONED** Datetime.\nTODO: Can be split into separate datetime + timezene fields\n"
+                    }
+                }
+            },
+            "SimpleHealthcareProvider": {
+                "title": "SimpleHealthcareProvider",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "description": "Simplified healthcare provider record."
+            },
+            "Settings": {
+                "title": "Settings",
+                "type": "object",
+                "description": "Account Settings",
+                "properties": {
+                    "leaderboardAnonymizationOptIn": {
+                        "type": "boolean",
+                        "default": true
+                    },
+                    "appointmentReminderEmailsOptIn": {
+                        "type": "boolean",
+                        "description": "",
+                        "default": false
+                    },
+                    "newsletterOptIn": {
+                        "type": "boolean",
+                        "default": false
+                    }
+                },
+                "required": [
+                    "leaderboardAnonymizationOptIn",
+                    "appointmentReminderEmailsOptIn",
+                    "newsletterOptIn"
+                ]
             }
         },
         "securitySchemes": {

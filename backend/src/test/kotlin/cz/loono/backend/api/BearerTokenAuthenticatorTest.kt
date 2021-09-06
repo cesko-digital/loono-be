@@ -2,7 +2,6 @@ package cz.loono.backend.api
 
 import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.api.service.JwtAuthService
-import cz.loono.backend.getTypedAttribute
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
@@ -124,6 +123,6 @@ internal class BearerTokenAuthenticatorTest {
 
         assertTrue { shouldContinue }
         assertFalse { response.isCommitted }
-        assertEquals(decodedUser, request.getTypedAttribute<BasicUser>(Attributes.ATTR_BASIC_USER))
+        assertEquals(decodedUser, request.getAttribute(Attributes.ATTR_BASIC_USER))
     }
 }
