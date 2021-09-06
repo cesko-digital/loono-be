@@ -2,6 +2,7 @@ package cz.loono.backend.api
 
 import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.api.service.AccountService
+import cz.loono.backend.createBasicUser
 import cz.loono.backend.data.repository.AccountRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -20,7 +21,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
-import java.net.URL
 
 /**
  * TODO configure in-memory database
@@ -102,11 +102,4 @@ internal class CreateAccountInterceptorTest {
         verify(repo).existsByUid("uid")
         verifyNoMoreInteractions(repo)
     }
-
-    private fun createBasicUser() = BasicUser(
-        "uid",
-        "zilvar@example.com",
-        "Zilvar z chudobince",
-        URL("https://example.com")
-    )
 }
