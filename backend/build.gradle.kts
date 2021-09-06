@@ -103,11 +103,12 @@ fun setUpOpenApiGenerator() {
         modelPackage.set("cz.loono.backend.api.dto")
         modelNameSuffix.set("Dto")
         generatorName.set("kotlin-spring")
+        configOptions.put("enumPropertyNaming", "original")
+        configOptions.put("serializationLibrary", "jackson")
         globalProperties.set(
             mapOf(
                 "apis" to "false",
                 "models" to "",
-                "enumPropertyNaming" to "original",
             )
         )
         inputSpec.set(localSpecFile.toString())
