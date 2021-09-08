@@ -2,7 +2,7 @@
     "openapi": "3.0.3",
     "info": {
         "title": "Loono API",
-        "description": "Loono API for the mobile application. The whole API is JSON based.\n\nFailed API operations return [Error](https://okarmazin.stoplight.io/docs/loono/c2NoOjI2ODI2OA-error-response).\n\nGeneral error codes:\n|HTTP Status|code |description|\n|--- |--- | --- |\n|403|ONBOARD_REQUIRED| The application created a user account with the Firebase SDK but hasn't gone through `/onboard` yet. A well formed client application shouldn't encounter this error. It is expected that client applications create the Firebase account and then call `/account/create` as a single atomic operation before querying account data. |",
+        "description": "Loono API for the mobile application. The whole API is JSON based.\n\nFailed API operations return [Error](https://okarmazin.stoplight.io/docs/loono/c2NoOjI2ODI2OA-error-response).\n\nGeneral error codes:\n|HTTP Status|code |description|\n|--- |--- | --- |\n|400|MISSING_PRIMARY_EMAIL| The Firebase login method did not include user email. Email is required and must be saved in Firebase before any API access. |\n|400|MISSING_USER_NAME| The Firebase login method did not include user name. Name is required and must be saved in Firebase before any API access. |",
         "contact": {
             "name": "Loono",
             "url": "https://www.loono.cz/"
@@ -99,7 +99,7 @@
         },
         "/leaderboard": {
             "get": {
-                "summary": "GET Leaderboard",
+                "summary": "[Draft] Get Leaderboard",
                 "tags": [
                     "Leaderboard"
                 ],
@@ -173,7 +173,7 @@
         },
         "/account/delete": {
             "post": {
-                "summary": "Delete Account",
+                "summary": "[Draft] Delete Account",
                 "operationId": "deleteAccount",
                 "responses": {
                     "200": {
@@ -272,7 +272,7 @@
         },
         "/examinations/reset": {
             "post": {
-                "summary": "Delete Examination Record",
+                "summary": "[Draft] Reset Examination Record",
                 "operationId": "deleteExamination",
                 "responses": {
                     "201": {
@@ -311,6 +311,36 @@
                 }
             },
             "parameters": []
+        },
+        "/examinations": {
+            "get": {
+                "summary": "Get Examination Records",
+                "tags": [
+                    "Examinations"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ExaminationRecord"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "getExaminations",
+                "description": "Returns the examination records of the current user.",
+                "security": [
+                    {
+                        "Bearer_Auth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
