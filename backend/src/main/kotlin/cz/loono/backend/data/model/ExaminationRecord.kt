@@ -17,7 +17,7 @@ data class ExaminationRecord(
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long = 0,
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, columnDefinition = "TEXT")
     val type: String = "",
 
     @Column(nullable = true)
