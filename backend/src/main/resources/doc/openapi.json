@@ -144,10 +144,10 @@
                 ]
             }
         },
-        "/account/update": {
+        "/account/user/update": {
             "post": {
-                "summary": "Update Account",
-                "operationId": "updateAccount",
+                "summary": "Update Account User",
+                "operationId": "updateAccountUser",
                 "responses": {
                     "200": {
                         "description": "Returns the updated Account",
@@ -158,9 +158,19 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
-                "description": "Change the auxiliary account information. Successful operation returns the whole updated **Account**\n\n(TODO!) Probrat semantiku `null` - tato hodnota by mela smazat prislusny zaznam z databaze. Pokud si uzivatel nepreje hodnotu menit, tak ji ve strukture vynecha uplne.",
+                "description": "Change the auxiliary account information. Successful operation returns the whole updated **Account**\n\n**ALL FIELDS ARE ALWAYS UPDATED. BEWARE OF DEFAULT PARAMETERS**",
                 "tags": [
                     "Account"
                 ],
@@ -168,6 +178,63 @@
                     {
                         "Bearer_Auth": []
                     }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserPatch"
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": []
+        },
+        "/account/settings/update": {
+            "post": {
+                "summary": "Update Account Settings",
+                "operationId": "updateAccountSettings",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Account"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Change the settings. Successful operation returns the whole updated **Account**\n\n**ALL FIELDS ARE ALWAYS UPDATED. BEWARE OF DEFAULT PARAMETERS**",
+                "security": [
+                    {
+                        "Bearer_Auth": []
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Settings"
+                            }
+                        }
+                    },
+                    "description": "The whole new settings object. "
+                },
+                "tags": [
+                    "Account"
                 ]
             }
         },
@@ -186,8 +253,18 @@
                             }
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
                     "403": {
-                        "description": "Forbidden, likely ",
+                        "description": "Forbidden, likely needs a more recent recent login",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -219,6 +296,46 @@
                 }
             }
         },
+        "/examinations": {
+            "get": {
+                "summary": "Get Examination Records",
+                "tags": [
+                    "Examinations"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ExaminationRecord"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "getExaminations",
+                "description": "Returns the examination records of the current user.",
+                "security": [
+                    {
+                        "Bearer_Auth": []
+                    }
+                ]
+            }
+        },
         "/examinations/{type}/complete": {
             "post": {
                 "summary": "Complete Examination",
@@ -233,6 +350,16 @@
                                     "items": {
                                         "$ref": "#/components/schemas/ExaminationRecord"
                                     }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -311,36 +438,6 @@
                 }
             },
             "parameters": []
-        },
-        "/examinations": {
-            "get": {
-                "summary": "Get Examination Records",
-                "tags": [
-                    "Examinations"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/ExaminationRecord"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "operationId": "getExaminations",
-                "description": "Returns the examination records of the current user.",
-                "security": [
-                    {
-                        "Bearer_Auth": []
-                    }
-                ]
-            }
         }
     },
     "components": {
