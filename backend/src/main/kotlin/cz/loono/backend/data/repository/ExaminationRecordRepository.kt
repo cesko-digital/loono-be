@@ -9,9 +9,3 @@ import org.springframework.stereotype.Repository
 interface ExaminationRecordRepository : CrudRepository<ExaminationRecord, Long> {
     fun findAllByAccount(account: Account): List<ExaminationRecord>
 }
-
-/*
-testy
-  - finds all
-  - only returns the records with the proper uid
- */

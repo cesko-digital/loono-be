@@ -15,8 +15,8 @@ internal fun createBasicUser() = BasicUser(
     URL("https://example.com")
 )
 
-internal fun createAccount() = Account(
-    uid = "uid",
+internal fun createAccount(uid: String = "uid") = Account(
+    uid = uid,
     userAuxiliary = UserAuxiliary(
         "preferredZilvar@example.com",
         SexDto.MALE.name,
