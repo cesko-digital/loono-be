@@ -65,7 +65,8 @@ class AccountController @Autowired constructor(
 
     @PostMapping("/settings/update")
     fun updateSettings(
-        @RequestAttribute(name = Attributes.ATTR_BASIC_USER) basicUser: BasicUser,
+        @RequestAttribute(name = Attributes.ATTR_BASIC_USER)
+        basicUser: BasicUser,
         settings: SettingsDto,
     ): AccountDto {
         val domainSettings = Settings(
