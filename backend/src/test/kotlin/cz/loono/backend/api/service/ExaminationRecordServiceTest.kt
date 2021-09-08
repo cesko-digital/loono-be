@@ -192,4 +192,33 @@ internal class ExaminationRecordServiceTest {
         assertEquals(LocalDate.of(2000, 1, 1), updatedRecord.lastVisit)
         assertEquals(LocalDate.of(2000, 1, 1), persistedUpdatedRecord.lastVisit)
     }
+
+    @Test
+    fun `completeExamination with null date sets the current date`() {
+        val account = createAccount().let {
+            val records = listOf(
+                ExaminationRecord(
+                    type = ExaminationTypeEnumDto.DENTIST.name,
+                    lastVisit = LocalDate.of(1999, 1, 1),
+                    account = it
+                )
+            )
+            it.copy(examinationRecords = records)
+        }
+        accountRepository.save(account)
+        val service = ExaminationRecordService(accountRepository, recordRepository)
+
+        val updatedRecord = service.completeExamination(
+            "uid",
+            ExaminationTypeEnumDto.DENTIST.name,
+            null, // <-- This is under test
+        ).first { it.type == ExaminationTypeEnumDto.DENTIST.name }
+
+        val persistedUpdatedRecord = accountRepository.findById("uid").get().examinationRecords
+            .first { it.type == ExaminationTypeEnumDto.DENTIST.name }
+
+        val expectedDate = LocalDate.now().withDayOfMonth(1)
+        assertEquals(expectedDate, updatedRecord.lastVisit)
+        assertEquals(expectedDate, persistedUpdatedRecord.lastVisit)
+    }
 }
