@@ -63,10 +63,10 @@ class ExaminationRecordService @Autowired constructor(
             }.toMutableList()
 
         // Create and add a default record for each missing exam type
-        desiredExamTypes.subtract(currentExamTypes)
-            .forEach { type ->
-                newRecords.add(ExaminationRecord(type = type, account = this))
-            }
+        val missingTypes = desiredExamTypes subtract currentExamTypes
+        for (type in missingTypes) {
+            newRecords.add(ExaminationRecord(type = type, account = this))
+        }
 
         // Remove leftovers from the database
         // okarmazin:
