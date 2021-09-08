@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse
  * An interceptor that ensures an account exists
  */
 @Component
-class CreateAccountInterceptor @Autowired constructor(
+class AccountCreatingInterceptor @Autowired constructor(
     private val accountService: AccountService,
 ) : HandlerInterceptor {
 

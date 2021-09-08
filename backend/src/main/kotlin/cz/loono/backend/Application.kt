@@ -1,6 +1,7 @@
 package cz.loono.backend
 
 import cz.loono.backend.api.BearerTokenAuthenticator
+import cz.loono.backend.api.AccountCreatingInterceptor
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.boot.runApplication
@@ -23,6 +24,7 @@ fun main(args: Array<String>) {
 @Configuration
 class Config(
     private val authenticator: BearerTokenAuthenticator,
+    private val accountCreatingInterceptor: AccountCreatingInterceptor,
 ) : WebMvcConfigurer {
     val unauthenticatedEndpoints = listOf(
         "/v3/api-docs",
@@ -33,5 +35,9 @@ class Config(
         registry.addInterceptor(authenticator)
             .excludePathPatterns(unauthenticatedEndpoints)
             .order(0)
+
+        registry.addInterceptor(accountCreatingInterceptor)
+            .excludePathPatterns(unauthenticatedEndpoints)
+            .order(1)
     }
 }

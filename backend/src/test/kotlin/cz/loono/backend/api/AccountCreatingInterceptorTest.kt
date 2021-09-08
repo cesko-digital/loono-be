@@ -28,14 +28,14 @@ import org.springframework.mock.web.MockHttpServletResponse
  */
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-internal class CreateAccountInterceptorTest {
+internal class AccountCreatingInterceptorTest {
 
     @Autowired
     private lateinit var realRepo: AccountRepository
 
     @Test
     fun `user is created if not exists`() {
-        val interceptor = CreateAccountInterceptor(AccountService(realRepo))
+        val interceptor = AccountCreatingInterceptor(AccountService(realRepo))
         val request = MockHttpServletRequest().apply {
             setAttribute(Attributes.ATTR_BASIC_USER, createBasicUser())
         }
@@ -52,7 +52,7 @@ internal class CreateAccountInterceptorTest {
     @Test
     fun `request without decoded user throws 500`() {
         val repo = mock<AccountRepository>()
-        val interceptor = CreateAccountInterceptor(AccountService(repo))
+        val interceptor = AccountCreatingInterceptor(AccountService(repo))
         val request = MockHttpServletRequest()
         val response = MockHttpServletResponse()
 
@@ -69,7 +69,7 @@ internal class CreateAccountInterceptorTest {
     @Test
     fun `request with invalid decoded user attribute throws 500`() {
         val repo = mock<AccountRepository>()
-        val interceptor = CreateAccountInterceptor(AccountService(repo))
+        val interceptor = AccountCreatingInterceptor(AccountService(repo))
         val request = MockHttpServletRequest().apply {
             setAttribute(Attributes.ATTR_BASIC_USER, Any())
         }
@@ -90,7 +90,7 @@ internal class CreateAccountInterceptorTest {
         val repo = mock<AccountRepository>()
         whenever(repo.existsByUid("uid")).thenReturn(true)
 
-        val interceptor = CreateAccountInterceptor(AccountService(repo))
+        val interceptor = AccountCreatingInterceptor(AccountService(repo))
         val request = MockHttpServletRequest().apply {
             setAttribute(Attributes.ATTR_BASIC_USER, createBasicUser())
         }
