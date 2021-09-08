@@ -1,7 +1,7 @@
 package cz.loono.backend
 
-import cz.loono.backend.api.BearerTokenAuthenticator
 import cz.loono.backend.api.AccountCreatingInterceptor
+import cz.loono.backend.api.BearerTokenAuthenticator
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.boot.runApplication

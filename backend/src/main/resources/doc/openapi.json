@@ -241,7 +241,7 @@
                 "tags": [
                     "Examinations"
                 ],
-                "description": "Notify the API that an examination has been performed.",
+                "description": "Notify the API that an examination has been performed.\n\nThe date of the completion must not be in the future.",
                 "security": [
                     {
                         "Bearer_Auth": []
@@ -360,18 +360,20 @@
             "ExaminationCompletion": {
                 "title": "ExaminationCompletion",
                 "type": "object",
-                "description": "A completed medical examination.\n\n`month` and `year` are optional and nullable. If they are missing or `null`, API defaults to `LocalDate.now()` - the current year and month.\n\nEither both `month` and `year` must be filled or none of them.",
+                "description": "A completed medical examination.\n\n`month` and `year` are optional and nullable. If any of them is missing or `null`, API defaults to `LocalDate.now()` - the current year and month.",
                 "properties": {
                     "month": {
                         "type": "integer",
                         "description": "",
                         "format": "int32",
+                        "default": null,
                         "nullable": true
                     },
                     "year": {
                         "type": "integer",
                         "description": "Must not be in the future",
                         "format": "int32",
+                        "default": null,
                         "nullable": true
                     }
                 }
@@ -554,8 +556,12 @@
                     "streak": {
                         "$ref": "#/components/schemas/Streak"
                     },
-                    "visit": {
-                        "type": "string"
+                    "lastVisitYear": {
+                        "type": "integer",
+                        "format": "date"
+                    },
+                    "lastVisitMonth": {
+                        "type": "integer"
                     }
                 },
                 "required": [

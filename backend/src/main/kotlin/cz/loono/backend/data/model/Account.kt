@@ -3,18 +3,20 @@ package cz.loono.backend.data.model
 import org.hibernate.Hibernate
 import java.time.LocalDate
 import java.util.Objects
+import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Embeddable
 import javax.persistence.Embedded
 import javax.persistence.Entity
 import javax.persistence.Id
+import javax.persistence.OneToMany
 import javax.persistence.Table
 
 @Entity
 @Table(name = "\"account\"")
 data class Account(
     @Id
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     val uid: String = "",
 
     @Embedded
@@ -25,6 +27,10 @@ data class Account(
 
     @Column(nullable = false)
     val points: Int = 0,
+
+    @OneToMany(orphanRemoval = true, cascade = [CascadeType.ALL], mappedBy = "account")
+    @Column(nullable = false, updatable = true, insertable = true)
+    val examinationRecords: List<ExaminationRecord> = mutableListOf()
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -74,10 +80,10 @@ data class Settings(
 
 @Embeddable
 data class UserAuxiliary(
-    @Column(nullable = true)
+    @Column(nullable = true, columnDefinition = "TEXT")
     val preferredEmail: String? = null,
 
-    @Column(nullable = true)
+    @Column(nullable = true, columnDefinition = "TEXT")
     val sex: String? = null,
 
     @Column(nullable = true)
