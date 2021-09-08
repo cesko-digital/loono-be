@@ -21,14 +21,14 @@ class AccountRepositoryTest {
     private lateinit var accountRepo: AccountRepository
 
     @Test
-    fun `exists with existing user`() {
+    fun `existsByUid with existing user`() {
         accountRepo.save(Account(uid = "uid"))
 
         assertTrue(accountRepo.existsByUid("uid"))
     }
 
     @Test
-    fun `exists with missing user`() {
+    fun `existsByUid with missing user`() {
         assertFalse(accountRepo.existsByUid("uid"))
     }
 }
