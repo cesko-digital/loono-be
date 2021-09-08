@@ -41,7 +41,7 @@ internal class ExaminationRecordServiceTest {
     }
 
     @Test
-    fun getOrUpdateRecords() {
+    fun getOrCreateRecords() {
         val account = createAccount().let {
             val records = listOf(
                 ExaminationRecord(
