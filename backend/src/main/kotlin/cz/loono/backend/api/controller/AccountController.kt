@@ -14,6 +14,7 @@ import cz.loono.backend.data.model.Settings
 import cz.loono.backend.data.model.UserAuxiliary
 import cz.loono.backend.data.repository.AccountRepository
 import cz.loono.backend.let3
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
@@ -33,13 +34,21 @@ class AccountController @Autowired constructor(
     private val accountService: AccountService,
     private val accountRepository: AccountRepository,
 ) {
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     @GetMapping
     fun getAccount(
         @RequestAttribute(name = Attributes.ATTR_BASIC_USER)
         basicUser: BasicUser
     ): AccountDto {
         val account = accountRepository.findByIdOrNull(basicUser.uid)
-            ?: throw LoonoBackendException(HttpStatus.NOT_FOUND)
+        if (account == null) {
+            logger.error(
+                "Tried to load account with uid: ${basicUser.uid} but no such account exists. " +
+                    "The account should have been created by the interceptor."
+            )
+            throw LoonoBackendException(HttpStatus.NOT_FOUND)
+        }
 
         return assembleAccountDto(basicUser, account)
     }
