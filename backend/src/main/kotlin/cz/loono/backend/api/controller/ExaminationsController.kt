@@ -69,10 +69,6 @@ class ExaminationsController @Autowired constructor(
 
         return getExaminationRecords(basicUser)
     }
-
-    /*
-      - complete returns 404 for nonexistent type
-     */
 }
 
 // Purposefully implemented as an expression to leverage the exhaustiveness check performed by the compiler
