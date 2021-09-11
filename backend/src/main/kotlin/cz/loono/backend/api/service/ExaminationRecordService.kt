@@ -55,32 +55,40 @@ class ExaminationRecordService @Autowired constructor(
             return this
         }
 
-        // Retain the valid records we already have, excluding leftovers
-        val retainedTypes = currentExamTypes intersect desiredExamTypes
-        val newRecords = this.examinationRecords
-            .filter { record ->
-                record.type in retainedTypes
-            }.toMutableList()
+        val newRecords = mutableListOf<ExaminationRecord>()
+        newRecords += retainValidRecords(examinationRecords, desiredExamTypes)
+        newRecords += createMissingRecords(this, desiredExamTypes)
 
-        // Create and add a default record for each missing exam type
-        val missingTypes = desiredExamTypes subtract currentExamTypes
-        for (type in missingTypes) {
-            newRecords.add(ExaminationRecord(type = type, account = this))
-        }
-
-        // Remove leftovers from the database
-        // okarmazin:
-        // FIXME When I tried the "orphanRemoval" attribute in Account,
-        //  it didn't actually remove the orphans from the database, therefore we need to
-        //  remove the orphans manually. Discuss with RP and ML.
-        val obsoleteTypes = currentExamTypes subtract desiredExamTypes
-        val removals = this.examinationRecords
-            .filter { record ->
-                record.type in obsoleteTypes
-            }
-        examinationRecordRepository.deleteAll(removals)
+        deleteObsoleteRecords(examinationRecords, desiredExamTypes)
 
         return accountRepository.save(copy(examinationRecords = newRecords))
+    }
+
+    private fun retainValidRecords(
+        currentRecords: List<ExaminationRecord>,
+        desiredRecordTypes: List<String>
+    ): List<ExaminationRecord> {
+        val retainedTypes = desiredRecordTypes intersect currentRecords.map { it.type }
+
+        return currentRecords.filter { record ->
+            record.type in retainedTypes
+        }
+    }
+
+    private fun createMissingRecords(account: Account, desiredRecordTypes: List<String>): List<ExaminationRecord> {
+        val missingTypes = desiredRecordTypes subtract account.examinationRecords.map { it.type }
+
+        return missingTypes.map { type ->
+            ExaminationRecord(type = type, account = account)
+        }
+    }
+
+    private fun deleteObsoleteRecords(currentRecords: List<ExaminationRecord>, desiredRecordTypes: List<String>) {
+        val obsoleteTypes = currentRecords.map { it.type } subtract desiredRecordTypes
+        val removals = currentRecords.filter { record ->
+            record.type in obsoleteTypes
+        }
+        examinationRecordRepository.deleteAll(removals)
     }
 
     @Transactional(rollbackFor = [Exception::class])
