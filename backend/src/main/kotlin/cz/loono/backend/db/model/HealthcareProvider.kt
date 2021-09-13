@@ -115,8 +115,10 @@ data class HealthcareProvider(
     @ManyToMany
     @JoinTable(
         name = "healthcare_provider_category",
-        joinColumns = [JoinColumn(name = "location_id", referencedColumnName = "location_id"),
-            JoinColumn(name = "institution_id", referencedColumnName = "institution_id")],
+        joinColumns = [
+            JoinColumn(name = "location_id", referencedColumnName = "location_id"),
+            JoinColumn(name = "institution_id", referencedColumnName = "institution_id")
+        ],
         inverseJoinColumns = [JoinColumn(name = "category", referencedColumnName = "value")]
     )
     val category: Set<Category> = mutableSetOf(),

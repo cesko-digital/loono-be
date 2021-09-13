@@ -33,7 +33,7 @@ data class User(
     val sex: String = "",
 
     @Column(nullable = false)
-    val birthdate: LocalDate = LocalDate.EPOCH,
+    val birthdate: LocalDate = LocalDate.MIN,
 
     @OneToMany(mappedBy = "user")
     val examinations: Set<Examination> = emptySet()
