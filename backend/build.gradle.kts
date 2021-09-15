@@ -35,11 +35,14 @@ dependencies {
 
     runtimeOnly("org.postgresql:postgresql")
 
+    testRuntimeOnly("com.h2database:h2")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
 }
 
-val artifactFinalName = "$name.jar"
+val artifactFinalName = "loono-be.jar"
 tasks.bootJar {
     archiveFileName.set(artifactFinalName)
     destinationDirectory.set(file("$buildDir/dists"))
@@ -103,11 +106,12 @@ fun setUpOpenApiGenerator() {
         modelPackage.set("cz.loono.backend.api.dto")
         modelNameSuffix.set("Dto")
         generatorName.set("kotlin-spring")
+        configOptions.put("enumPropertyNaming", "original")
+        configOptions.put("serializationLibrary", "jackson")
         globalProperties.set(
             mapOf(
                 "apis" to "false",
                 "models" to "",
-                "enumPropertyNaming" to "original",
             )
         )
         inputSpec.set(localSpecFile.toString())
