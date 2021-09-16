@@ -7,8 +7,8 @@ import javax.persistence.ManyToMany
 import javax.persistence.Table
 
 @Entity
-@Table(name = "\"category\"")
-data class Category(
+@Table(name = "\"healthcare_category\"")
+data class HealthcareCategory(
 
     @Id
     @Column(nullable = false, columnDefinition = "TEXT")

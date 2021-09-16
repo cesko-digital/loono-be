@@ -4,28 +4,28 @@ import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.data.HealthcareCSVParser
 import cz.loono.backend.data.constants.CategoryValues
 import cz.loono.backend.data.constants.Constants.Companion.OPEN_DATA_URL
-import cz.loono.backend.db.model.Category
-import cz.loono.backend.db.repository.CategoryRepository
+import cz.loono.backend.db.model.HealthcareCategory
+import cz.loono.backend.db.repository.HealthcareCategoryRepository
 import cz.loono.backend.db.repository.HealthcareProviderRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.io.InputStream
 import java.net.URL
 
 @Service
 class HealthcareProvidersService @Autowired constructor(
     private val healthcareProviderRepository: HealthcareProviderRepository,
-    private val categoryRepository: CategoryRepository
+    private val healthcareCategoryRepository: HealthcareCategoryRepository
 ) {
 
     @Transactional(rollbackFor = [Exception::class])
     fun updateData() {
-        val input = downloadLatestVersion()
+        val input = URL(OPEN_DATA_URL).openStream()
         val providers = HealthcareCSVParser().parse(input)
         if (providers.isNotEmpty()) {
-            categoryRepository.saveAll(getCategories())
+            val categoryValues = CategoryValues.values().map { HealthcareCategory(it.value) }
+            healthcareCategoryRepository.saveAll(categoryValues)
             healthcareProviderRepository.saveAll(providers)
         } else {
             throw LoonoBackendException(
@@ -34,17 +34,5 @@ class HealthcareProvidersService @Autowired constructor(
                 errorMessage = "Data update failed."
             )
         }
-    }
-
-    private fun downloadLatestVersion(): InputStream {
-        return URL(OPEN_DATA_URL).openStream()
-    }
-
-    private fun getCategories(): List<Category> {
-        val list = mutableListOf<Category>()
-        CategoryValues.values().iterator().forEach {
-            list.add(Category(it.value))
-        }
-        return list
     }
 }

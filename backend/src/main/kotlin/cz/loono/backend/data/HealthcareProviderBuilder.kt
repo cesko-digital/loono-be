@@ -4,7 +4,7 @@ import cz.loono.backend.data.constants.Constants
 import cz.loono.backend.data.constants.District
 import cz.loono.backend.data.constants.LawyerFormList
 import cz.loono.backend.data.constants.Region
-import cz.loono.backend.db.model.Category
+import cz.loono.backend.db.model.HealthcareCategory
 import cz.loono.backend.db.model.HealthcareProvider
 
 class HealthcareProviderBuilder(private val columns: List<String>) {
@@ -12,7 +12,7 @@ class HealthcareProviderBuilder(private val columns: List<String>) {
     private var lawyerFormCode = ""
     private var lawyerFormName = ""
     private var lawyerPersonType = ""
-    private var categories = emptySet<Category>()
+    private var categories = emptySet<HealthcareCategory>()
     private var hqDistrictName = ""
     private var hqRegionName = ""
 

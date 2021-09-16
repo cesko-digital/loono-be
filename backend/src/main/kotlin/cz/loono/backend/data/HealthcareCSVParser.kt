@@ -11,6 +11,10 @@ class HealthcareCSVParser {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
+    /**
+     * The function should receive a CSV from NRPZS open data.
+     * @see <a href="https://opendata.mzcr.cz/data/nrpzs/narodni-registr-poskytovatelu-zdravotnich-sluzeb.csv-metadata.json">Doc</a>
+     */
     fun parse(input: InputStream): List<HealthcareProvider> {
 
         val providers = mutableListOf<HealthcareProvider>()

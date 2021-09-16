@@ -121,7 +121,7 @@ data class HealthcareProvider(
         ],
         inverseJoinColumns = [JoinColumn(name = "category", referencedColumnName = "value")]
     )
-    val category: Set<Category> = mutableSetOf(),
+    val category: Set<HealthcareCategory> = mutableSetOf(),
 
     @Column(nullable = false, columnDefinition = "TEXT")
     val careForm: String = "",
