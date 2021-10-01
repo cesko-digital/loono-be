@@ -1,5 +1,6 @@
 package cz.loono.backend.api.service
 
+import cz.loono.backend.api.UpdateStatusMessage
 import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.data.HealthcareCSVParser
 import cz.loono.backend.data.constants.CategoryValues
@@ -20,7 +21,7 @@ class HealthcareProvidersService @Autowired constructor(
 ) {
 
     @Transactional(rollbackFor = [Exception::class])
-    fun updateData() {
+    fun updateData(): UpdateStatusMessage {
         val input = URL(OPEN_DATA_URL).openStream()
         val providers = HealthcareCSVParser().parse(input)
         if (providers.isNotEmpty()) {
@@ -30,9 +31,10 @@ class HealthcareProvidersService @Autowired constructor(
         } else {
             throw LoonoBackendException(
                 HttpStatus.UNPROCESSABLE_ENTITY,
-                errorCode = null,
+                errorCode = HttpStatus.UNPROCESSABLE_ENTITY.value().toString(),
                 errorMessage = "Data update failed."
             )
         }
+        return UpdateStatusMessage("Data successfully updated.")
     }
 }
