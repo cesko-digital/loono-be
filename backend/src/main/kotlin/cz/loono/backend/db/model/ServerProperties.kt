@@ -19,7 +19,7 @@ data class ServerProperties(
     val superUserName: String = "loonoAdmin",
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    val superUserPassword: String = "pass",
+    val superUserPassword: String = "{noop}pass",
 
     @Column(nullable = false, columnDefinition = "TEXT")
     val updateInterval: String = "0 0 1 * *" // once per month
