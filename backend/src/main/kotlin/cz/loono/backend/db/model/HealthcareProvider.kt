@@ -37,8 +37,8 @@ data class HealthcareProvider(
     @Column(nullable = false, columnDefinition = "TEXT")
     val postalCode: String = "",
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val street: String = "",
+    @Column(columnDefinition = "TEXT")
+    val street: String? = null,
 
     @Column(nullable = false, columnDefinition = "TEXT")
     val houseNumber: String = "",
@@ -55,20 +55,20 @@ data class HealthcareProvider(
     @Column(nullable = false, columnDefinition = "TEXT")
     val districtCode: String = "",
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val administrativeDistrict: String = "",
+    @Column(columnDefinition = "TEXT")
+    val administrativeDistrict: String? = null,
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val phoneNumber: String = "",
+    @Column(columnDefinition = "TEXT")
+    val phoneNumber: String? = null,
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val fax: String = "",
+    @Column(columnDefinition = "TEXT")
+    val fax: String? = null,
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val email: String = "",
+    @Column(columnDefinition = "TEXT")
+    val email: String? = null,
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val website: String = "",
+    @Column(columnDefinition = "TEXT")
+    val website: String? = null,
 
     @Column(nullable = false, columnDefinition = "TEXT")
     val ico: String = "",
@@ -76,41 +76,41 @@ data class HealthcareProvider(
     @Column(nullable = false, columnDefinition = "TEXT")
     val personTypeCode: String = "",
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val lawyerFormCode: String = "",
+    @Column(columnDefinition = "TEXT")
+    val lawyerFormCode: String? = null,
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val layerForm: String = "",
+    @Column(columnDefinition = "TEXT")
+    val layerForm: String? = null,
 
     @Column(nullable = false, columnDefinition = "TEXT")
     val personType: String = "",
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val hqRegion: String = "",
+    @Column(columnDefinition = "TEXT")
+    val hqRegion: String? = null,
+
+    @Column(columnDefinition = "TEXT")
+    val hqRegionCode: String? = null,
+
+    @Column(columnDefinition = "TEXT")
+    val hqDistrict: String? = null,
+
+    @Column(columnDefinition = "TEXT")
+    val hqDistrictCode: String? = null,
+
+    @Column(columnDefinition = "TEXT")
+    val hqCity: String? = null,
+
+    @Column(columnDefinition = "TEXT")
+    val hqPostalCode: String? = null,
+
+    @Column(columnDefinition = "TEXT")
+    val hqStreet: String? = null,
+
+    @Column(columnDefinition = "TEXT")
+    val hqHouseNumber: String? = null,
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    val hqRegionCode: String = "",
-
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val hqDistrict: String = "",
-
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val hqDistrictCode: String = "",
-
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val hqCity: String = "",
-
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val hqPostalCode: String = "",
-
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val hqStreet: String = "",
-
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val hqHouseNumber: String = "",
-
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val specialization: String = "",
+    val specialization: String? = null,
 
     @ManyToMany
     @JoinTable(
@@ -123,14 +123,14 @@ data class HealthcareProvider(
     )
     val category: Set<HealthcareCategory> = mutableSetOf(),
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val careForm: String = "",
+    @Column(columnDefinition = "TEXT")
+    val careForm: String? = null,
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val careType: String = "",
+    @Column(columnDefinition = "TEXT")
+    val careType: String? = null,
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    val substitute: String = "",
+    @Column(columnDefinition = "TEXT")
+    val substitute: String? = null,
 
     @Column(nullable = false, columnDefinition = "TEXT")
     val lat: String = "",
