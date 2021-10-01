@@ -1,4 +1,4 @@
-package cz.loono.backend.api
+package cz.loono.backend.security
 
 import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.api.service.JwtAuthService

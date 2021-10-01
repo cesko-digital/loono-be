@@ -2,6 +2,10 @@ package cz.loono.backend.api
 
 import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.api.service.JwtAuthService
+import cz.loono.backend.security.Attributes
+import cz.loono.backend.security.BearerTokenAuthenticator
+import cz.loono.backend.security.MissingPrimaryEmailException
+import cz.loono.backend.security.MissingUserNameException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull

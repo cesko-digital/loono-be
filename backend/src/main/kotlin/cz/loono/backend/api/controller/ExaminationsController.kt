@@ -1,6 +1,5 @@
 package cz.loono.backend.api.controller
 
-import cz.loono.backend.api.Attributes
 import cz.loono.backend.api.BasicUser
 import cz.loono.backend.api.dto.ExaminationCompletionDto
 import cz.loono.backend.api.dto.ExaminationRecordDto
@@ -9,6 +8,7 @@ import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.api.service.ExaminationRecordService
 import cz.loono.backend.db.model.ExaminationRecord
 import cz.loono.backend.let3
+import cz.loono.backend.security.Attributes
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
