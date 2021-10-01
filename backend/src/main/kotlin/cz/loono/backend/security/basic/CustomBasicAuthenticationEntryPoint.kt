@@ -1,5 +1,6 @@
 package cz.loono.backend.security.basic
 
+import com.google.gson.Gson
 import cz.loono.backend.api.dto.ErrorDto
 import org.apache.http.entity.ContentType
 import org.springframework.security.core.AuthenticationException
@@ -20,10 +21,12 @@ class CustomBasicAuthenticationEntryPoint : BasicAuthenticationEntryPoint() {
         response.addHeader("WWW-Authenticate", "Basic realm=\"$realmName\"")
         response.status = HttpServletResponse.SC_UNAUTHORIZED
         response.writer.write(
-            ErrorDto(
-                code = HttpServletResponse.SC_UNAUTHORIZED.toString(),
-                message = "Unauthorized request."
-            ).toString()
+            Gson().toJson(
+                ErrorDto(
+                    code = HttpServletResponse.SC_UNAUTHORIZED.toString(),
+                    message = "Unauthorized request."
+                )
+            )
         )
     }
 
