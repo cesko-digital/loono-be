@@ -28,7 +28,7 @@ class HealthcareCSVParser {
                     logger.warn("The structure of the file has changed.")
                     return@forEachLine
                 }
-                if (columns.size > Constants.header.size) {
+                if (columns.size > Constants.healthcareProvidersCSVHeader.size) {
                     logger.warn("The line doesn't fit header size and will be skipped.")
                     return@forEachLine
                 }
@@ -68,6 +68,6 @@ class HealthcareCSVParser {
     }
 
     private fun verifyColumns(columns: List<String>): Boolean {
-        return Constants.header != columns
+        return Constants.healthcareProvidersCSVHeader != columns
     }
 }

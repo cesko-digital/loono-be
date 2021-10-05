@@ -44,7 +44,7 @@ class SecurityConfig @Autowired constructor(
 
     override fun configure(http: HttpSecurity) {
         http.authorizeRequests()
-            .antMatchers("/doctors/update").hasRole("ADMIN")
+            .antMatchers("/providers/update").hasRole("ADMIN")
             .and()
             .httpBasic()
             .authenticationEntryPoint(authenticationEntryPoint)

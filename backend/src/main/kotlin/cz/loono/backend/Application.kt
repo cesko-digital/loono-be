@@ -31,7 +31,7 @@ class Config(
         "/v3/api-docs",
         "/actuator/health",
         "/error",
-        "/doctors/update"
+        "/providers/update"
     )
 
     override fun addInterceptors(registry: InterceptorRegistry) {

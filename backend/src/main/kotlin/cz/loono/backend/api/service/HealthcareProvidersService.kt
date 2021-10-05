@@ -4,7 +4,7 @@ import cz.loono.backend.api.UpdateStatusMessage
 import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.data.HealthcareCSVParser
 import cz.loono.backend.data.constants.CategoryValues
-import cz.loono.backend.data.constants.Constants.Companion.OPEN_DATA_URL
+import cz.loono.backend.data.constants.Constants.OPEN_DATA_URL
 import cz.loono.backend.db.model.HealthcareCategory
 import cz.loono.backend.db.repository.HealthcareCategoryRepository
 import cz.loono.backend.db.repository.HealthcareProviderRepository

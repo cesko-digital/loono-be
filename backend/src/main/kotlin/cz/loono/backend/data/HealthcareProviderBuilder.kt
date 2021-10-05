@@ -85,7 +85,7 @@ class HealthcareProviderBuilder(private val columns: List<String>) {
     }
 
     private fun getColumnValue(columnName: String, columns: List<String>): String {
-        var value = columns[Constants.header.indexOf(columnName)]
+        var value = columns[Constants.healthcareProvidersCSVHeader.indexOf(columnName)]
         value = value.replace("_Q_", "\"")
         value = value.replace("_COMMA_", ",")
         return value

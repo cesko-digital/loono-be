@@ -33,6 +33,6 @@ class HealthcareProvidersController {
     }
 
     companion object {
-        private const val DOCTORS_PATH = "/doctors"
+        const val DOCTORS_PATH = "/providers"
     }
 }
