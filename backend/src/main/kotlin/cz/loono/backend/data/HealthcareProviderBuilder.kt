@@ -72,7 +72,7 @@ class HealthcareProviderBuilder(private val columns: List<String>) {
 
     fun withCategories(): HealthcareProviderBuilder {
         val specialization = getColumnValue("OborPece", columns)
-        categories = SpecializationMapper.defineCategory(specialization)
+        categories = SpecializationMapper().defineCategory(specialization)
         return this
     }
 

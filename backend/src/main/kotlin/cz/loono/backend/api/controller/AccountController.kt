@@ -1,5 +1,6 @@
 package cz.loono.backend.api.controller
 
+import cz.loono.backend.api.Attributes
 import cz.loono.backend.api.BasicUser
 import cz.loono.backend.api.dto.AccountDto
 import cz.loono.backend.api.dto.SettingsDto
@@ -13,7 +14,6 @@ import cz.loono.backend.db.model.Settings
 import cz.loono.backend.db.model.UserAuxiliary
 import cz.loono.backend.db.repository.AccountRepository
 import cz.loono.backend.let3
-import cz.loono.backend.api.Attributes
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
