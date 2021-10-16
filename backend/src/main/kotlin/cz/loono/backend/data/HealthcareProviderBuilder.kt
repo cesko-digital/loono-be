@@ -2,7 +2,7 @@ package cz.loono.backend.data
 
 import cz.loono.backend.data.constants.Constants
 import cz.loono.backend.data.constants.District
-import cz.loono.backend.data.constants.LawyerFormList
+import cz.loono.backend.data.constants.LawyerForm
 import cz.loono.backend.data.constants.Region
 import cz.loono.backend.db.model.HealthcareCategory
 import cz.loono.backend.db.model.HealthcareProvider
@@ -62,9 +62,9 @@ class HealthcareProviderBuilder(private val columns: List<String>) {
     fun withLawyerForm(): HealthcareProviderBuilder {
         val lawyerFormCodeId = getColumnValue("PravniFormaKod", columns).toIntOrNull()
         if (lawyerFormCodeId != null) {
-            val lawyerForm = LawyerFormList.list[lawyerFormCodeId]
             lawyerFormCode = lawyerFormCodeId.toString()
-            lawyerFormName = lawyerForm!!.name
+            val lawyerForm = LawyerForm.ofCode(lawyerFormCodeId)
+            lawyerFormName = lawyerForm.name
             lawyerPersonType = lawyerForm.personType.value
         }
         return this
