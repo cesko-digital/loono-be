@@ -10,18 +10,19 @@ interface ServerPropertiesRepository : CrudRepository<ServerProperties, Long> {
 
     override fun findAll(): List<ServerProperties>
 
-    @Query("select sp.super_user_name as superUserName, sp.super_user_password as superUserPassword from server_properties sp", nativeQuery = true)
-    fun findAllSuperUserNameAndPassword(): List<SuperUser>
+    @Query("SELECT sp.superUserName as superUserName, sp.superUserPassword as superUserPassword FROM ServerProperties AS sp")
+    fun getSuperUserNameAndPassword(): List<SuperUser>
 
-    @Query("select sp.update_interval as updateInterval from server_properties sp", nativeQuery = true)
-    fun findAllUpdateInterval(): List<OpenDataProperties>
+    @Query("SELECT sp.updateInterval as updateInterval FROM ServerProperties AS sp")
+    fun getUpdateInterval(): List<OpenDataProperties>
 }
 
+
 interface SuperUser {
-    fun getSuperUserName(): String
-    fun getSuperUserPassword(): String
+    var superUserName: String
+    var superUserPassword: String
 }
 
 interface OpenDataProperties {
-    fun getUpdateInterval(): String
+    var updateInterval: String
 }

@@ -15,12 +15,12 @@ import javax.persistence.Table
 data class HealthcareProvider(
 
     @Id
-    @Column(name = "location_id", nullable = false, columnDefinition = "TEXT")
-    val locationId: String = "",
+    @Column(name = "location_id", nullable = false)
+    val locationId: Long = 0,
 
     @Id
-    @Column(name = "institution_id", nullable = false, columnDefinition = "TEXT")
-    val institutionId: String = "",
+    @Column(name = "institution_id", nullable = false)
+    val institutionId: Long = 0,
 
     @Column(nullable = false, columnDefinition = "TEXT")
     val code: String = "",
@@ -119,7 +119,7 @@ data class HealthcareProvider(
             JoinColumn(name = "location_id", referencedColumnName = "location_id"),
             JoinColumn(name = "institution_id", referencedColumnName = "institution_id")
         ],
-        inverseJoinColumns = [JoinColumn(name = "category", referencedColumnName = "value")]
+        inverseJoinColumns = [JoinColumn(name = "category", referencedColumnName = "id")]
     )
     val category: Set<HealthcareCategory> = mutableSetOf(),
 
@@ -155,4 +155,13 @@ data class HealthcareProvider(
         result = 31 * result + institutionId.hashCode()
         return result
     }
+
+    override fun toString(): String {
+        return "$locationId,$institutionId,$code,$title,$institutionType,$city,$postalCode,$street,$houseNumber,$region," +
+            "$regionCode,$district,$districtCode,$administrativeDistrict,$phoneNumber,$fax,$email,$website,$ico," +
+            "$personTypeCode,$lawyerFormCode,$layerForm,$personType,$hqRegion,$hqRegionCode,$hqDistrict,$hqDistrictCode," +
+            "$hqCity,$hqPostalCode,$hqStreet,$hqHouseNumber,$specialization,$category,$careForm,$careType,$substitute," +
+            "$lat,$lng"
+    }
+
 }

@@ -18,8 +18,8 @@ class HealthcareProviderBuilder(private val columns: List<String>) {
 
     fun build(): HealthcareProvider {
         return HealthcareProvider(
-            locationId = getColumnValue("MistoPoskytovaniId", columns),
-            institutionId = getColumnValue("ZdravotnickeZarizeniId", columns),
+            locationId = getColumnValue("MistoPoskytovaniId", columns).toLong(),
+            institutionId = getColumnValue("ZdravotnickeZarizeniId", columns).toLong(),
             code = getColumnValue("Kod", columns),
             title = getColumnValue("NazevZarizeni", columns),
             institutionType = getColumnValue("DruhZarizeni", columns),

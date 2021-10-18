@@ -25,7 +25,7 @@ class HealthcareProvidersService @Autowired constructor(
         val input = URL(OPEN_DATA_URL).openStream()
         val providers = HealthcareCSVParser().parse(input)
         if (providers.isNotEmpty()) {
-            val categoryValues = CategoryValues.values().map { HealthcareCategory(it.value) }
+            val categoryValues = CategoryValues.values().map { HealthcareCategory(value = it.value) }
             healthcareCategoryRepository.saveAll(categoryValues)
             healthcareProviderRepository.saveAll(providers)
         } else {

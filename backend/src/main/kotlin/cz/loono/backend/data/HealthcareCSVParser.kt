@@ -24,11 +24,11 @@ class HealthcareCSVParser {
             reader.forEachLine { line ->
                 val columns = parseColumns(line)
 
-                if (providers.isEmpty() && verifyColumns(columns)) {
+                if (line.startsWith("MistoPoskytovaniId") && !verifyColumns(columns)) {
                     logger.warn("The structure of the file has changed.")
                     return@forEachLine
                 }
-                if (columns.size > Constants.healthcareProvidersCSVHeader.size) {
+                if (columns.size != Constants.healthcareProvidersCSVHeader.size) {
                     logger.warn("The line doesn't fit header size and will be skipped.")
                     return@forEachLine
                 }
@@ -41,8 +41,6 @@ class HealthcareCSVParser {
             }
         }
 
-        // Removing header
-        providers.removeAt(0)
         return providers
     }
 

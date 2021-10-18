@@ -1,6 +1,7 @@
 package cz.loono.backend.security.basic
 
 import cz.loono.backend.db.repository.ServerPropertiesRepository
+import cz.loono.backend.db.repository.SuperUser
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -15,10 +16,10 @@ class SuperUserDetailsService : UserDetailsService {
     lateinit var serverPropertiesRepository: ServerPropertiesRepository
 
     override fun loadUserByUsername(username: String): UserDetails {
-        val superUser = serverPropertiesRepository.findAllSuperUserNameAndPassword()[0]
+        val superUser: SuperUser = serverPropertiesRepository.getSuperUserNameAndPassword()[0]
         return SuperUserDetails(
-            username = superUser.getSuperUserName(),
-            password = superUser.getSuperUserPassword()
+            username = superUser.superUserName,
+            password = superUser.superUserPassword
         )
     }
 }
