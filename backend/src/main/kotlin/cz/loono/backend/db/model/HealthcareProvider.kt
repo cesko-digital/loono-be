@@ -163,5 +163,4 @@ data class HealthcareProvider(
             "$hqCity,$hqPostalCode,$hqStreet,$hqHouseNumber,$specialization,$category,$careForm,$careType,$substitute," +
             "$lat,$lng"
     }
-
 }

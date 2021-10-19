@@ -6,8 +6,11 @@ import cz.loono.backend.data.constants.LawyerForm
 import cz.loono.backend.data.constants.Region
 import cz.loono.backend.db.model.HealthcareCategory
 import cz.loono.backend.db.model.HealthcareProvider
+import org.slf4j.LoggerFactory
 
 class HealthcareProviderBuilder(private val columns: List<String>) {
+
+    private val logger = LoggerFactory.getLogger(javaClass)
 
     private var lawyerFormCode = ""
     private var lawyerFormName = ""
@@ -85,7 +88,16 @@ class HealthcareProviderBuilder(private val columns: List<String>) {
     }
 
     private fun getColumnValue(columnName: String, columns: List<String>): String {
-        var value = columns[Constants.healthcareProvidersCSVHeader.indexOf(columnName)]
+
+        val columnIndex = Constants.healthcareProvidersCSVHeader.indexOf(columnName)
+        if (columns.size < 2) {
+            throw IllegalArgumentException("Location ID and Institution ID is required.")
+        } else if (columnIndex >= columns.size) {
+            logger.warn("Column size of the builder doesn't suite the column index.")
+            return ""
+        }
+
+        var value = columns[columnIndex]
         value = value.replace("_Q_", "\"")
         value = value.replace("_COMMA_", ",")
         return value

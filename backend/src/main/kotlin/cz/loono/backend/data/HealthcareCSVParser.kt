@@ -5,7 +5,6 @@ import cz.loono.backend.db.model.HealthcareProvider
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 import java.io.InputStream
-import java.io.InputStreamReader
 
 class HealthcareCSVParser {
 
@@ -20,7 +19,7 @@ class HealthcareCSVParser {
         val providers = mutableListOf<HealthcareProvider>()
 
         input.use { inputStream ->
-            val reader = BufferedReader(InputStreamReader(inputStream))
+            val reader = BufferedReader(inputStream.reader(Charsets.UTF_8))
             reader.forEachLine { line ->
                 val columns = parseColumns(line)
 
