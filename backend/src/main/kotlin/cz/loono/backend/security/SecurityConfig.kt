@@ -1,5 +1,6 @@
 package cz.loono.backend.security
 
+import cz.loono.backend.db.repository.ServerPropertiesRepository
 import cz.loono.backend.security.basic.CustomBasicAuthenticationEntryPoint
 import cz.loono.backend.security.basic.SuperUserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,9 +21,12 @@ class SecurityConfig @Autowired constructor(
     private val authenticationEntryPoint: CustomBasicAuthenticationEntryPoint
 ) : WebSecurityConfigurerAdapter() {
 
+    @Autowired
+    private lateinit var serverPropertiesRepository: ServerPropertiesRepository
+
     @Bean
     override fun userDetailsService(): UserDetailsService {
-        return SuperUserDetailsService()
+        return SuperUserDetailsService(serverPropertiesRepository)
     }
 
     @Bean

@@ -10,10 +10,9 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 
 @Service
-class SuperUserDetailsService : UserDetailsService {
-
-    @Autowired
-    lateinit var serverPropertiesRepository: ServerPropertiesRepository
+class SuperUserDetailsService @Autowired constructor(
+    private val serverPropertiesRepository: ServerPropertiesRepository
+) : UserDetailsService {
 
     override fun loadUserByUsername(username: String): UserDetails {
         val superUser: SuperUser = serverPropertiesRepository.getSuperUserNameAndPassword()[0]
