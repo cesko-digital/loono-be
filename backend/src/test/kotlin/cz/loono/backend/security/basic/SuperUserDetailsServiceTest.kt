@@ -26,7 +26,7 @@ class SuperUserDetailsServiceTest {
         assert(
             userDetails == SuperUserDetails(
                 username = "loonoAdmin",
-                password = "\$2a\$10\$mqCYPoDvwtA.7H6qrhvFNeX5nlaM1n7Pt//A5gS3V9UOqiuhquu0i"
+                password = "\$2a\$10\$hx6i9opda20rbC81fJqUj.3mE.xZDB5OV5fApv9WlyEnkFNbFZUh2"
             )
         )
     }

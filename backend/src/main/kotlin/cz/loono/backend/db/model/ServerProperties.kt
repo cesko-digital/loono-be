@@ -19,7 +19,8 @@ data class ServerProperties(
     val superUserName: String = "loonoAdmin",
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    val superUserPassword: String = "\$2a\$10\$mqCYPoDvwtA.7H6qrhvFNeX5nlaM1n7Pt//A5gS3V9UOqiuhquu0i",
+    // The password is known by Loono administrators. Just ask.
+    val superUserPassword: String = "\$2a\$10\$hx6i9opda20rbC81fJqUj.3mE.xZDB5OV5fApv9WlyEnkFNbFZUh2",
 
     @Column(nullable = false, columnDefinition = "TEXT")
     val updateInterval: String = "0 0 1 * *" // once per month
