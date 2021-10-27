@@ -1,5 +1,6 @@
 package cz.loono.backend.db.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -114,13 +115,14 @@ data class HealthcareProvider(
     val specialization: String? = null,
 
     @ManyToMany(cascade = [CascadeType.ALL])
+    @JsonIgnore
     @JoinTable(
         name = "healthcare_provider_category",
         joinColumns = [
             JoinColumn(name = "location_id", referencedColumnName = "location_id"),
             JoinColumn(name = "institution_id", referencedColumnName = "institution_id")
         ],
-        inverseJoinColumns = [JoinColumn(name = "category", referencedColumnName = "id")]
+        inverseJoinColumns = [JoinColumn(name = "id", referencedColumnName = "id")]
     )
     val category: Set<HealthcareCategory> = mutableSetOf(),
 

@@ -1,12 +1,19 @@
 package cz.loono.backend.api.controller
 
-import cz.loono.backend.api.UpdateStatusMessage
+import com.google.gson.Gson
+import cz.loono.backend.api.dto.HealthcareProviderDetailsDto
+import cz.loono.backend.api.dto.HealthcareProviderIdDto
+import cz.loono.backend.api.dto.UpdateStatusMessageDto
 import cz.loono.backend.api.service.HealthcareProvidersService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import javax.servlet.http.HttpServletResponse
+import javax.validation.Valid
 
 @RestController
 @RequestMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -16,20 +23,28 @@ class HealthcareProvidersController {
     private lateinit var healthCareProvidersService: HealthcareProvidersService
 
     @GetMapping(value = ["$DOCTORS_PATH/update"])
-    fun updateData(): UpdateStatusMessage {
+    fun updateData(): UpdateStatusMessageDto {
         return healthCareProvidersService.updateData()
     }
 
-    @GetMapping(value = ["$DOCTORS_PATH/all"])
-    fun getAll(): String {
-        // TODO returns all providers in simple form
-        return "{}"
+    @GetMapping(value = ["$DOCTORS_PATH/all"], produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
+    fun getAll(response: HttpServletResponse): ByteArray {
+        response.setHeader("Content-Disposition", "attachment; filename=providers.json")
+        val `in` = Gson().toJson(healthCareProvidersService.getAllSimpleData())
+        return `in`.encodeToByteArray()
     }
 
-    @GetMapping(value = ["$DOCTORS_PATH/detail"])
-    fun getDetail(): String {
-        // TODO returns a concrete details of the given doctor
-        return "{}"
+    @PostMapping(value = ["$DOCTORS_PATH/detail"])
+    fun getDetail(
+        @RequestBody
+        @Valid
+        healthcareProviderIdDto: HealthcareProviderIdDto
+    ): HealthcareProviderDetailsDto {
+
+        return healthCareProvidersService.getHealthcareProviderDetail(
+            healthcareProviderIdDto.locationId!!,
+            healthcareProviderIdDto.institutionId!!
+        )
     }
 
     companion object {

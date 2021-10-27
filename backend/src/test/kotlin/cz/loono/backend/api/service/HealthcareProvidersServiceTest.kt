@@ -1,6 +1,6 @@
 package cz.loono.backend.api.service
 
-import cz.loono.backend.api.UpdateStatusMessage
+import cz.loono.backend.api.dto.UpdateStatusMessageDto
 import cz.loono.backend.db.repository.HealthcareCategoryRepository
 import cz.loono.backend.db.repository.HealthcareProviderRepository
 import org.junit.jupiter.api.Test
@@ -26,7 +26,7 @@ class HealthcareProvidersServiceTest {
 
         val msg = healthcareProvidersService.updateData()
 
-        assert(msg == UpdateStatusMessage("Data successfully updated."))
+        assert(msg == UpdateStatusMessageDto("Data successfully updated."))
         assert(healthcareProviderRepository.count() > 30000)
     }
 }

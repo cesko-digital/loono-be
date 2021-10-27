@@ -5,4 +5,6 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface HealthcareProviderRepository : CrudRepository<HealthcareProvider, Long>
+interface HealthcareProviderRepository : CrudRepository<HealthcareProvider, Long> {
+    fun findAllByLocationIdAndInstitutionId(locationId: Long, institutionId: Long): Set<HealthcareProvider>
+}
