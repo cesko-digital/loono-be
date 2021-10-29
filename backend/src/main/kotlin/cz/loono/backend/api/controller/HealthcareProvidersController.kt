@@ -4,14 +4,20 @@ import com.google.gson.Gson
 import cz.loono.backend.api.dto.HealthcareProviderDetailsDto
 import cz.loono.backend.api.dto.HealthcareProviderIdDto
 import cz.loono.backend.api.dto.UpdateStatusMessageDto
+import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.api.service.HealthcareProvidersService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 import javax.servlet.http.HttpServletResponse
 import javax.validation.Valid
 
@@ -29,9 +35,20 @@ class HealthcareProvidersController {
 
     @GetMapping(value = ["$DOCTORS_PATH/all"], produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
     fun getAll(response: HttpServletResponse): ByteArray {
-        response.setHeader("Content-Disposition", "attachment; filename=providers.json")
+        response.setHeader("Content-Disposition", "attachment; filename=providers.zip")
         val `in` = Gson().toJson(healthCareProvidersService.getAllSimpleData())
-        return `in`.encodeToByteArray()
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        try {
+            ZipOutputStream(byteArrayOutputStream).use { zos ->
+                val entry = ZipEntry("providers.json")
+                zos.putNextEntry(entry)
+                zos.write(`in`.toByteArray())
+                zos.closeEntry()
+            }
+        } catch (ioe: IOException) {
+            throw LoonoBackendException(HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+        return byteArrayOutputStream.toByteArray()
     }
 
     @PostMapping(value = ["$DOCTORS_PATH/detail"])
