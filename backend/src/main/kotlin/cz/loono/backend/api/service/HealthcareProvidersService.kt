@@ -35,7 +35,7 @@ class HealthcareProvidersService @Autowired constructor(
     private val providersCache = Cache.Builder().build<HealthcareProviderIdDto, HealthcareProvider>()
     private val fileCache = Cache.Builder().build<String, ByteArray>()
 
-    @Scheduled(cron = "0 0 2 1 * ?") // each the 1st day of month at 2AM
+    @Scheduled(cron = "0 0 2 2 * ?") // each the 2nd day of month at 2AM
     @Synchronized
     @Transactional(rollbackFor = [Exception::class])
     fun updateData(): UpdateStatusMessageDto {
@@ -58,7 +58,7 @@ class HealthcareProvidersService @Autowired constructor(
 
     private fun updateCache() {
         providersCache.invalidateAll()
-        fileCache.invalidate("providers")
+        fileCache.invalidateAll()
         val providers = healthcareProviderRepository.findAll()
         providers.forEach { provider ->
             val id = HealthcareProviderIdDto(locationId = provider.locationId, institutionId = provider.institutionId)
@@ -72,13 +72,13 @@ class HealthcareProvidersService @Autowired constructor(
         val list = HealthcareProviderListDto(
             healthcareProviders = simplifyProviders
         )
-        val `in` = Gson().toJson(list)
+        val jsonString = Gson().toJson(list)
         val byteArrayOutputStream = ByteArrayOutputStream()
         try {
             ZipOutputStream(byteArrayOutputStream).use { zos ->
                 val entry = ZipEntry("providers.json")
                 zos.putNextEntry(entry)
-                zos.write(`in`.toByteArray())
+                zos.write(jsonString.toByteArray())
                 zos.closeEntry()
             }
         } catch (ioe: IOException) {
