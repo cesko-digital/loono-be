@@ -1,6 +1,8 @@
 package cz.loono.backend.api.service
 
+import com.google.gson.Gson
 import cz.loono.backend.api.dto.HealthcareProviderDetailsDto
+import cz.loono.backend.api.dto.HealthcareProviderIdDto
 import cz.loono.backend.api.dto.HealthcareProviderListDto
 import cz.loono.backend.api.dto.SimpleHealthcareProviderDto
 import cz.loono.backend.api.dto.UpdateStatusMessageDto
@@ -10,7 +12,6 @@ import cz.loono.backend.data.constants.CategoryValues
 import cz.loono.backend.data.constants.Constants.OPEN_DATA_URL
 import cz.loono.backend.db.model.HealthcareCategory
 import cz.loono.backend.db.model.HealthcareProvider
-import cz.loono.backend.db.model.HealthcareProviderId
 import cz.loono.backend.db.repository.HealthcareCategoryRepository
 import cz.loono.backend.db.repository.HealthcareProviderRepository
 import io.github.reactivecircus.cache4k.Cache
@@ -19,7 +20,11 @@ import org.springframework.http.HttpStatus
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.net.URL
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
 @Service
 class HealthcareProvidersService @Autowired constructor(
@@ -27,7 +32,8 @@ class HealthcareProvidersService @Autowired constructor(
     private val healthcareCategoryRepository: HealthcareCategoryRepository
 ) {
 
-    private val cache = Cache.Builder().build<HealthcareProviderId, SimpleHealthcareProviderDto>()
+    private val providersCache = Cache.Builder().build<HealthcareProviderIdDto, HealthcareProvider>()
+    private val fileCache = Cache.Builder().build<String, ByteArray>()
 
     @Scheduled(cron = "0 0 2 1 * ?") // each the 1st day of month at 2AM
     @Synchronized
@@ -51,28 +57,47 @@ class HealthcareProvidersService @Autowired constructor(
     }
 
     private fun updateCache() {
-        cache.invalidateAll()
+        providersCache.invalidateAll()
+        fileCache.invalidate("providers")
         val providers = healthcareProviderRepository.findAll()
         providers.forEach { provider ->
-            val id = HealthcareProviderId(locationId = provider.locationId, institutionId = provider.institutionId)
-            cache.put(id, provider.simplify())
+            val id = HealthcareProviderIdDto(locationId = provider.locationId, institutionId = provider.institutionId)
+            providersCache.put(id, provider)
         }
+        fileCache.put("providers", zipProviders())
     }
 
-    fun getAllSimpleData(): HealthcareProviderListDto {
-        return HealthcareProviderListDto(
-            healthcareProviders = cache.asMap().values.toList()
+    private fun zipProviders(): ByteArray {
+        val simplifyProviders = providersCache.asMap().values.map { it.simplify() }
+        val list = HealthcareProviderListDto(
+            healthcareProviders = simplifyProviders
         )
+        val `in` = Gson().toJson(list)
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        try {
+            ZipOutputStream(byteArrayOutputStream).use { zos ->
+                val entry = ZipEntry("providers.json")
+                zos.putNextEntry(entry)
+                zos.write(`in`.toByteArray())
+                zos.closeEntry()
+            }
+        } catch (ioe: IOException) {
+            throw LoonoBackendException(HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+        return byteArrayOutputStream.toByteArray()
     }
 
-    fun getHealthcareProviderDetail(locationId: Long, institutionId: Long): HealthcareProviderDetailsDto {
-        val providers = healthcareProviderRepository.findAllByLocationIdAndInstitutionId(locationId, institutionId)
-        if (providers.isEmpty()) {
-            throw LoonoBackendException(HttpStatus.NOT_FOUND)
-        } else if (providers.size > 1) {
-            throw LoonoBackendException(HttpStatus.BAD_REQUEST)
-        }
-        return providers.first().getDetails()
+    fun getAllSimpleData(): ByteArray {
+        return fileCache.get("providers")!!
+    }
+
+    fun getHealthcareProviderDetail(healthcareProviderId: HealthcareProviderIdDto): HealthcareProviderDetailsDto {
+        val provider = providersCache.get(healthcareProviderId) ?: throw LoonoBackendException(
+            status = HttpStatus.NOT_FOUND,
+            errorCode = "404",
+            errorMessage = "The healthcare provider with this ID not found."
+        )
+        return provider.getDetails()
     }
 
     fun HealthcareProvider.simplify(): SimpleHealthcareProviderDto {
