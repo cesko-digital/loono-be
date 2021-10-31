@@ -28,7 +28,10 @@ class HealthcareProvidersController {
 
     @GetMapping(value = ["$DOCTORS_PATH/all"], produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
     fun getAll(response: HttpServletResponse): ByteArray {
-        response.setHeader("Content-Disposition", "attachment; filename=providers.zip")
+        response.setHeader(
+            "Content-Disposition",
+            "attachment; filename=providers-${healthCareProvidersService.lastUpdate}.zip"
+        )
         return healthCareProvidersService.getAllSimpleData()
     }
 

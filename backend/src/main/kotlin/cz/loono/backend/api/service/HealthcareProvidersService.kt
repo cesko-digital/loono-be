@@ -12,8 +12,10 @@ import cz.loono.backend.data.constants.CategoryValues
 import cz.loono.backend.data.constants.Constants.OPEN_DATA_URL
 import cz.loono.backend.db.model.HealthcareCategory
 import cz.loono.backend.db.model.HealthcareProvider
+import cz.loono.backend.db.model.ServerProperties
 import cz.loono.backend.db.repository.HealthcareCategoryRepository
 import cz.loono.backend.db.repository.HealthcareProviderRepository
+import cz.loono.backend.db.repository.ServerPropertiesRepository
 import io.github.reactivecircus.cache4k.Cache
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -23,17 +25,21 @@ import org.springframework.transaction.annotation.Transactional
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.net.URL
+import java.time.LocalDate
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
 @Service
 class HealthcareProvidersService @Autowired constructor(
     private val healthcareProviderRepository: HealthcareProviderRepository,
-    private val healthcareCategoryRepository: HealthcareCategoryRepository
+    private val healthcareCategoryRepository: HealthcareCategoryRepository,
+    private val serverPropertiesRepository: ServerPropertiesRepository
 ) {
 
     private val providersCache = Cache.Builder().build<HealthcareProviderIdDto, HealthcareProvider>()
     private val fileCache = Cache.Builder().build<String, ByteArray>()
+
+    var lastUpdate = ""
 
     @Scheduled(cron = "0 0 2 2 * ?") // each the 2nd day of month at 2AM
     @Synchronized
@@ -46,6 +52,7 @@ class HealthcareProvidersService @Autowired constructor(
             healthcareCategoryRepository.saveAll(categoryValues)
             healthcareProviderRepository.saveAll(providers)
             updateCache()
+            setLastUpdate()
         } else {
             throw LoonoBackendException(
                 HttpStatus.UNPROCESSABLE_ENTITY,
@@ -54,6 +61,19 @@ class HealthcareProvidersService @Autowired constructor(
             )
         }
         return UpdateStatusMessageDto("Data successfully updated.")
+    }
+
+    private fun setLastUpdate() {
+        val serverProperties = serverPropertiesRepository.findAll()
+        val updateDate = LocalDate.now()
+        lastUpdate = "${updateDate.year}-${updateDate.monthValue}"
+        if (serverProperties.isEmpty()) {
+            serverPropertiesRepository.save(ServerProperties())
+            return
+        }
+        val firstProperties = serverProperties.first()
+        firstProperties.lastUpdate = updateDate
+        serverPropertiesRepository.save(firstProperties)
     }
 
     private fun updateCache() {
