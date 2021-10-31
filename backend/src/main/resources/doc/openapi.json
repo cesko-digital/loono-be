@@ -438,6 +438,96 @@
                 }
             },
             "parameters": []
+        },
+        "/providers/all": {
+            "get": {
+                "summary": "Your GET endpoint",
+                "tags": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HealthcareProviderList"
+                                }
+                            },
+                            "application/octet-stream": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            },
+                            "application/xml": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {}
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "get-providers-all",
+                "description": "Getting all healthcare providers.\n\nList of all healthcare providers in the simple form. The file format is JSON and it is zipped.",
+                "security": [
+                    {
+                        "Bearer_Auth": []
+                    }
+                ]
+            }
+        },
+        "/providers/detail": {
+            "post": {
+                "summary": "",
+                "operationId": "post-providers-detail",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HealthcareProviderDetails"
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/HealthcareProviderId"
+                            }
+                        }
+                    },
+                    "description": "Healthcare provider ID"
+                },
+                "security": [
+                    {
+                        "Bearer_Auth": []
+                    }
+                ],
+                "description": "Returns complete detail of a healthcare provider"
+            }
+        },
+        "/providers/update": {
+            "get": {
+                "summary": "Your GET endpoint",
+                "tags": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateStatusMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "get-providers-update"
+            }
         }
     },
     "components": {
