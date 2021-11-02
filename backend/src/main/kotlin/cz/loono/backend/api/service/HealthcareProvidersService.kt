@@ -18,6 +18,7 @@ import cz.loono.backend.db.repository.HealthcareProviderRepository
 import cz.loono.backend.db.repository.ServerPropertiesRepository
 import io.github.reactivecircus.cache4k.Cache
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
@@ -43,14 +44,11 @@ class HealthcareProvidersService @Autowired constructor(
 
     @Scheduled(cron = "0 0 2 2 * ?") // each the 2nd day of month at 2AM
     @Synchronized
-    @Transactional(rollbackFor = [Exception::class])
     fun updateData(): UpdateStatusMessageDto {
         val input = URL(OPEN_DATA_URL).openStream()
         val providers = HealthcareCSVParser().parse(input)
         if (providers.isNotEmpty()) {
-            val categoryValues = CategoryValues.values().map { HealthcareCategory(value = it.value) }
-            healthcareCategoryRepository.saveAll(categoryValues)
-            healthcareProviderRepository.saveAll(providers)
+            saveData(providers)
             updateCache()
             setLastUpdate()
         } else {
@@ -63,7 +61,26 @@ class HealthcareProvidersService @Autowired constructor(
         return UpdateStatusMessageDto("Data successfully updated.")
     }
 
-    private fun setLastUpdate() {
+    @Synchronized
+    @Transactional(rollbackFor = [Exception::class])
+    fun saveData(providers: List<HealthcareProvider>) {
+        val categoryValues = CategoryValues.values().map { HealthcareCategory(value = it.value) }
+        healthcareCategoryRepository.saveAll(categoryValues)
+        val cycles = providers.size.div(1000)
+        val rest = providers.size % 1000 - 1
+        for (i in 0..cycles) {
+            val start = i * 1000
+            var end = start + 999
+            if (i == cycles) {
+                end = start + rest
+            }
+            healthcareProviderRepository.saveAll(providers.subList(start, end))
+        }
+    }
+
+    @Synchronized
+    @Transactional(rollbackFor = [Exception::class])
+    fun setLastUpdate() {
         val serverProperties = serverPropertiesRepository.findAll()
         val updateDate = LocalDate.now()
         lastUpdate = "${updateDate.year}-${updateDate.monthValue}"
@@ -76,13 +93,19 @@ class HealthcareProvidersService @Autowired constructor(
         serverPropertiesRepository.save(firstProperties)
     }
 
-    private fun updateCache() {
+    @Synchronized
+    fun updateCache() {
         providersCache.invalidateAll()
         fileCache.invalidateAll()
-        val providers = healthcareProviderRepository.findAll()
-        providers.forEach { provider ->
-            val id = HealthcareProviderIdDto(locationId = provider.locationId, institutionId = provider.institutionId)
-            providersCache.put(id, provider)
+        val providers = mutableSetOf<HealthcareProvider>()
+        val cycles = healthcareProviderRepository.count().div(1000).toInt()
+        for (i in 0..cycles) {
+            val page = PageRequest.of(i, 1000)
+            providers.addAll(healthcareProviderRepository.findAll(page))
+            providers.forEach { provider ->
+                val id = HealthcareProviderIdDto(locationId = provider.locationId, institutionId = provider.institutionId)
+                providersCache.put(id, provider)
+            }
         }
         fileCache.put("providers", zipProviders())
     }
