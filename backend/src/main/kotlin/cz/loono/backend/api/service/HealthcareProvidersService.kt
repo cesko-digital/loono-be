@@ -17,6 +17,7 @@ import cz.loono.backend.db.repository.HealthcareCategoryRepository
 import cz.loono.backend.db.repository.HealthcareProviderRepository
 import cz.loono.backend.db.repository.ServerPropertiesRepository
 import io.github.reactivecircus.cache4k.Cache
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
@@ -36,8 +37,9 @@ class HealthcareProvidersService @Autowired constructor(
     private val healthcareCategoryRepository: HealthcareCategoryRepository,
     private val serverPropertiesRepository: ServerPropertiesRepository
 ) {
+    private val logger = LoggerFactory.getLogger(javaClass)
 
-    private val providersCache = Cache.Builder().build<HealthcareProviderIdDto, HealthcareProvider>()
+    private val providersCache = Cache.Builder().build<String, LinkedHashSet<HealthcareProvider>>()
     private val fileCache = Cache.Builder().build<String, ByteArray>()
 
     var lastUpdate = ""
@@ -58,6 +60,7 @@ class HealthcareProvidersService @Autowired constructor(
                 errorMessage = "Data update failed."
             )
         }
+        logger.info("Update finished.")
         return UpdateStatusMessageDto("Data successfully updated.")
     }
 
@@ -97,21 +100,20 @@ class HealthcareProvidersService @Autowired constructor(
     fun updateCache() {
         providersCache.invalidateAll()
         fileCache.invalidateAll()
-        val providers = mutableSetOf<HealthcareProvider>()
-        val cycles = healthcareProviderRepository.count().div(1000).toInt()
+        val count = healthcareProviderRepository.count().toInt()
+        val providers = LinkedHashSet<HealthcareProvider>(count)
+        val cycles = count.div(1000)
         for (i in 0..cycles) {
             val page = PageRequest.of(i, 1000)
             providers.addAll(healthcareProviderRepository.findAll(page))
-            providers.forEach { provider ->
-                val id = HealthcareProviderIdDto(locationId = provider.locationId, institutionId = provider.institutionId)
-                providersCache.put(id, provider)
-            }
         }
+        providersCache.put("list", providers)
         fileCache.put("providers", zipProviders())
     }
 
     private fun zipProviders(): ByteArray {
-        val simplifyProviders = providersCache.asMap().values.map { it.simplify() }
+        val providers = providersCache.get("list")
+        val simplifyProviders = providers?.map { it.simplify() }
         val list = HealthcareProviderListDto(
             healthcareProviders = simplifyProviders
         )
@@ -135,12 +137,14 @@ class HealthcareProvidersService @Autowired constructor(
     }
 
     fun getHealthcareProviderDetail(healthcareProviderId: HealthcareProviderIdDto): HealthcareProviderDetailsDto {
-        val provider = providersCache.get(healthcareProviderId) ?: throw LoonoBackendException(
+        val provider = providersCache.get("list")?.find {
+            it.institutionId == healthcareProviderId.institutionId && it.locationId == healthcareProviderId.locationId
+        }
+        return provider?.getDetails() ?: throw LoonoBackendException(
             status = HttpStatus.NOT_FOUND,
             errorCode = "404",
             errorMessage = "The healthcare provider with this ID not found."
         )
-        return provider.getDetails()
     }
 
     fun HealthcareProvider.simplify(): SimpleHealthcareProviderDto {
