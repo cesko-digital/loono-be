@@ -51,7 +51,7 @@ class PreventionService(
             // TODO  we need planned exam - rework exams table to have planned date and executed date
             PreventionStatus(
                 examinationInterval.examinationType,
-                examinationInterval.intervalDays,
+                examinationInterval.intervalYears,
                 lastExamDate,
             )
         }

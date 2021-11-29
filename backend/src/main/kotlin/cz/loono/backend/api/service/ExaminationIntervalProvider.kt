@@ -92,7 +92,7 @@ object ExaminationIntervalProvider {
 
 data class ExaminationInterval(
     val examinationType: ExaminationTypeEnumDto,
-    val intervalDays: Int,
+    val intervalYears: Int,
 )
 
 data class Patient(
