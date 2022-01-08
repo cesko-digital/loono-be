@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -27,8 +27,8 @@ class ExaminationRecordRepositoryTest {
         account1 = account1.let {
             val records = listOf(
                 ExaminationRecord(
-                    type = ExaminationTypeEnumDto.DENTIST.name,
-                    lastVisit = LocalDate.of(1999, 1, 1),
+                    type = ExaminationTypeEnumDto.DENTIST,
+                    date = LocalDateTime.of(1999, 1, 1, 8, 0, 0),
                     account = it
                 )
             )
@@ -41,8 +41,8 @@ class ExaminationRecordRepositoryTest {
         account2 = account2.let {
             val records = listOf(
                 ExaminationRecord(
-                    type = ExaminationTypeEnumDto.MAMMOGRAM.name,
-                    lastVisit = LocalDate.of(2000, 1, 1),
+                    type = ExaminationTypeEnumDto.MAMMOGRAM,
+                    date = LocalDateTime.of(2000, 1, 1, 8, 0, 0),
                     account = it
                 )
             )
@@ -55,6 +55,6 @@ class ExaminationRecordRepositoryTest {
 
         val a1Records = recordRepo.findAllByAccount(account1)
         assertEquals(1, a1Records.size)
-        assertEquals(ExaminationTypeEnumDto.DENTIST.name, a1Records.first().type)
+        assertEquals(ExaminationTypeEnumDto.DENTIST, a1Records.first().type)
     }
 }

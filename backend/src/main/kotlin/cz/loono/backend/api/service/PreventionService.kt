@@ -1,6 +1,8 @@
 package cz.loono.backend.api.service
 
+import cz.loono.backend.api.dto.ExaminationStatusDto
 import cz.loono.backend.api.dto.ExaminationTypeEnumDto
+import cz.loono.backend.api.dto.PreventionStatusDto
 import cz.loono.backend.api.dto.SexDto
 import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.db.model.ExaminationRecord
@@ -10,7 +12,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
-import java.util.UUID
 
 @Service
 class PreventionService(
@@ -18,8 +19,8 @@ class PreventionService(
     private val accountRepository: AccountRepository
 ) {
 
-    fun getPreventionStatus(accountUuid: UUID): List<PreventionStatus> {
-        val account = accountRepository.findByUid(accountUuid.toString()) ?: throw LoonoBackendException(
+    fun getPreventionStatus(accountUuid: String): List<PreventionStatusDto> {
+        val account = accountRepository.findByUid(accountUuid) ?: throw LoonoBackendException(
             HttpStatus.NOT_FOUND, "Account not found"
         )
 
@@ -36,31 +37,37 @@ class PreventionService(
             Patient(age, SexDto.valueOf(sex))
         )
 
-        val examinationTypesToRecords: Map<String, List<ExaminationRecord>> =
-            examinationRecordRepository.findAllByAccount(account)
-                .filter { it.lastVisit != null }
+        val examinationTypesToRecords: Map<ExaminationTypeEnumDto, List<ExaminationRecord>> =
+            examinationRecordRepository.findAllByAccountOrderByDateDesc(account)
                 .groupBy { it.type }
                 .mapNotNull { entry -> entry.key to entry.value }
                 .toMap()
 
         return examinationRequests.map { examinationInterval ->
-            val examsOfType = examinationTypesToRecords[examinationInterval.examinationType.name]
-            val lastExamDate = examsOfType
-                ?.mapNotNull { it.lastVisit }
-                ?.maxOrNull()
+            val examsOfType = examinationTypesToRecords[examinationInterval.examinationType]
+            val sortedExamsOfType = examsOfType
+                ?.filter { it ->
+                    it.date != null
+                        || it.status != ExaminationStatusDto.CONFIRMED
+                        || it.status != ExaminationStatusDto.CANCELED
+                }
+                ?.sortedBy { it.date } ?: listOf(ExaminationRecord())
 
-            // TODO  we need planned exam - rework exams table to have planned date and executed date
-            PreventionStatus(
-                examinationInterval.examinationType,
-                examinationInterval.intervalYears,
-                lastExamDate,
+            var streak = 0
+            if (examsOfType != null) {
+                streak = examsOfType.map { it.status = ExaminationStatusDto.CONFIRMED }.size
+            }
+
+            PreventionStatusDto(
+                id = sortedExamsOfType[0].id,
+                examinationType = examinationInterval.examinationType,
+                intervalYears = examinationInterval.intervalYears,
+                lastExamDate = sortedExamsOfType[0].date,
+                firstExam = sortedExamsOfType[0].firstExam,
+                priority = examinationInterval.priority,
+                state = sortedExamsOfType[0].status,
+                streak = streak
             )
         }
     }
 }
-
-data class PreventionStatus(
-    val examinationType: ExaminationTypeEnumDto,
-    val intervalYears: Int,
-    val lastExamDate: LocalDate?
-)
