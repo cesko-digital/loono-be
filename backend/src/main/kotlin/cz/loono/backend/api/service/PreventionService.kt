@@ -47,26 +47,26 @@ class PreventionService(
             val examsOfType = examinationTypesToRecords[examinationInterval.examinationType]
             val sortedExamsOfType = examsOfType
                 ?.filter { it ->
-                    it.date != null
-                        || it.status != ExaminationStatusDto.CONFIRMED
-                        || it.status != ExaminationStatusDto.CANCELED
+                    it.date != null ||
+                        it.status != ExaminationStatusDto.CONFIRMED ||
+                        it.status != ExaminationStatusDto.CANCELED
                 }
                 ?.sortedBy { it.date } ?: listOf(ExaminationRecord())
 
-            var streak = 0
+            var count = 0
             if (examsOfType != null) {
-                streak = examsOfType.map { it.status = ExaminationStatusDto.CONFIRMED }.size
+                count = examsOfType.map { it.status == ExaminationStatusDto.CONFIRMED }.size
             }
 
             PreventionStatusDto(
                 id = sortedExamsOfType[0].id,
                 examinationType = examinationInterval.examinationType,
                 intervalYears = examinationInterval.intervalYears,
-                lastExamDate = sortedExamsOfType[0].date,
+                date = sortedExamsOfType[0].date,
                 firstExam = sortedExamsOfType[0].firstExam,
                 priority = examinationInterval.priority,
                 state = sortedExamsOfType[0].status,
-                streak = streak
+                count = count
             )
         }
     }

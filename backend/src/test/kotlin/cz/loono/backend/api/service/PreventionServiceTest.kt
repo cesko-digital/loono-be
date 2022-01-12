@@ -53,40 +53,44 @@ class PreventionServiceTest {
         assertEquals(
             /* expected = */ listOf(
                 PreventionStatusDto(
+                    id = 0,
                     examinationType = ExaminationTypeEnumDto.GENERAL_PRACTITIONER,
                     intervalYears = 2,
-                    firstExam = false,
+                    firstExam = true,
                     priority = 1,
                     state = ExaminationStatusDto.NEW,
-                    streak = 1,
-                    lastExamDate = now
+                    count = 1,
+                    date = now
                 ),
                 PreventionStatusDto(
+                    id = 0,
                     examinationType = ExaminationTypeEnumDto.DERMATOLOGIST,
                     intervalYears = 1,
-                    lastExamDate = null,
-                    firstExam = false,
+                    date = null,
+                    firstExam = true,
                     priority = 6,
                     state = ExaminationStatusDto.NEW,
-                    streak = 0
+                    count = 0
                 ),
                 PreventionStatusDto(
+                    id = 0,
                     examinationType = ExaminationTypeEnumDto.DENTIST,
                     intervalYears = 1,
-                    lastExamDate = null,
-                    firstExam = false,
+                    date = null,
+                    firstExam = true,
                     priority = 8,
                     state = ExaminationStatusDto.NEW,
-                    streak = 0
+                    count = 0
                 ),
                 PreventionStatusDto(
+                    id = 0,
                     examinationType = ExaminationTypeEnumDto.OPHTHALMOLOGIST,
                     intervalYears = 4,
-                    lastExamDate = null,
-                    firstExam = false,
+                    date = null,
+                    firstExam = true,
                     priority = 9,
                     state = ExaminationStatusDto.NEW,
-                    streak = 0
+                    count = 0
                 ),
             ),
             /* actual = */ result
