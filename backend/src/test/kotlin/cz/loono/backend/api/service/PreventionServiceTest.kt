@@ -36,11 +36,11 @@ class PreventionServiceTest {
         )
 
         whenever(accountRepository.findByUid(uuid)).thenReturn(account)
-        whenever(examinationRecordRepository.findAllByAccountOrderByDateDesc(account)).thenReturn(
+        whenever(examinationRecordRepository.findAllByAccountOrderByPlannedDateDesc(account)).thenReturn(
             setOf(
                 ExaminationRecord(
                     id = 1,
-                    date = now,
+                    plannedDate = now,
                     type = ExaminationTypeEnumDto.GENERAL_PRACTITIONER
                 ),
                 ExaminationRecord(
@@ -49,7 +49,7 @@ class PreventionServiceTest {
                 ), // is only planned
                 ExaminationRecord(
                     id = 3,
-                    date = lastVisit,
+                    plannedDate = lastVisit,
                     type = ExaminationTypeEnumDto.COLONOSCOPY
                 ), // is not required
                 ExaminationRecord(
@@ -59,7 +59,7 @@ class PreventionServiceTest {
                 ExaminationRecord(
                     id = 5,
                     type = ExaminationTypeEnumDto.DENTIST,
-                    date = LocalDateTime.MIN,
+                    plannedDate = LocalDateTime.MIN,
                     status = ExaminationStatusDto.CONFIRMED
                 )
             )
