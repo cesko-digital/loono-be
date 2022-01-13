@@ -53,10 +53,12 @@ class PreventionService(
                 }
                 ?.sortedBy { it.date } ?: listOf(ExaminationRecord())
 
-            var count = 0
-            if (examsOfType != null) {
-                count = examsOfType.map { it.status == ExaminationStatusDto.CONFIRMED }.size
-            }
+            val confirmedExamsOfCurrentType = examsOfType?.filter { it.status == ExaminationStatusDto.CONFIRMED }
+            // 1) Filter all the confirmed records
+            // 2) Map all non-nullable lastExamination records
+            // 3) Find the largest or return null if the list is empty
+            val lastConfirmedDate = confirmedExamsOfCurrentType?.mapNotNull(ExaminationRecord::date)?.maxOrNull()
+            val totalCountOfConfirmedExams = confirmedExamsOfCurrentType?.size ?: 0
 
             PreventionStatusDto(
                 id = sortedExamsOfType[0].id,
@@ -66,7 +68,8 @@ class PreventionService(
                 firstExam = sortedExamsOfType[0].firstExam,
                 priority = examinationInterval.priority,
                 state = sortedExamsOfType[0].status,
-                count = count
+                count = totalCountOfConfirmedExams,
+                lastConfirmedDate = lastConfirmedDate
             )
         }
     }
