@@ -9,7 +9,6 @@ import cz.loono.backend.api.dto.PreventionStatusDto
 import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.api.service.ExaminationRecordService
 import cz.loono.backend.api.service.PreventionService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -23,7 +22,7 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/examinations", produces = [MediaType.APPLICATION_JSON_VALUE])
-class ExaminationsController @Autowired constructor(
+class ExaminationsController(
     private val recordService: ExaminationRecordService,
     private val preventionService: PreventionService
 ) {
@@ -38,13 +37,12 @@ class ExaminationsController @Autowired constructor(
         @Valid
         @RequestBody
         examinationIdDto: ExaminationIdDto
-    ): ExaminationRecordDto {
-        if (type !in ExaminationTypeEnumDto.values().map { it.name }) {
+    ): ExaminationRecordDto =
+        if (type !in getAvailableExaminations()) {
             throw LoonoBackendException(HttpStatus.NOT_FOUND)
+        } else {
+            recordService.confirmExam(examinationIdDto.id, basicUser.uid)
         }
-
-        return recordService.confirmExam(examinationIdDto.id, basicUser.uid)
-    }
 
     @PostMapping("/{type}/cancel")
     fun cancel(
@@ -57,13 +55,12 @@ class ExaminationsController @Autowired constructor(
         @Valid
         @RequestBody
         examinationIdDto: ExaminationIdDto
-    ): ExaminationRecordDto {
-        if (type !in ExaminationTypeEnumDto.values().map { it.name }) {
+    ): ExaminationRecordDto =
+        if (type !in getAvailableExaminations()) {
             throw LoonoBackendException(HttpStatus.NOT_FOUND)
+        } else {
+            recordService.cancelExam(examinationIdDto.id, basicUser.uid)
         }
-
-        return recordService.cancelExam(examinationIdDto.id, basicUser.uid)
-    }
 
     @PostMapping
     fun updateOrCreate(
@@ -73,17 +70,15 @@ class ExaminationsController @Autowired constructor(
         @Valid
         @RequestBody
         examinationRecordDto: ExaminationRecordDto
-    ): ExaminationRecordDto {
-        return recordService.createOrUpdateExam(examinationRecordDto, basicUser.uid)
-    }
+    ): ExaminationRecordDto = recordService.createOrUpdateExam(examinationRecordDto, basicUser.uid)
 
     @GetMapping
     fun getPreventionStatus(
         @RequestAttribute(Attributes.ATTR_BASIC_USER)
         basicUser: BasicUser
-    ): List<PreventionStatusDto> {
-        return preventionService.getPreventionStatus(basicUser.uid)
-    }
+    ): List<PreventionStatusDto> = preventionService.getPreventionStatus(basicUser.uid)
+
+    private fun getAvailableExaminations() = ExaminationTypeEnumDto.values().map(ExaminationTypeEnumDto::name)
 }
 
 // Purposefully implemented as an expression to leverage the exhaustiveness check performed by the compiler
