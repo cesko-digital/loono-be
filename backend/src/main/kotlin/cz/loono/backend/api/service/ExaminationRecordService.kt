@@ -35,7 +35,7 @@ class ExaminationRecordService @Autowired constructor(
             ExaminationRecord(
                 id = examinationRecordDto.id ?: 0,
                 type = examinationRecordDto.type,
-                plannedDate = examinationRecordDto.date,
+                date = examinationRecordDto.date,
                 account = findAccount(uid),
                 firstExam = examinationRecordDto.firstExam ?: true,
                 status = examinationRecordDto.status ?: ExaminationStatusDto.NEW
@@ -62,7 +62,7 @@ class ExaminationRecordService @Autowired constructor(
         return ExaminationRecordDto(
             id = id,
             type = type,
-            date = plannedDate,
+            date = date,
             firstExam = firstExam,
             status = status
         )

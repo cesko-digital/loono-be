@@ -28,7 +28,7 @@ class ExaminationRecordRepositoryTest {
             val records = listOf(
                 ExaminationRecord(
                     type = ExaminationTypeEnumDto.DENTIST,
-                    plannedDate = LocalDateTime.of(1999, 1, 1, 8, 0, 0),
+                    date = LocalDateTime.of(1999, 1, 1, 8, 0, 0),
                     account = it
                 )
             )
@@ -42,7 +42,7 @@ class ExaminationRecordRepositoryTest {
             val records = listOf(
                 ExaminationRecord(
                     type = ExaminationTypeEnumDto.MAMMOGRAM,
-                    plannedDate = LocalDateTime.of(2000, 1, 1, 8, 0, 0),
+                    date = LocalDateTime.of(2000, 1, 1, 8, 0, 0),
                     account = it
                 )
             )

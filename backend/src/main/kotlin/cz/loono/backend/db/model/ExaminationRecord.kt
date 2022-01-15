@@ -23,7 +23,7 @@ data class ExaminationRecord(
     val type: ExaminationTypeEnumDto = ExaminationTypeEnumDto.GENERAL_PRACTITIONER,
 
     @Column
-    val plannedDate: LocalDateTime? = null,
+    val date: LocalDateTime? = null,
 
     @ManyToOne(optional = false)
     val account: Account = Account(),
@@ -47,6 +47,6 @@ data class ExaminationRecord(
 
     @Override
     override fun toString(): String {
-        return this::class.simpleName + "(id = $id , type = $type , plannedDate = $plannedDate , accountId = ${account.uid}, firstExam = $firstExam, status = $status)" // ktlint-disable max-line-ength
+        return this::class.simpleName + "(id = $id , type = $type , date = $date , accountId = ${account.uid}, firstExam = $firstExam, status = $status)" // ktlint-disable max-line-ength
     }
 }

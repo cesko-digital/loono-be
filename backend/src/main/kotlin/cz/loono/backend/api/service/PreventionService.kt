@@ -38,7 +38,7 @@ class PreventionService(
         )
 
         val examinationTypesToRecords: Map<ExaminationTypeEnumDto, List<ExaminationRecord>> =
-            examinationRecordRepository.findAllByAccountOrderByPlannedDateDesc(account)
+            examinationRecordRepository.findAllByAccountOrderByDateDesc(account)
                 .groupBy { it.type }
                 .mapNotNull { entry -> entry.key to entry.value }
                 .toMap()
@@ -47,24 +47,24 @@ class PreventionService(
             val examsOfType = examinationTypesToRecords[examinationInterval.examinationType]
             val sortedExamsOfType = examsOfType
                 ?.filter { it ->
-                    it.plannedDate != null ||
+                    it.date != null ||
                         it.status != ExaminationStatusDto.CONFIRMED ||
                         it.status != ExaminationStatusDto.CANCELED
                 }
-                ?.sortedBy(ExaminationRecord::plannedDate) ?: listOf(ExaminationRecord())
+                ?.sortedBy(ExaminationRecord::date) ?: listOf(ExaminationRecord())
 
             val confirmedExamsOfCurrentType = examsOfType?.filter { it.status == ExaminationStatusDto.CONFIRMED }
             // 1) Filter all the confirmed records
             // 2) Map all non-nullable lastExamination records
             // 3) Find the largest or return null if the list is empty
-            val lastConfirmedDate = confirmedExamsOfCurrentType?.mapNotNull(ExaminationRecord::plannedDate)?.maxOrNull()
+            val lastConfirmedDate = confirmedExamsOfCurrentType?.mapNotNull(ExaminationRecord::date)?.maxOrNull()
             val totalCountOfConfirmedExams = confirmedExamsOfCurrentType?.size ?: 0
 
             PreventionStatusDto(
                 id = sortedExamsOfType[0].id,
                 examinationType = examinationInterval.examinationType,
                 intervalYears = examinationInterval.intervalYears,
-                date = sortedExamsOfType[0].plannedDate,
+                date = sortedExamsOfType[0].date,
                 firstExam = sortedExamsOfType[0].firstExam,
                 priority = examinationInterval.priority,
                 state = sortedExamsOfType[0].status,
