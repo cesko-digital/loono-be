@@ -36,11 +36,11 @@ class PreventionServiceTest {
         )
 
         whenever(accountRepository.findByUid(uuid)).thenReturn(account)
-        whenever(examinationRecordRepository.findAllByAccountOrderByDateDesc(account)).thenReturn(
+        whenever(examinationRecordRepository.findAllByAccountOrderByPlannedDateDesc(account)).thenReturn(
             setOf(
                 ExaminationRecord(
                     id = 1,
-                    date = now,
+                    plannedDate = now,
                     type = ExaminationTypeEnumDto.GENERAL_PRACTITIONER
                 ),
                 ExaminationRecord(
@@ -49,7 +49,7 @@ class PreventionServiceTest {
                 ), // is only planned
                 ExaminationRecord(
                     id = 3,
-                    date = lastVisit,
+                    plannedDate = lastVisit,
                     type = ExaminationTypeEnumDto.COLONOSCOPY
                 ), // is not required
                 ExaminationRecord(
@@ -59,7 +59,7 @@ class PreventionServiceTest {
                 ExaminationRecord(
                     id = 5,
                     type = ExaminationTypeEnumDto.DENTIST,
-                    date = LocalDateTime.MIN,
+                    plannedDate = LocalDateTime.MIN,
                     status = ExaminationStatusDto.CONFIRMED
                 )
             )
@@ -76,13 +76,13 @@ class PreventionServiceTest {
                     priority = 1,
                     state = ExaminationStatusDto.NEW,
                     count = 0,
-                    date = now
+                    plannedDate = now
                 ),
                 PreventionStatusDto(
                     id = 0,
                     examinationType = ExaminationTypeEnumDto.DERMATOLOGIST,
                     intervalYears = 1,
-                    date = null,
+                    plannedDate = null,
                     firstExam = true,
                     priority = 6,
                     state = ExaminationStatusDto.NEW,
@@ -92,7 +92,7 @@ class PreventionServiceTest {
                     id = 4,
                     examinationType = ExaminationTypeEnumDto.DENTIST,
                     intervalYears = 1,
-                    date = null,
+                    plannedDate = null,
                     firstExam = true,
                     priority = 8,
                     state = ExaminationStatusDto.NEW,
@@ -103,7 +103,7 @@ class PreventionServiceTest {
                     id = 2,
                     examinationType = ExaminationTypeEnumDto.OPHTHALMOLOGIST,
                     intervalYears = 4,
-                    date = null,
+                    plannedDate = null,
                     firstExam = true,
                     priority = 9,
                     state = ExaminationStatusDto.NEW,
