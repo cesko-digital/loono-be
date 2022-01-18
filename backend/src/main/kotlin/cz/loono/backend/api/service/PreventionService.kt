@@ -38,8 +38,8 @@ class PreventionService(
         )
 
         val examinationTypesToRecords: Map<ExaminationTypeEnumDto, List<ExaminationRecord>> =
-            examinationRecordRepository.findAllByAccountOrderByDateDesc(account)
-                .groupBy { it.type }
+            examinationRecordRepository.findAllByAccountOrderByPlannedDateDesc(account)
+                .groupBy(ExaminationRecord::type)
                 .mapNotNull { entry -> entry.key to entry.value }
                 .toMap()
 
@@ -47,26 +47,29 @@ class PreventionService(
             val examsOfType = examinationTypesToRecords[examinationInterval.examinationType]
             val sortedExamsOfType = examsOfType
                 ?.filter { it ->
-                    it.date != null ||
+                    it.plannedDate != null ||
                         it.status != ExaminationStatusDto.CONFIRMED ||
                         it.status != ExaminationStatusDto.CANCELED
                 }
-                ?.sortedBy { it.date } ?: listOf(ExaminationRecord())
+                ?.sortedBy(ExaminationRecord::plannedDate) ?: listOf(ExaminationRecord())
 
-            var count = 0
-            if (examsOfType != null) {
-                count = examsOfType.map { it.status == ExaminationStatusDto.CONFIRMED }.size
-            }
+            val confirmedExamsOfCurrentType = examsOfType?.filter { it.status == ExaminationStatusDto.CONFIRMED }
+            // 1) Filter all the confirmed records
+            // 2) Map all non-nullable lastExamination records
+            // 3) Find the largest or return null if the list is empty
+            val lastConfirmedDate = confirmedExamsOfCurrentType?.mapNotNull(ExaminationRecord::plannedDate)?.maxOrNull()
+            val totalCountOfConfirmedExams = confirmedExamsOfCurrentType?.size ?: 0
 
             PreventionStatusDto(
                 id = sortedExamsOfType[0].id,
                 examinationType = examinationInterval.examinationType,
                 intervalYears = examinationInterval.intervalYears,
-                date = sortedExamsOfType[0].date,
+                plannedDate = sortedExamsOfType[0].plannedDate,
                 firstExam = sortedExamsOfType[0].firstExam,
                 priority = examinationInterval.priority,
                 state = sortedExamsOfType[0].status,
-                count = count
+                count = totalCountOfConfirmedExams,
+                lastConfirmedDate = lastConfirmedDate
             )
         }
     }
