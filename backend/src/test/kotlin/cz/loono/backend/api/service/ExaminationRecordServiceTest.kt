@@ -33,7 +33,7 @@ internal class ExaminationRecordServiceTest {
         assertThrows<LoonoBackendException>("Account not found") {
             examinationRecordService.createOrUpdateExam(
                 ExaminationRecordDto(
-                    id = 1,
+                    uuid = "1",
                     type = ExaminationTypeEnumDto.GENERAL_PRACTITIONER,
                     status = ExaminationStatusDto.TO_BE_CONFIRMED
                 ),
@@ -47,7 +47,7 @@ internal class ExaminationRecordServiceTest {
         accountRepository.save(Account(uid = "101"))
         val examinationRecordService = ExaminationRecordService(accountRepository, examinationRecordRepository)
         val exam = ExaminationRecordDto(
-            id = 1,
+            uuid = "1",
             type = ExaminationTypeEnumDto.GENERAL_PRACTITIONER,
             status = ExaminationStatusDto.TO_BE_CONFIRMED,
             firstExam = false,
@@ -86,7 +86,7 @@ internal class ExaminationRecordServiceTest {
         )
         val storedExam = examinationRecordRepository.save(ExaminationRecord(type = exam.type, account = account))
         val changedExam = ExaminationRecordDto(
-            id = storedExam.id,
+            uuid = storedExam.uuid,
             type = ExaminationTypeEnumDto.GENERAL_PRACTITIONER,
             status = ExaminationStatusDto.TO_BE_CONFIRMED,
             firstExam = false,
@@ -98,5 +98,35 @@ internal class ExaminationRecordServiceTest {
         assert(result.status == changedExam.status)
         assert(result.firstExam == changedExam.firstExam)
         assert(result.date == changedExam.date)
+    }
+
+    @Test
+    fun `confirm exam`() {
+        val account = accountRepository.save(Account(uid = "101"))
+        val examinationRecordService = ExaminationRecordService(accountRepository, examinationRecordRepository)
+        val exam = ExaminationRecordDto(
+            type = ExaminationTypeEnumDto.GENERAL_PRACTITIONER,
+            status = ExaminationStatusDto.TO_BE_CONFIRMED
+        )
+        val storedExam = examinationRecordRepository.save(ExaminationRecord(type = exam.type, account = account))
+
+        val result = examinationRecordService.confirmExam(storedExam.id, "101")
+
+        assert(result.status == ExaminationStatusDto.CONFIRMED)
+    }
+
+    @Test
+    fun `cancel exam`() {
+        val account = accountRepository.save(Account(uid = "101"))
+        val examinationRecordService = ExaminationRecordService(accountRepository, examinationRecordRepository)
+        val exam = ExaminationRecordDto(
+            type = ExaminationTypeEnumDto.GENERAL_PRACTITIONER,
+            status = ExaminationStatusDto.TO_BE_CONFIRMED
+        )
+        val storedExam = examinationRecordRepository.save(ExaminationRecord(type = exam.type, account = account))
+
+        val result = examinationRecordService.cancelExam(storedExam.id, "101")
+
+        assert(result.status == ExaminationStatusDto.CANCELED)
     }
 }

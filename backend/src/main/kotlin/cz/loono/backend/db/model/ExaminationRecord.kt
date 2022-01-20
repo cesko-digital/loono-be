@@ -4,6 +4,7 @@ import cz.loono.backend.api.dto.ExaminationStatusDto
 import cz.loono.backend.api.dto.ExaminationTypeEnumDto
 import org.hibernate.Hibernate
 import java.time.LocalDateTime
+import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -32,7 +33,10 @@ data class ExaminationRecord(
     val firstExam: Boolean = true,
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    var status: ExaminationStatusDto = ExaminationStatusDto.NEW
+    var status: ExaminationStatusDto = ExaminationStatusDto.NEW,
+
+    @Column(unique = true, nullable = false, columnDefinition = "TEXT")
+    val uuid: String = UUID.randomUUID().toString()
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
