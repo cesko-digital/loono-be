@@ -31,6 +31,7 @@ class ExaminationRecordService @Autowired constructor(
     }
 
     fun createOrUpdateExam(examinationRecordDto: ExaminationRecordDto, uid: String): ExaminationRecordDto {
+        validateUpdateAttempt(examinationRecordDto)
         return examinationRecordRepository.save(
             ExaminationRecord(
                 id = examinationRecordDto.id ?: 0,
@@ -41,6 +42,19 @@ class ExaminationRecordService @Autowired constructor(
                 status = examinationRecordDto.status ?: ExaminationStatusDto.NEW
             )
         ).toExaminationRecordDto()
+    }
+
+    private fun validateUpdateAttempt(examinationRecordDto: ExaminationRecordDto) {
+        if (examinationRecordDto.id != null) {
+            val record = examinationRecordRepository.findById(examinationRecordDto.id)
+            if (record.isEmpty) {
+                throw LoonoBackendException(
+                    HttpStatus.NOT_FOUND,
+                    "404",
+                    "The given examination identifier not found."
+                )
+            }
+        }
     }
 
     private fun findAccount(uid: String): Account {

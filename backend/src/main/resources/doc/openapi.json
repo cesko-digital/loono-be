@@ -1116,7 +1116,8 @@
                     "CONFIRMED",
                     "CANCELED",
                     "UNKNOWN"
-                ]
+                ],
+                "default": "NEW"
             },
             "PreventionStatus": {
                 "type": "object",
@@ -1184,7 +1185,8 @@
                         "$ref": "#/components/schemas/ExaminationStatus"
                     },
                     "firstExam": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "default": true
                     }
                 },
                 "required": [
