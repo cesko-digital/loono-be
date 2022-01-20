@@ -20,14 +20,14 @@ class ExaminationRecordService @Autowired constructor(
 
     @Synchronized
     @Transactional(rollbackFor = [Exception::class])
-    fun confirmExam(examId: Long, uid: String): ExaminationRecordDto {
-        return changeState(examId, uid, ExaminationStatusDto.CONFIRMED)
+    fun confirmExam(examUuid: String, accoutUid: String): ExaminationRecordDto {
+        return changeState(examUuid, accoutUid, ExaminationStatusDto.CONFIRMED)
     }
 
     @Synchronized
     @Transactional(rollbackFor = [Exception::class])
-    fun cancelExam(examId: Long, uid: String): ExaminationRecordDto {
-        return changeState(examId, uid, ExaminationStatusDto.CANCELED)
+    fun cancelExam(examUuid: String, accountUid: String): ExaminationRecordDto {
+        return changeState(examUuid, accountUid, ExaminationStatusDto.CANCELED)
     }
 
     fun createOrUpdateExam(examinationRecordDto: ExaminationRecordDto, uid: String): ExaminationRecordDto {
@@ -63,10 +63,10 @@ class ExaminationRecordService @Autowired constructor(
         )
     }
 
-    private fun changeState(examId: Long, uid: String, state: ExaminationStatusDto): ExaminationRecordDto {
-        val account = findAccount(uid)
+    private fun changeState(examUuid: String, accountUid: String, state: ExaminationStatusDto): ExaminationRecordDto {
+        val account = findAccount(accountUid)
 
-        val exam = examinationRecordRepository.findByIdAndAccount(examId, account)
+        val exam = examinationRecordRepository.findByUuidAndAccount(examUuid, account)
         exam.status = state
 
         return examinationRecordRepository.save(exam).toExaminationRecordDto()

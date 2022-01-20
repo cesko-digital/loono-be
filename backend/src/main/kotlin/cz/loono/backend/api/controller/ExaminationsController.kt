@@ -41,7 +41,7 @@ class ExaminationsController(
         if (type !in getAvailableExaminations()) {
             throw LoonoBackendException(HttpStatus.NOT_FOUND)
         } else {
-            recordService.confirmExam(examinationIdDto.id, basicUser.uid)
+            recordService.confirmExam(examinationIdDto.uuid, basicUser.uid)
         }
 
     @PostMapping("/{type}/cancel")
@@ -59,7 +59,7 @@ class ExaminationsController(
         if (type !in getAvailableExaminations()) {
             throw LoonoBackendException(HttpStatus.NOT_FOUND)
         } else {
-            recordService.cancelExam(examinationIdDto.id, basicUser.uid)
+            recordService.cancelExam(examinationIdDto.uuid, basicUser.uid)
         }
 
     @PostMapping

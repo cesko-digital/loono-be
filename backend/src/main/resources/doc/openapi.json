@@ -653,15 +653,14 @@
                 "type": "object",
                 "description": "A examination identification.\n\n`month` and `year` are optional and nullable. If any of them is missing or `null`, API defaults to `LocalDate.now()` - the current year and month.",
                 "properties": {
-                    "id": {
-                        "type": "integer",
+                    "uuid": {
+                        "type": "string",
                         "description": "Must not be in the future",
-                        "format": "int64",
                         "default": null
                     }
                 },
                 "required": [
-                    "id"
+                    "uuid"
                 ]
             },
             "User": {
@@ -1170,7 +1169,6 @@
                 "description": "Examination object to update or create an object",
                 "properties": {
                     "uuid": {
-                        "format": "int64",
                         "type": "string",
                         "nullable": true
                     },

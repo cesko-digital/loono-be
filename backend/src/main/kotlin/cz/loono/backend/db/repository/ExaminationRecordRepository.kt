@@ -10,5 +10,5 @@ interface ExaminationRecordRepository : CrudRepository<ExaminationRecord, Long> 
     fun findAllByAccount(account: Account): Set<ExaminationRecord>
     fun findByUuid(uuid: String): ExaminationRecord?
     fun findAllByAccountOrderByPlannedDateDesc(account: Account): Set<ExaminationRecord>
-    fun findByIdAndAccount(id: Long, account: Account): ExaminationRecord
+    fun findByUuidAndAccount(uuid: String, account: Account): ExaminationRecord
 }

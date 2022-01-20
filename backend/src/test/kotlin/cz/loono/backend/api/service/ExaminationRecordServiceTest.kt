@@ -110,7 +110,7 @@ internal class ExaminationRecordServiceTest {
         )
         val storedExam = examinationRecordRepository.save(ExaminationRecord(type = exam.type, account = account))
 
-        val result = examinationRecordService.confirmExam(storedExam.id, "101")
+        val result = examinationRecordService.confirmExam(storedExam.uuid, "101")
 
         assert(result.status == ExaminationStatusDto.CONFIRMED)
     }
@@ -125,7 +125,7 @@ internal class ExaminationRecordServiceTest {
         )
         val storedExam = examinationRecordRepository.save(ExaminationRecord(type = exam.type, account = account))
 
-        val result = examinationRecordService.cancelExam(storedExam.id, "101")
+        val result = examinationRecordService.cancelExam(storedExam.uuid, "101")
 
         assert(result.status == ExaminationStatusDto.CANCELED)
     }
