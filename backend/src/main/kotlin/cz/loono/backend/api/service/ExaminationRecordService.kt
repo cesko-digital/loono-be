@@ -45,17 +45,17 @@ class ExaminationRecordService @Autowired constructor(
         ).toExaminationRecordDto()
     }
 
-    private fun validateUpdateAttempt(examinationRecordDto: ExaminationRecordDto): ExaminationRecord {
+    private fun validateUpdateAttempt(examinationRecordDto: ExaminationRecordDto): ExaminationRecord =
         if (examinationRecordDto.uuid != null) {
-            return examinationRecordRepository.findByUuid(examinationRecordDto.uuid)
+            examinationRecordRepository.findByUuid(examinationRecordDto.uuid)
                 ?: throw LoonoBackendException(
                     HttpStatus.NOT_FOUND,
                     "404",
                     "The given examination identifier not found."
                 )
+        } else {
+            ExaminationRecord()
         }
-        return ExaminationRecord()
-    }
 
     private fun findAccount(uid: String): Account =
         accountRepository.findByUid(uid) ?: throw LoonoBackendException(
