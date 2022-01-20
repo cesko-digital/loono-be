@@ -57,11 +57,10 @@ class ExaminationRecordService @Autowired constructor(
         return ExaminationRecord()
     }
 
-    private fun findAccount(uid: String): Account {
-        return accountRepository.findByUid(uid) ?: throw LoonoBackendException(
+    private fun findAccount(uid: String): Account =
+        accountRepository.findByUid(uid) ?: throw LoonoBackendException(
             HttpStatus.NOT_FOUND, "Account not found"
         )
-    }
 
     private fun changeState(examUuid: String, accountUid: String, state: ExaminationStatusDto): ExaminationRecordDto {
         val account = findAccount(accountUid)
@@ -72,13 +71,12 @@ class ExaminationRecordService @Autowired constructor(
         return examinationRecordRepository.save(exam).toExaminationRecordDto()
     }
 
-    fun ExaminationRecord.toExaminationRecordDto(): ExaminationRecordDto {
-        return ExaminationRecordDto(
+    fun ExaminationRecord.toExaminationRecordDto(): ExaminationRecordDto =
+        ExaminationRecordDto(
             uuid = uuid,
             type = type,
             date = plannedDate,
             firstExam = firstExam,
             status = status
         )
-    }
 }
