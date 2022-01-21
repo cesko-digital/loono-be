@@ -1,5 +1,7 @@
 # Spring Boot configuration
 spring:
+  main:
+    allow-bean-definition-overriding: true
   # Database
   datasource:
     driver-class-name: org.postgresql.Driver
