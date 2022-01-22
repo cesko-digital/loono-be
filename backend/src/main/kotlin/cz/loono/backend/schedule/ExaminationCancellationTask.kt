@@ -4,12 +4,11 @@ import cz.loono.backend.api.dto.ExaminationStatusDto
 import cz.loono.backend.api.service.ExaminationRecordService
 import cz.loono.backend.api.service.PreventionService
 import cz.loono.backend.db.repository.ExaminationRecordRepository
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
-@Component("examCancel")
-class ExaminationCancellationTask @Autowired constructor(
+@Component
+class ExaminationCancellationTask(
     private val preventionService: PreventionService,
     private val examinationRecordService: ExaminationRecordService,
     private val examinationRecordRepository: ExaminationRecordRepository
