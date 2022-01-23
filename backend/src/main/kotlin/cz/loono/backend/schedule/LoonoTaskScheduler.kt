@@ -8,7 +8,7 @@ class LoonoTaskScheduler(
     private val examinationCancellationTask: ExaminationCancellationTask
 ) {
 
-    @Scheduled(cron = "0 0 3 * * ?") // each day at 3AM
+    @Scheduled(cron = "\${scheduler.cron.daily-task}") // each day at 3AM
     fun executeDailyTasks() {
         examinationCancellationTask.run()
     }
