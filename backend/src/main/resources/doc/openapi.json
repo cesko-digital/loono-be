@@ -792,6 +792,20 @@
                 },
                 "writeOnly": true
             },
+            "BadgeType": {
+                "type": "string",
+                "title": "Badge type",
+                "description": "Available badges enum",
+                "enum": [
+                    "COAT",
+                    "TOP",
+                    "BELT",
+                    "SHOES",
+                    "GLOVES",
+                    "HEADBAND",
+                    "GLASSES"
+                ]
+            },
             "Sex": {
                 "type": "string",
                 "title": "Sex",
@@ -1201,7 +1215,7 @@
                 "description": "Badge owned by the user",
                 "properties": {
                     "type": {
-                        "type": "string"
+                        "$ref": "#/components/schemas/BadgeType"
                     },
                     "level": {
                         "type": "integer"
