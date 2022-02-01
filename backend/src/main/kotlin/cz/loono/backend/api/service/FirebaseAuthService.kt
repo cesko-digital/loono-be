@@ -64,7 +64,7 @@ class FirebaseAuthService : JwtAuthService {
             request.setDisplayName(userAuxiliary.nickname)
             change = true
         }
-        if (userAuxiliary.nickname != null) {
+        if (userAuxiliary.profileImageUrl != null) {
             request.setPhotoUrl(userAuxiliary.profileImageUrl)
             change = true
         }
