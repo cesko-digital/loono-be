@@ -34,11 +34,15 @@ data class Account(
     val settings: Settings = Settings(),
 
     @Column(nullable = false)
-    val points: Int = 0,
+    var points: Int = 0,
 
     @OneToMany(orphanRemoval = true, cascade = [CascadeType.ALL], mappedBy = "account")
     @Column(nullable = false, updatable = true, insertable = true)
-    val examinationRecords: List<ExaminationRecord> = mutableListOf()
+    val examinationRecords: List<ExaminationRecord> = mutableListOf(),
+
+    @OneToMany(orphanRemoval = true, cascade = [CascadeType.ALL], mappedBy = "account")
+    @Column(nullable = true, updatable = true, insertable = true)
+    val badges: MutableList<Badge> = mutableListOf()
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
