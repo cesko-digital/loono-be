@@ -5,7 +5,6 @@ import cz.loono.backend.api.dto.ExaminationStatusDto
 import cz.loono.backend.api.dto.ExaminationTypeEnumDto
 import cz.loono.backend.api.dto.SexDto
 import cz.loono.backend.api.exception.LoonoBackendException
-import cz.loono.backend.api.extensions.toOffsetDateTime
 import cz.loono.backend.db.model.Account
 import cz.loono.backend.db.model.Badge
 import cz.loono.backend.db.model.ExaminationRecord
@@ -14,13 +13,11 @@ import cz.loono.backend.db.repository.ExaminationRecordRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.Clock
 
 @Service
 class ExaminationRecordService(
     private val accountRepository: AccountRepository,
-    private val examinationRecordRepository: ExaminationRecordRepository,
-    private val clock: Clock
+    private val examinationRecordRepository: ExaminationRecordRepository
 ) {
 
     companion object {
@@ -95,9 +92,7 @@ class ExaminationRecordService(
                     .minus(toIncrement)
                     .toMutableSet()
                 badgesWithoutToIncrement.apply { add(toIncrement.copy(level = toIncrement.level.inc())) }
-            } ?: account.badges.plus(
-                Badge(badgeType, account.id, STARTING_LEVEL, clock.instant().toOffsetDateTime(), account)
-            )
+            } ?: account.badges.plus(Badge(badgeType, account.id, STARTING_LEVEL, account))
 
             account.copy(badges = badgesToCopy, points = account.points + points)
         }

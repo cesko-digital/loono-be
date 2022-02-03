@@ -5,7 +5,6 @@ import cz.loono.backend.api.dto.ExaminationIdDto
 import cz.loono.backend.api.dto.ExaminationRecordDto
 import cz.loono.backend.api.dto.ExaminationTypeEnumDto
 import cz.loono.backend.api.exception.LoonoBackendException
-import cz.loono.backend.api.extensions.toOffsetDateTime
 import cz.loono.backend.api.service.ExaminationRecordService
 import cz.loono.backend.api.service.PreventionService
 import cz.loono.backend.createAccount
@@ -15,17 +14,10 @@ import cz.loono.backend.db.repository.AccountRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
-import org.springframework.context.annotation.Primary
-import java.time.Clock
-import java.time.Instant
 
 @DataJpaTest
 @Import(value = [ExaminationRecordService::class, PreventionService::class])
@@ -44,7 +36,7 @@ class ExaminationsControllerTest(
         val examinationRecord = ExaminationRecordDto(type = ExaminationTypeEnumDto.DENTIST)
         // This is done to get assigned ID by the DB
         existingAccount = repo.save(existingAccount)
-        val expectedBadge = Badge(BadgeTypeDto.HEADBAND.value, existingAccount.id, 1, Instant.EPOCH.toOffsetDateTime(), existingAccount)
+        val expectedBadge = Badge(BadgeTypeDto.HEADBAND.value, existingAccount.id, 1, existingAccount)
 
         var examUUID = controller.updateOrCreate(basicUser, examinationRecord).uuid!!
         controller.confirm(basicUser, ExaminationTypeEnumDto.DENTIST.toString(), ExaminationIdDto(examUUID))
@@ -85,14 +77,5 @@ class ExaminationsControllerTest(
             controller.confirm(basicUser, ExaminationTypeEnumDto.MAMMOGRAM.toString(), ExaminationIdDto(examUUID))
         }
         assertThat(actualError.errorMessage).isEqualTo("Unsupported examination type MAMMOGRAM")
-    }
-
-    @TestConfiguration
-    class MockedConfig {
-        @Primary
-        @Bean
-        fun mockedClock() = mock<Clock>().apply {
-            whenever(instant()).thenReturn(Instant.EPOCH)
-        }
     }
 }

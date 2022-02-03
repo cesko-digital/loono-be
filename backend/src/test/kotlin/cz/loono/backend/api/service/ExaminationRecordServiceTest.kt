@@ -4,7 +4,6 @@ import cz.loono.backend.api.dto.ExaminationRecordDto
 import cz.loono.backend.api.dto.ExaminationStatusDto
 import cz.loono.backend.api.dto.ExaminationTypeEnumDto
 import cz.loono.backend.api.exception.LoonoBackendException
-import cz.loono.backend.config.ClockConfig
 import cz.loono.backend.db.model.Account
 import cz.loono.backend.db.model.ExaminationRecord
 import cz.loono.backend.db.repository.AccountRepository
@@ -14,22 +13,18 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.context.annotation.Import
-import java.time.Clock
 import java.time.LocalDateTime
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
-@Import(ClockConfig::class)
 class ExaminationRecordServiceTest(
     private val accountRepository: AccountRepository,
     private val examinationRecordRepository: ExaminationRecordRepository,
-    private val clock: Clock
 ) {
 
     @Test
     fun `changing state for a non-existing user`() {
-        val examinationRecordService = ExaminationRecordService(accountRepository, examinationRecordRepository, clock)
+        val examinationRecordService = ExaminationRecordService(accountRepository, examinationRecordRepository)
 
         assertThrows<LoonoBackendException>("Account not found") {
             examinationRecordService.createOrUpdateExam(
@@ -46,7 +41,7 @@ class ExaminationRecordServiceTest(
     @Test
     fun `changing state of a non-existing exam`() {
         accountRepository.save(Account(uid = "101"))
-        val examinationRecordService = ExaminationRecordService(accountRepository, examinationRecordRepository, clock)
+        val examinationRecordService = ExaminationRecordService(accountRepository, examinationRecordRepository)
         val exam = ExaminationRecordDto(
             uuid = "1",
             type = ExaminationTypeEnumDto.GENERAL_PRACTITIONER,
@@ -66,7 +61,7 @@ class ExaminationRecordServiceTest(
     @Test
     fun `new exam creation`() {
         accountRepository.save(Account(uid = "101"))
-        val examinationRecordService = ExaminationRecordService(accountRepository, examinationRecordRepository, clock)
+        val examinationRecordService = ExaminationRecordService(accountRepository, examinationRecordRepository)
         val exam = ExaminationRecordDto(
             type = ExaminationTypeEnumDto.GENERAL_PRACTITIONER
         )
@@ -81,7 +76,7 @@ class ExaminationRecordServiceTest(
     @Test
     fun `valid changing of state`() {
         val account = accountRepository.save(Account(uid = "101"))
-        val examinationRecordService = ExaminationRecordService(accountRepository, examinationRecordRepository, clock)
+        val examinationRecordService = ExaminationRecordService(accountRepository, examinationRecordRepository)
         val exam = ExaminationRecordDto(
             type = ExaminationTypeEnumDto.GENERAL_PRACTITIONER
         )
@@ -104,7 +99,7 @@ class ExaminationRecordServiceTest(
     @Test
     fun `confirm exam`() {
         val account = accountRepository.save(Account(uid = "101"))
-        val examinationRecordService = ExaminationRecordService(accountRepository, examinationRecordRepository, clock)
+        val examinationRecordService = ExaminationRecordService(accountRepository, examinationRecordRepository)
         val exam = ExaminationRecordDto(
             type = ExaminationTypeEnumDto.GENERAL_PRACTITIONER,
             status = ExaminationStatusDto.TO_BE_CONFIRMED
@@ -119,7 +114,7 @@ class ExaminationRecordServiceTest(
     @Test
     fun `cancel exam`() {
         val account = accountRepository.save(Account(uid = "101"))
-        val examinationRecordService = ExaminationRecordService(accountRepository, examinationRecordRepository, clock)
+        val examinationRecordService = ExaminationRecordService(accountRepository, examinationRecordRepository)
         val exam = ExaminationRecordDto(
             type = ExaminationTypeEnumDto.GENERAL_PRACTITIONER,
             status = ExaminationStatusDto.TO_BE_CONFIRMED
