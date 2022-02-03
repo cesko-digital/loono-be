@@ -3,9 +3,9 @@ spring:
   # Database
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/data_api
-    username: postgres
-    password: data_api
+    url: jdbc:postgresql://${POSTGRE_URL}
+    username: ${POSTGRE_USER}
+    password: ${POSTGRE_PWD}
   # JPA properties
   jpa:
     hibernate:
