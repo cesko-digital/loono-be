@@ -36,11 +36,11 @@ data class Account(
     @Column(nullable = false)
     val points: Int = 0,
 
-    @OneToMany(orphanRemoval = true, cascade = [CascadeType.ALL], mappedBy = "account")
+    @OneToMany(orphanRemoval = false, cascade = [CascadeType.ALL], mappedBy = "account")
     @Column(nullable = false, updatable = true, insertable = true)
     val examinationRecords: List<ExaminationRecord> = mutableListOf(),
 
-    @OneToMany(orphanRemoval = true, cascade = [CascadeType.ALL], mappedBy = "account")
+    @OneToMany(orphanRemoval = false, cascade = [CascadeType.ALL], mappedBy = "account")
     @Column(nullable = true, updatable = true, insertable = true)
     val badges: Set<Badge> = mutableSetOf()
 ) {
