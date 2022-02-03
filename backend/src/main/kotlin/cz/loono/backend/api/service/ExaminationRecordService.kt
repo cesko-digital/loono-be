@@ -11,10 +11,10 @@ import cz.loono.backend.db.model.Badge
 import cz.loono.backend.db.model.ExaminationRecord
 import cz.loono.backend.db.repository.AccountRepository
 import cz.loono.backend.db.repository.ExaminationRecordRepository
-import java.time.Clock
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Clock
 
 @Service
 class ExaminationRecordService(
@@ -84,26 +84,22 @@ class ExaminationRecordService(
     private fun updateWithBadgeAndPoints(examType: ExaminationTypeEnumDto, account: Account): Account? =
         account.userAuxiliary.sex?.let { sexString ->
             val badgeToPoints = BadgesPointsProvider.getBadgesAndPoints(examType, SexDto.valueOf(sexString))
-            val badgeType = badgeToPoints.first
+            val badgeType = badgeToPoints.first.toString()
             val points = badgeToPoints.second
 
             // Increment badge level by 1 if badge already exists, add this badge as new one otherwise
-            val badges = account.badges.find { it.type.equals(badgeType.toString(), ignoreCase = true) }?.let {
-                account.badges.filterNot { it.type.equals(badgeType.toString(), ignoreCase = true) }
+            val badgeToIncrement = account.badges.find { it.type.equals(badgeType, ignoreCase = true) }
+            val badgesToCopy = badgeToIncrement?.let { toIncrement ->
+                // Due to immutability first removing badge, then coping old badge with incremented level
+                val badgesWithoutToIncrement = account.badges
+                    .minus(toIncrement)
                     .toMutableSet()
-                    .apply {
-                        add(it.copy(level = it.level.inc()))
-                    }
-            } ?: (account.badges +
-                            Badge(
-                                badgeToPoints.first.toString(),
-                                account.id,
-                                STARTING_LEVEL,
-                                clock.instant().toOffsetDateTime(),
-                                account
-                            )
-                    )
-            account.copy(badges = badges, points = account.points + points)
+                badgesWithoutToIncrement.apply { add(toIncrement.copy(level = toIncrement.level.inc())) }
+            } ?: account.badges.plus(
+                Badge(badgeType, account.id, STARTING_LEVEL, clock.instant().toOffsetDateTime(), account)
+            )
+
+            account.copy(badges = badgesToCopy, points = account.points + points)
         }
 
     fun ExaminationRecord.toExaminationRecordDto(): ExaminationRecordDto =
