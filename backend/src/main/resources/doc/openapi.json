@@ -158,8 +158,19 @@
                     {
                         "Bearer_Auth": []
                     }
+                ],
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "name": "size",
+                        "description": "Count of leading accounts"
+                    }
                 ]
-            }
+            },
+            "parameters": []
         },
         "/account/user/update": {
             "post": {
