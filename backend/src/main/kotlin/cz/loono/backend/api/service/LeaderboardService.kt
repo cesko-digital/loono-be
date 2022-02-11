@@ -11,9 +11,9 @@ class LeaderboardService(
     private val accountRepository: AccountRepository
 ) {
 
-    fun getLeaderboard(uid: String, size: Int): LeaderboardDto =
+    fun getLeaderboard(uid: String, leaderboardSize: Int): LeaderboardDto =
         LeaderboardDto(
-            accountRepository.findAllByOrderByPointsDesc(PageRequest.of(0, size)).map {
+            accountRepository.findAllByOrderByPointsDesc(PageRequest.of(0, leaderboardSize)).map {
                 LeaderboardUserDto(
                     name = it.userAuxiliary.nickname,
                     points = it.points,

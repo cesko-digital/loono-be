@@ -21,9 +21,9 @@ class LeaderboardController(
     fun getLeaderboard(
         @RequestAttribute(name = Attributes.ATTR_BASIC_USER)
         basicUser: BasicUser,
-        @RequestParam
-        size: Int = 100
+        @RequestParam(name = "leaderboard_size")
+        leaderboardSize: Int = 100
     ): LeaderboardDto {
-        return leaderboardService.getLeaderboard(basicUser.uid, size)
+        return leaderboardService.getLeaderboard(basicUser.uid, leaderboardSize)
     }
 }

@@ -165,7 +165,7 @@
                             "type": "integer"
                         },
                         "in": "query",
-                        "name": "size",
+                        "name": "leaderboard_size",
                         "description": "Count of leading accounts"
                     }
                 ]
