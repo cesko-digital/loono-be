@@ -23,7 +23,5 @@ class LeaderboardController(
         basicUser: BasicUser,
         @RequestParam
         size: Int = 100
-    ): LeaderboardDto {
-        return leaderboardService.getLeaderboard(basicUser.uid, size)
-    }
+    ): LeaderboardDto = leaderboardService.getLeaderboard(basicUser.uid, size)
 }
