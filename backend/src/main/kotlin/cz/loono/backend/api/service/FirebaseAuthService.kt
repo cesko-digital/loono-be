@@ -30,26 +30,6 @@ class FirebaseAuthService : JwtAuthService {
             return JwtAuthService.VerificationResult.Error("Could not verify JWT.")
         }
 
-        if (decodedToken.email == null) {
-            val error = "Firebase accounts without email are not permitted.\n" +
-                "UID: ${decodedToken.uid}\n" +
-                "Probable reason: Client application may have allowed a login method " +
-                "which doesn't provide user email. Loono only permits login methods which provide user email."
-            logger.error(error)
-
-            return JwtAuthService.VerificationResult.MissingPrimaryEmail
-        }
-
-        if (decodedToken.name == null) {
-            val error = "Firebase accounts without name are not permitted.\n" +
-                "UID: ${decodedToken.uid}\n" +
-                "Probable reason: Client application may have allowed a login method " +
-                "which doesn't provide account name. Loono only permits login methods which provide user name."
-            logger.error(error)
-
-            return JwtAuthService.VerificationResult.MissingUserName
-        }
-
         val user = BasicUser(decodedToken.uid, decodedToken.email, decodedToken.name, URL(decodedToken.picture))
         return JwtAuthService.VerificationResult.Success(user)
     }
