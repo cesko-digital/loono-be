@@ -123,15 +123,6 @@ class ExaminationRecordServiceTest(
 
     @Test
     fun `try to create exam with non-suitable sex`() {
-        val account = accountRepository.save(
-            Account(
-                uid = "101",
-                userAuxiliary = UserAuxiliary(
-                    sex = SexDto.MALE.value,
-                    birthdate = LocalDate.of(1990, 9, 9)
-                )
-            )
-        )
         val examinationRecordService =
             ExaminationRecordService(accountRepository, examinationRecordRepository, preventionService)
         val examRecord = ExaminationRecordDto(
