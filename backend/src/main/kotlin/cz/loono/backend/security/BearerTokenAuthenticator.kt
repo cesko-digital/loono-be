@@ -37,7 +37,6 @@ class BearerTokenAuthenticator(
                 )
             }
         }
-        return false
     }
 
     private fun parseToken(authHeader: String): String {
