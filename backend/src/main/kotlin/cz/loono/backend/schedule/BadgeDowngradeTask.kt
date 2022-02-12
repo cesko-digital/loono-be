@@ -45,7 +45,7 @@ class BadgeDowngradeTask(
                     val exam: ExaminationTypeEnumDto = BADGES_TO_EXAMS.getValue(BadgeTypeDto.valueOf(badge.type))
                     val intervalYears = examsRequests.first { it.examinationType == exam }.intervalYears
                     intervalYears.toLong().let {
-                        // Using double-bang operator as we filtered only non-nullable planned dates before
+                        // Using double-bang operator as we filtered out only non-nullable planned dates before
                         val plannedDate = latestExam.plannedDate!!.plusYears(it).plusMonths(toleranceMonths)
                         val lastUpdatedDate = badge.lastUpdateOn
                         if (now.isAfter(lastUpdatedDate) && now.isAfter(plannedDate)) {
