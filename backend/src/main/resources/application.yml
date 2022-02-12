@@ -44,3 +44,4 @@ scheduler.cron:
 
 task.badge-downgrade:
   page-size: 50
+  tolerance-months: 0
