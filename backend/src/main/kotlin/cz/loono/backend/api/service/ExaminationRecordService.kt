@@ -58,7 +58,7 @@ class ExaminationRecordService(
             "The account not found."
         )
         val intervals = preventionService.getExaminationRequests(account).filter { it.examinationType == type }
-        if (intervals.isEmpty()) {
+        intervals.ifEmpty {
             throw LoonoBackendException(
                 HttpStatus.BAD_REQUEST,
                 "400",
