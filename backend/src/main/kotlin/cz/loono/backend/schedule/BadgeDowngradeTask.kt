@@ -21,13 +21,13 @@ import kotlin.math.abs
 
 @Component
 class BadgeDowngradeTask(
-    private val accountRepository: AccountRepository,
+    @Value("\${task.badge-downgrade.tolerance-months}")
+    private val toleranceMonths: Int,
     @Value("\${task.badge-downgrade.page-size}")
     private val pageSize: Int,
+    private val accountRepository: AccountRepository,
     private val preventionService: PreventionService,
     private val clock: Clock,
-    @Value("\${task.badge-downgrade.tolerance-months}")
-    private val toleranceMonths: Int
 ) : SchedulerTask {
 
     companion object {
@@ -36,27 +36,23 @@ class BadgeDowngradeTask(
     }
 
     override fun run() {
-        var page: Pageable = PageRequest.of(0, pageSize, Sort.by(*FIELDS_TO_SORT_BY))
-
-        do {
-            val accountsPage = accountRepository.findAll(page)
-            val accountsFromPage = accountsPage.content
-            val accountsToUpdate = accountsFromPage.mapNotNull { account ->
+        paginateOverAccounts { nextPage ->
+            val accountsToUpdate = nextPage.mapNotNull { account ->
                 val now = clock.instant().toLocalDateTime()
                 val userBadges = account.badges
                 // Don't do anything when no badges to downgrade
                 userBadges.ifEmpty {
-                    return
+                    return@ifEmpty
                 }
 
-                val confirmedExams = getPlannedExams(account)
+                val plannedExams = getPlannedExams(account)
                 val examsRequests = preventionService.getExaminationRequests(account)
 
                 val downgradedBadges = userBadges.map { badge ->
                     val exam: ExaminationTypeEnumDto = BADGES_TO_EXAMS.getValue(BadgeTypeDto.valueOf(badge.type))
                     val request = examsRequests.find { it.examinationType == exam }
-                    val updatedBadge = request?.let { request ->
-                        val confirmedExamsWithinYearCount = confirmedExams.count {
+                    val downgradedBadge = request?.let { request ->
+                        val confirmedExamsWithinYearCount = plannedExams.count {
                             it.type == request.examinationType && differenceInMonths(
                                 now,
                                 // Using bang operator, since we take non-nullable plannedDates only
@@ -69,12 +65,22 @@ class BadgeDowngradeTask(
                             badge
                         }
                     }
-                    updatedBadge ?: badge
+                    downgradedBadge ?: badge
                 }.toSet()
                 if (downgradedBadges != account.badges) account.copy(badges = downgradedBadges) else null
             }
 
             accountRepository.saveAll(removeZeroLevelBadges(accountsToUpdate))
+        }
+    }
+
+    private fun paginateOverAccounts(transformPage: (List<Account>) -> Unit) {
+        var page: Pageable = PageRequest.of(0, pageSize, Sort.by(*FIELDS_TO_SORT_BY))
+
+        do {
+            val accountsPage = accountRepository.findAll(page)
+            val accountsFromPage = accountsPage.content
+            transformPage(accountsFromPage)
             page = accountsPage.nextPageable()
         } while (accountsPage.hasNext())
     }

@@ -3,9 +3,9 @@ spring:
   # Database
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://postgres
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://${POSTGRE_URL}
+    username: ${POSTGRE_USER}
+    password: ${POSTGRE_PWD}
   # JPA properties
   jpa:
     hibernate:
@@ -41,7 +41,3 @@ management.health:
 scheduler.cron:
   daily-task: "0 0 3 * * ?"
   data-update: "0 0 2 2 * ?"
-
-task.badge-downgrade:
-  page-size: 50
-  tolerance-months: 0
