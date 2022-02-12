@@ -42,14 +42,14 @@ class BadgeDowngradeTaskTest(
         val account = createAccount("uuid1")
         val badges = setOf(
             Badge(
-                BadgeTypeDto.HEADBAND.toString(),
+                BadgeTypeDto.GLASSES.toString(),
                 1,
                 3,
                 account,
-                LocalDateTime.parse("2021-02-13T17:14:06.419")
+                LocalDateTime.parse("2020-02-13T17:14:06.419")
             ),
             Badge(
-                BadgeTypeDto.GLASSES.toString(),
+                BadgeTypeDto.HEADBAND.toString(),
                 1,
                 3,
                 account,
@@ -61,8 +61,8 @@ class BadgeDowngradeTaskTest(
             badges = badges,
             examinationRecords = listOf(
                 ExaminationRecord(
-                    type = ExaminationTypeEnumDto.DENTIST,
-                    plannedDate = LocalDateTime.parse("2021-02-11T17:14:06.419"),
+                    type = ExaminationTypeEnumDto.OPHTHALMOLOGIST,
+                    plannedDate = LocalDateTime.parse("2020-02-11T17:14:06.419"),
                     account = account,
                     status = ExaminationStatusDto.CONFIRMED
                 )
@@ -78,14 +78,14 @@ class BadgeDowngradeTaskTest(
         val actual = accountRepository.findByUid("uuid1")!!.badges
         val expected = setOf(
             Badge(
-                BadgeTypeDto.HEADBAND.toString(),
+                BadgeTypeDto.GLASSES.toString(),
                 1,
                 2,
                 account,
-                LocalDateTime.parse("2023-02-12T17:14:06.419")
+                LocalDateTime.parse("2024-02-12T17:14:06.419")
             ),
             Badge(
-                BadgeTypeDto.GLASSES.toString(),
+                BadgeTypeDto.HEADBAND.toString(),
                 1,
                 3,
                 account,
