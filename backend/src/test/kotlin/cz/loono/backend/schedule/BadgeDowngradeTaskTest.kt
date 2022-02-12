@@ -10,7 +10,6 @@ import cz.loono.backend.createAccount
 import cz.loono.backend.db.model.Badge
 import cz.loono.backend.db.model.ExaminationRecord
 import cz.loono.backend.db.repository.AccountRepository
-import cz.loono.backend.extensions.toLocalDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
@@ -33,6 +32,10 @@ class BadgeDowngradeTaskTest(
     private val badgeDowngradeTask: BadgeDowngradeTask,
     private val accountRepository: AccountRepository,
 ) {
+    companion object {
+        // 1644682446419L == 2022-02-12T17:14:06.419
+        private const val MILLIS = 1644682446419L
+    }
 
     @Test
     fun `Should correctly downgrade badge`() {
@@ -43,14 +46,14 @@ class BadgeDowngradeTaskTest(
                 1,
                 3,
                 account,
-                LocalDateTime.parse("2010-02-12T14:29:33.583944")
+                LocalDateTime.parse("2021-02-13T17:14:06.419")
             ),
             Badge(
                 BadgeTypeDto.GLASSES.toString(),
                 1,
                 3,
                 account,
-                LocalDateTime.parse("2050-02-12T14:29:33.583944")
+                LocalDateTime.parse("2022-02-12T17:14:06.419")
             )
         )
         accountRepository.save(account)
@@ -59,7 +62,7 @@ class BadgeDowngradeTaskTest(
             examinationRecords = listOf(
                 ExaminationRecord(
                     type = ExaminationTypeEnumDto.DENTIST,
-                    plannedDate = LocalDateTime.parse("2010-02-12T14:29:33.583944"),
+                    plannedDate = LocalDateTime.parse("2021-02-11T17:14:06.419"),
                     account = account,
                     status = ExaminationStatusDto.CONFIRMED
                 )
@@ -79,14 +82,14 @@ class BadgeDowngradeTaskTest(
                 1,
                 2,
                 account,
-                Instant.ofEpochMilli(1644682446419L).toLocalDateTime()
+                LocalDateTime.parse("2023-02-12T17:14:06.419")
             ),
             Badge(
                 BadgeTypeDto.GLASSES.toString(),
                 1,
                 3,
                 account,
-                LocalDateTime.parse("2050-02-12T14:29:33.583944")
+                LocalDateTime.parse("2022-02-12T17:14:06.419")
             )
         )
 
@@ -133,7 +136,7 @@ class BadgeDowngradeTaskTest(
         @Bean
         @Primary
         fun mockedClock() = mock<Clock>().apply {
-            whenever(instant()).thenReturn(Instant.ofEpochMilli(1644682446419L))
+            whenever(instant()).thenReturn(Instant.ofEpochMilli(MILLIS))
         }
     }
 }
