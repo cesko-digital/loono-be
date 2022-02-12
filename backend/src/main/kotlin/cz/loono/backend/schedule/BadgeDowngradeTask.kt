@@ -35,7 +35,7 @@ class BadgeDowngradeTask(
                 val userBadges = account.badges
                 // Don't do anything when no badges to downgrade
                 userBadges.ifEmpty {
-                    return@paginateOverAccounts
+                    return@mapNotNull null
                 }
 
                 val latestExam = getLatestExam(account)
