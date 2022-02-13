@@ -31,10 +31,6 @@ class BadgeDowngradeTaskTest(
     private val badgeDowngradeTask: BadgeDowngradeTask,
     private val accountRepository: AccountRepository,
 ) {
-    companion object {
-        // 1644682446419L == 2022-02-12T17:14:06.419
-        private const val MILLIS = 1644682446419L
-    }
 
     @Test
     fun `Should correctly downgrade badges`() {
