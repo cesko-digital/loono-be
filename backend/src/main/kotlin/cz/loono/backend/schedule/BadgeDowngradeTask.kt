@@ -8,6 +8,7 @@ import cz.loono.backend.db.repository.AccountRepository
 import cz.loono.backend.extensions.toLocalDateTime
 import cz.loono.backend.schedule.SchedulerTask
 import java.time.Clock
+import java.time.LocalDateTime
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
@@ -55,7 +56,7 @@ class BadgeDowngradeTask(
                     intervalYears?.toLong()?.let {
                         val plannedDate = latestExam?.plannedDate?.plusYears(it)?.plusMonths(toleranceMonths)
                         val lastUpdatedDate = badge.lastUpdateOn
-                        if (now.isAfter(lastUpdatedDate) && (plannedDate == null || now.isAfter(plannedDate))) {
+                        if (shouldDowngradeBadge(now, lastUpdatedDate, plannedDate)) {
                             badge.copy(level = badge.level.dec(), lastUpdateOn = now.plusYears(it))
                         } else {
                             badge
@@ -65,13 +66,19 @@ class BadgeDowngradeTask(
 
                 if (downgradedBadges != account.badges) account.copy(badges = downgradedBadges) else null
             }
-            val accountsWithUpdatedBadges = removeZeroLevelBadges(accountsToUpdate)
-            logger.debug("Updating badges for the following accounts '$accountsWithUpdatedBadges'")
+            val accountsWithDowngradedBadges = removeZeroLevelBadges(accountsToUpdate)
+            logger.debug("Updating badges for the following accounts '$accountsWithDowngradedBadges'")
 
-            accountRepository.saveAll(accountsWithUpdatedBadges)
+            accountRepository.saveAll(accountsWithDowngradedBadges)
         }
         logger.info("BadgeDowngradeTask finished")
     }
+
+    private fun shouldDowngradeBadge(
+        now: LocalDateTime,
+        lastUpdatedDate: LocalDateTime,
+        plannedDate: LocalDateTime?
+    ) = now.isAfter(lastUpdatedDate) && (plannedDate == null || now.isAfter(plannedDate))
 
     private fun paginateOverAccounts(transformPage: (List<Account>) -> Unit) {
         var page: Pageable = PageRequest.of(0, pageSize, Sort.by(*FIELDS_TO_SORT_BY))
