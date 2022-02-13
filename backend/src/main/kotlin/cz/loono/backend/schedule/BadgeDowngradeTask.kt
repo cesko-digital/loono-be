@@ -3,15 +3,17 @@ import cz.loono.backend.api.dto.ExaminationTypeEnumDto
 import cz.loono.backend.api.service.BadgesPointsProvider.BADGES_TO_EXAMS
 import cz.loono.backend.api.service.PreventionService
 import cz.loono.backend.db.model.Account
+import cz.loono.backend.db.model.ExaminationRecord
 import cz.loono.backend.db.repository.AccountRepository
 import cz.loono.backend.extensions.toLocalDateTime
 import cz.loono.backend.schedule.SchedulerTask
+import java.time.Clock
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Component
-import java.time.Clock
 
 @Component
 class BadgeDowngradeTask(
@@ -24,11 +26,16 @@ class BadgeDowngradeTask(
     private val clock: Clock,
 ) : SchedulerTask {
 
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     companion object {
         private val FIELDS_TO_SORT_BY = arrayOf("id")
     }
 
     override fun run() {
+        logger.info(
+            "BadgeDowngradeTask executed with the following settings 'toleranceMonths '$toleranceMonths', pageSize '$pageSize'"
+        )
         paginateOverAccounts { nextPage ->
             val accountsToUpdate = nextPage.mapNotNull { account ->
                 val now = clock.instant().toLocalDateTime()
@@ -38,29 +45,32 @@ class BadgeDowngradeTask(
                     return@mapNotNull null
                 }
 
-                val latestExam = getLatestExam(account)
                 val examsRequests = preventionService.getExaminationRequests(account)
 
                 val downgradedBadges = userBadges.map { badge ->
-                    val exam: ExaminationTypeEnumDto = BADGES_TO_EXAMS.getValue(BadgeTypeDto.valueOf(badge.type))
-                    val intervalYears = examsRequests.first { it.examinationType == exam }.intervalYears
-                    intervalYears.toLong().let {
-                        // Using double-bang operator as we filtered out only non-nullable planned dates before
-                        val plannedDate = latestExam.plannedDate!!.plusYears(it).plusMonths(toleranceMonths)
+                    val examType = BADGES_TO_EXAMS.getValue(BadgeTypeDto.valueOf(badge.type))
+                    val intervalYears = examsRequests.firstOrNull { it.examinationType == examType }?.intervalYears
+                    val latestExam = getLatestExam(account.examinationRecords, examType)
+
+                    intervalYears?.toLong()?.let {
+                        val plannedDate = latestExam?.plannedDate?.plusYears(it)?.plusMonths(toleranceMonths)
                         val lastUpdatedDate = badge.lastUpdateOn
-                        if (now.isAfter(lastUpdatedDate) && now.isAfter(plannedDate)) {
+                        if (now.isAfter(lastUpdatedDate) && (plannedDate == null || now.isAfter(plannedDate))) {
                             badge.copy(level = badge.level.dec(), lastUpdateOn = now.plusYears(it))
                         } else {
                             badge
                         }
-                    }
+                    } ?: badge
                 }.toSet()
 
                 if (downgradedBadges != account.badges) account.copy(badges = downgradedBadges) else null
             }
+            val accountsWithUpdatedBadges = removeZeroLevelBadges(accountsToUpdate)
+            logger.debug("Updating badges for the following accounts '$accountsWithUpdatedBadges'")
 
-            accountRepository.saveAll(removeZeroLevelBadges(accountsToUpdate))
+            accountRepository.saveAll(accountsWithUpdatedBadges)
         }
+        logger.info("BadgeDowngradeTask finished")
     }
 
     private fun paginateOverAccounts(transformPage: (List<Account>) -> Unit) {
@@ -77,5 +87,6 @@ class BadgeDowngradeTask(
     private fun removeZeroLevelBadges(accounts: List<Account>) =
         accounts.map { account -> account.copy(badges = account.badges.filter { it.level > 0 }.toSet()) }
 
-    private fun getLatestExam(account: Account) = account.examinationRecords.last { it.plannedDate != null }
+    private fun getLatestExam(examRecords: List<ExaminationRecord>, examType: ExaminationTypeEnumDto) =
+        examRecords.lastOrNull { it.plannedDate != null && it.type == examType }
 }

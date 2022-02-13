@@ -38,7 +38,7 @@ class BadgeDowngradeTaskTest(
     }
 
     @Test
-    fun `Should correctly downgrade badge`() {
+    fun `Should correctly downgrade badges`() {
         val account = createAccount("uuid1")
         val badges = setOf(
             Badge(
@@ -54,6 +54,13 @@ class BadgeDowngradeTaskTest(
                 3,
                 account,
                 LocalDateTime.parse("2022-02-12T17:14:06.419")
+            ),
+            Badge(
+                BadgeTypeDto.COAT.toString(),
+                1,
+                3,
+                account,
+                LocalDateTime.parse("2020-02-12T17:14:06.419")
             )
         )
         accountRepository.save(account)
@@ -90,6 +97,13 @@ class BadgeDowngradeTaskTest(
                 3,
                 account,
                 LocalDateTime.parse("2022-02-12T17:14:06.419")
+            ),
+            Badge(
+                BadgeTypeDto.COAT.toString(),
+                1,
+                2,
+                account,
+                LocalDateTime.parse("2024-02-12T17:14:06.419")
             )
         )
 
@@ -98,37 +112,14 @@ class BadgeDowngradeTaskTest(
 
     @Test
     fun `Should remove badge when level downgraded to zero`() {
-        val account = createAccount("uuid1")
-        val badges = setOf(
-            Badge(
-                BadgeTypeDto.HEADBAND.toString(),
-                1,
-                1,
-                account,
-                LocalDateTime.parse("2010-02-12T14:29:33.583944")
-            )
-        )
-        accountRepository.save(account)
-        val withBadgesAndRecords = accountRepository.findByUid("uuid1")!!.copy(
-            badges = badges,
-            examinationRecords = listOf(
-                ExaminationRecord(
-                    type = ExaminationTypeEnumDto.DENTIST,
-                    plannedDate = LocalDateTime.parse("2010-02-12T14:29:33.583944"),
-                    account = account,
-                    status = ExaminationStatusDto.CONFIRMED
-                )
-            )
-        )
+        val accounts = listOf("uuid1", "uuid2", "uuid3").map(::createAccount)
 
-        accountRepository.save(withBadgesAndRecords)
-
+        accountRepository.saveAll(accounts)
         badgeDowngradeTask.run()
 
         val actual = accountRepository.findByUid("uuid1")!!.badges
-        val expected = emptySet<Badge>()
 
-        assertThat(actual).isEqualTo(expected)
+        assertThat(actual).isEqualTo(emptySet<Badge>())
     }
 
     @TestConfiguration
