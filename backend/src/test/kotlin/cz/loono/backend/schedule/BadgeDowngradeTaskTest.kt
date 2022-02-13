@@ -2,7 +2,7 @@ package cz.loono.backend.schedule
 
 import cz.loono.backend.api.dto.BadgeTypeDto
 import cz.loono.backend.api.dto.ExaminationStatusDto
-import cz.loono.backend.api.dto.ExaminationTypeEnumDto
+import cz.loono.backend.api.dto.ExaminationTypeDto
 import cz.loono.backend.api.service.PreventionService
 import cz.loono.backend.configuration.ClockConfiguration
 import cz.loono.backend.createAccount
@@ -67,7 +67,7 @@ class BadgeDowngradeTaskTest(
             badges = badges,
             examinationRecords = listOf(
                 ExaminationRecord(
-                    type = ExaminationTypeEnumDto.OPHTHALMOLOGIST,
+                    type = ExaminationTypeDto.OPHTHALMOLOGIST,
                     plannedDate = LocalDateTime.parse("2020-02-11T17:14:06.419"),
                     account = account,
                     status = ExaminationStatusDto.CONFIRMED
@@ -126,7 +126,7 @@ class BadgeDowngradeTaskTest(
             badges = badges,
             examinationRecords = listOf(
                 ExaminationRecord(
-                    type = ExaminationTypeEnumDto.OPHTHALMOLOGIST,
+                    type = ExaminationTypeDto.OPHTHALMOLOGIST,
                     plannedDate = LocalDateTime.parse("2020-02-11T17:14:06.419"),
                     account = account,
                     status = ExaminationStatusDto.CONFIRMED
