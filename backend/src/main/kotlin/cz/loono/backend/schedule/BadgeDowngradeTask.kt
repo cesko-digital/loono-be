@@ -1,3 +1,5 @@
+package cz.loono.backend.schedule
+
 import cz.loono.backend.api.dto.BadgeTypeDto
 import cz.loono.backend.api.dto.ExaminationTypeEnumDto
 import cz.loono.backend.api.service.BadgesPointsProvider.BADGES_TO_EXAMS
@@ -6,15 +8,14 @@ import cz.loono.backend.db.model.Account
 import cz.loono.backend.db.model.ExaminationRecord
 import cz.loono.backend.db.repository.AccountRepository
 import cz.loono.backend.extensions.toLocalDateTime
-import cz.loono.backend.schedule.SchedulerTask
-import java.time.Clock
-import java.time.LocalDateTime
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Component
+import java.time.Clock
+import java.time.LocalDateTime
 
 @Component
 class BadgeDowngradeTask(

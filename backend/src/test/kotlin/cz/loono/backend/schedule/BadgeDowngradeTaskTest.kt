@@ -1,6 +1,5 @@
 package cz.loono.backend.schedule
 
-import BadgeDowngradeTask
 import cz.loono.backend.api.dto.BadgeTypeDto
 import cz.loono.backend.api.dto.ExaminationStatusDto
 import cz.loono.backend.api.dto.ExaminationTypeEnumDto
