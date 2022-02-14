@@ -26,8 +26,7 @@ jobs:
       
       - name: Build with Gradle
         run: |
-          ./gradlew test --tests "cz.loono.backend.schedule.ExaminationCancellationTaskTest"  
-          ls -ltr
+          ./gradlew build
 
       - name: Publish Unit Test Results
         # This action shall be used for ubuntu
