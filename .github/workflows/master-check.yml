@@ -1,15 +1,6 @@
-name: 'Master branch CI'
+name: 'Build and Test'
 
-on:
-  pull_request:
-    branches:
-      - master
-  push:
-    branches: [ master ]
-    paths-ignore:
-      - '.github/**'
-      - '.gitignore'
-      - 'README.md'
+on: [push, pull_request]
 
 jobs:
   build:
