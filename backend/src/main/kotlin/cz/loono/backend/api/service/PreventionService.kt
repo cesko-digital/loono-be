@@ -108,7 +108,7 @@ class PreventionService(
                         lastExamUuid = plannedExam.uuid,
                         plannedDate = plannedExam.dueDate,
                         type = type,
-                        history = filteredExams.map { it.status }
+                        history = filteredExams.map(SelfExaminationRecord::status)
                     )
                 )
             } else if (suitableSelfExam) {
