@@ -1251,33 +1251,6 @@
                     "badge"
                 ]
             },
-            "SelfExaminationPreventionStatus": {
-                "type": "object",
-                "title": "SelfExamanationPreventionStatus",
-                "description": "Overview status of self-examinations",
-                "properties": {
-                    "lastExamUuid": {
-                        "type": "string"
-                    },
-                    "plannedDate": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/SelfExaminationType"
-                    },
-                    "history": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/SelfExaminationStatus"
-                        }
-                    }
-                },
-                "required": [
-                    "type",
-                    "history"
-                ]
-            },
             "Badge": {
                 "type": "object",
                 "title": "Badge",
