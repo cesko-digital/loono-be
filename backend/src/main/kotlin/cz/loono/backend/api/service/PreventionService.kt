@@ -107,27 +107,30 @@ class PreventionService(
         SelfExaminationTypeDto.values().forEach { type ->
             val filteredExams = selfExams.filter { exam -> exam.type == type }
             val rewards = BadgesPointsProvider.getBadgesAndPoints(type, SexDto.valueOf(account.userAuxiliary.sex))
-            if (filteredExams.isNotEmpty() && rewards != null) {
-                val plannedExam = filteredExams.filter { exam -> exam.status == SelfExaminationStatusDto.PLANNED }.first()
-                result.add(
-                    SelfExaminationPreventionStatusDto(
-                        lastExamUuid = plannedExam.uuid,
-                        plannedDate = plannedExam.dueDate,
-                        type = type,
-                        history = filteredExams.map(SelfExaminationRecord::status),
-                        points = rewards.second,
-                        badge = rewards.first
+            when {
+                filteredExams.isNotEmpty() && rewards != null -> {
+                    val plannedExam = filteredExams.first { exam -> exam.status == SelfExaminationStatusDto.PLANNED }
+                    result.add(
+                        SelfExaminationPreventionStatusDto(
+                            lastExamUuid = plannedExam.uuid,
+                            plannedDate = plannedExam.dueDate,
+                            type = type,
+                            history = filteredExams.map(SelfExaminationRecord::status),
+                            points = rewards.second,
+                            badge = rewards.first
+                        )
                     )
-                )
-            } else if (rewards != null) {
-                result.add(
-                    SelfExaminationPreventionStatusDto(
-                        type = type,
-                        history = emptyList(),
-                        points = rewards.second,
-                        badge = rewards.first
+                }
+                rewards != null -> {
+                    result.add(
+                        SelfExaminationPreventionStatusDto(
+                            type = type,
+                            history = emptyList(),
+                            points = rewards.second,
+                            badge = rewards.first
+                        )
                     )
-                )
+                }
             }
         }
         return result
