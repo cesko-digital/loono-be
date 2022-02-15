@@ -3,23 +3,31 @@ package cz.loono.backend.api.service
 import cz.loono.backend.api.dto.ExaminationRecordDto
 import cz.loono.backend.api.dto.ExaminationStatusDto
 import cz.loono.backend.api.dto.ExaminationTypeDto
+import cz.loono.backend.api.dto.SelfExaminationCompletionInformationDto
+import cz.loono.backend.api.dto.SelfExaminationResultDto
+import cz.loono.backend.api.dto.SelfExaminationStatusDto
+import cz.loono.backend.api.dto.SelfExaminationTypeDto
 import cz.loono.backend.api.dto.SexDto
 import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.db.model.Account
 import cz.loono.backend.db.model.Badge
 import cz.loono.backend.db.model.ExaminationRecord
+import cz.loono.backend.db.model.SelfExaminationRecord
 import cz.loono.backend.db.repository.AccountRepository
 import cz.loono.backend.db.repository.ExaminationRecordRepository
+import cz.loono.backend.db.repository.SelfExaminationRecordRepository
 import cz.loono.backend.extensions.toLocalDateTime
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
+import java.time.LocalDate
 
 @Service
 class ExaminationRecordService(
     private val accountRepository: AccountRepository,
     private val examinationRecordRepository: ExaminationRecordRepository,
+    private val selfExaminationRecordRepository: SelfExaminationRecordRepository,
     private val preventionService: PreventionService,
     private val clock: Clock,
 ) {
@@ -32,6 +40,97 @@ class ExaminationRecordService(
     @Transactional(rollbackFor = [Exception::class])
     fun confirmExam(examUuid: String, accountUuid: String): ExaminationRecordDto =
         changeState(examUuid, accountUuid, ExaminationStatusDto.CONFIRMED)
+
+    fun confirmSelfExam(
+        type: SelfExaminationTypeDto,
+        result: SelfExaminationResultDto,
+        accountUuid: String
+    ): SelfExaminationCompletionInformationDto {
+        val account = accountRepository.findByUid(accountUuid) ?: throw LoonoBackendException(
+            HttpStatus.NOT_FOUND,
+            "404",
+            "The account not found."
+        )
+        if (!preventionService.validateSexPrerequisites(type, account.userAuxiliary.sex)) {
+            throw LoonoBackendException(
+                HttpStatus.BAD_REQUEST,
+                "400",
+                "This type of examination cannot applied for the account."
+            )
+        }
+        val selfExams = selfExaminationRecordRepository.findAllByAccountAndTypeOrderByDueDateDesc(account, type)
+        if (selfExams.isEmpty()) {
+            val firstRecord = selfExaminationRecordRepository.save(
+                SelfExaminationRecord(
+                    type = type,
+                    dueDate = LocalDate.now(),
+                    account = account,
+                    result = result,
+                    status = SelfExaminationStatusDto.COMPLETED
+                )
+            )
+            saveNewSelfExam(firstRecord)
+        } else {
+            val plannedExam = selfExams.first { it.status == SelfExaminationStatusDto.PLANNED }
+            validateSelfExamConfirmation(plannedExam.dueDate)
+            selfExaminationRecordRepository.save(
+                plannedExam.copy(
+                    result = result,
+                    status = SelfExaminationStatusDto.COMPLETED
+                )
+            )
+            saveNewSelfExam(plannedExam)
+        }
+        val reward = BadgesPointsProvider.getBadgesAndPoints(type, SexDto.valueOf(account.userAuxiliary.sex))!!
+        val pointsIncrement = addPoints(reward.second, account)
+        val streak = streakCount(selfExams)
+        return SelfExaminationCompletionInformationDto(
+            points = pointsIncrement,
+            allPoints = account.points,
+            badgeType = reward.first,
+            badgeLevel = 0, // TODO badge level counting
+            streak = streak
+        )
+    }
+
+    private fun validateSelfExamConfirmation(dueDate: LocalDate?) {
+        if (dueDate == null) {
+            throw LoonoBackendException(HttpStatus.BAD_REQUEST)
+        }
+        val now = LocalDate.now()
+        val threeDaysBefore = dueDate.minusDays(3)
+        val threeDaysAfter = dueDate.plusDays(3)
+        if (!(now.isAfter(threeDaysBefore) && now.isBefore(threeDaysAfter))) {
+            throw LoonoBackendException(
+                HttpStatus.BAD_REQUEST,
+                "400",
+                "The self-examination cannot be completed."
+            )
+        }
+    }
+
+    private fun streakCount(selfExams: List<SelfExaminationRecord>): Int {
+        // TODO badges
+        return 0
+    }
+
+    private fun addPoints(points: Int, account: Account): Int {
+        val newSum = account.points + points
+        accountRepository.save(account.copy(points = newSum))
+        return points
+    }
+
+    private fun saveNewSelfExam(previousExam: SelfExaminationRecord) {
+        selfExaminationRecordRepository.save(
+            SelfExaminationRecord(
+                type = previousExam.type,
+                dueDate = previousExam.dueDate!!.plusMonths(1),
+                account = previousExam.account,
+                result = null,
+                status = SelfExaminationStatusDto.PLANNED
+            )
+        )
+    }
 
     @Synchronized
     @Transactional(rollbackFor = [Exception::class])
@@ -100,7 +199,7 @@ class ExaminationRecordService(
     }
 
     private fun updateWithBadgeAndPoints(examType: ExaminationTypeDto, account: Account): Account? =
-        account.userAuxiliary.sex?.let { sexString ->
+        account.userAuxiliary.sex.let { sexString ->
             val badgeToPoints = BadgesPointsProvider.getBadgesAndPoints(examType, SexDto.valueOf(sexString))
             val badgeType = badgeToPoints.first.toString()
             val points = badgeToPoints.second

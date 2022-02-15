@@ -11,6 +11,7 @@ import cz.loono.backend.api.dto.SexDto
 import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.db.model.Account
 import cz.loono.backend.db.model.ExaminationRecord
+import cz.loono.backend.db.model.SelfExaminationRecord
 import cz.loono.backend.db.repository.AccountRepository
 import cz.loono.backend.db.repository.ExaminationRecordRepository
 import cz.loono.backend.db.repository.SelfExaminationRecordRepository
@@ -52,7 +53,11 @@ class PreventionService(
                 .mapNotNull { entry -> entry.key to entry.value }
                 .toMap()
 
-        val examinations = prepareExaminationStatuses(examinationRequests, examinationTypesToRecords)
+        val examinations = prepareExaminationStatuses(
+            examinationRequests,
+            examinationTypesToRecords,
+            account.userAuxiliary.sex
+        )
 
         val selfExamsList = prepareSelfExaminationsStatuses(account)
         return PreventionStatusDto(examinations = examinations, selfexaminations = selfExamsList)
@@ -60,7 +65,8 @@ class PreventionService(
 
     private fun prepareExaminationStatuses(
         examinationRequests: List<ExaminationInterval>,
-        examinationTypesToRecords: Map<ExaminationTypeDto, List<ExaminationRecord>>
+        examinationTypesToRecords: Map<ExaminationTypeDto, List<ExaminationRecord>>,
+        sex: String
     ): List<ExaminationPreventionStatusDto> = examinationRequests.map { examinationInterval ->
         val examsOfType = examinationTypesToRecords[examinationInterval.examinationType]
         val sortedExamsOfType = examsOfType
@@ -77,6 +83,7 @@ class PreventionService(
         // 3) Find the largest or return null if the list is empty
         val lastConfirmedDate = confirmedExamsOfCurrentType?.mapNotNull(ExaminationRecord::plannedDate)?.maxOrNull()
         val totalCountOfConfirmedExams = confirmedExamsOfCurrentType?.size ?: 0
+        val rewards = BadgesPointsProvider.getBadgesAndPoints(examinationInterval.examinationType, SexDto.valueOf(sex))
 
         ExaminationPreventionStatusDto(
             uuid = sortedExamsOfType[0].uuid,
@@ -87,7 +94,9 @@ class PreventionService(
             priority = examinationInterval.priority,
             state = sortedExamsOfType[0].status,
             count = totalCountOfConfirmedExams,
-            lastConfirmedDate = lastConfirmedDate
+            lastConfirmedDate = lastConfirmedDate,
+            points = rewards.second,
+            badge = rewards.first
         )
     }
 
@@ -96,22 +105,26 @@ class PreventionService(
         val selfExams = selfExaminationRecordRepository.findAllByAccount(account)
         SelfExaminationTypeDto.values().forEach { type ->
             val filteredExams = selfExams.filter { exam -> exam.type == type }
-            val suitableSelfExam = validateSexPrerequisites(type, account.userAuxiliary.sex)
-            if (filteredExams.isNotEmpty() && suitableSelfExam) {
+            val rewards = BadgesPointsProvider.getBadgesAndPoints(type, SexDto.valueOf(account.userAuxiliary.sex))
+            if (filteredExams.isNotEmpty() && rewards != null) {
                 val plannedExam = filteredExams.filter { exam -> exam.status == SelfExaminationStatusDto.PLANNED }[0]
                 result.add(
                     SelfExaminationPreventionStatusDto(
                         lastExamUuid = plannedExam.uuid,
                         plannedDate = plannedExam.dueDate,
                         type = type,
-                        history = filteredExams.map(SelfExaminationRecord::status)
+                        history = filteredExams.map(SelfExaminationRecord::status),
+                        points = rewards.second,
+                        badge = rewards.first
                     )
                 )
-            } else if (suitableSelfExam) {
+            } else if (rewards != null) {
                 result.add(
                     SelfExaminationPreventionStatusDto(
                         type = type,
-                        history = emptyList()
+                        history = emptyList(),
+                        points = rewards.second,
+                        badge = rewards.first
                     )
                 )
             }
