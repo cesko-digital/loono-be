@@ -35,7 +35,8 @@ class PreventionService(
         val age = ChronoUnit.YEARS.between(birthDate, LocalDate.now()).toInt()
 
         return ExaminationIntervalProvider.findExaminationRequests(
-            Patient(age, SexDto.valueOf(account.userAuxiliary.sex))
+            // Using double-bang operator, since sex is non-nullable
+            Patient(age, SexDto.valueOf(account.userAuxiliary.sex!!))
         )
     }
 
