@@ -28,17 +28,13 @@ class PreventionService(
 
     fun getExaminationRequests(account: Account): List<ExaminationInterval> {
 
-        val sex = account.userAuxiliary.sex ?: throw LoonoBackendException(
-            HttpStatus.UNPROCESSABLE_ENTITY, "sex not known"
-        )
-
         val birthDate = account.userAuxiliary.birthdate ?: throw LoonoBackendException(
             HttpStatus.UNPROCESSABLE_ENTITY, "birthdate not known"
         )
         val age = ChronoUnit.YEARS.between(birthDate, LocalDate.now()).toInt()
 
         return ExaminationIntervalProvider.findExaminationRequests(
-            Patient(age, SexDto.valueOf(sex))
+            Patient(age, SexDto.valueOf(account.userAuxiliary.sex))
         )
     }
 
@@ -100,7 +96,7 @@ class PreventionService(
         val selfExams = selfExaminationRecordRepository.findAllByAccount(account)
         SelfExaminationTypeDto.values().forEach { type ->
             val filteredExams = selfExams.filter { exam -> exam.type == type }
-            val suitableSelfExam = validateSexPrerequisities(type, account.userAuxiliary.sex)
+            val suitableSelfExam = validateSexPrerequisites(type, account.userAuxiliary.sex)
             if (filteredExams.isNotEmpty() && suitableSelfExam) {
                 val plannedExam = filteredExams.filter { exam -> exam.status == SelfExaminationStatusDto.PLANNED }[0]
                 result.add(
@@ -123,10 +119,9 @@ class PreventionService(
         return result
     }
 
-    private fun validateSexPrerequisities(type: SelfExaminationTypeDto, sex: String?): Boolean {
-        return when (type) {
+    fun validateSexPrerequisites(type: SelfExaminationTypeDto, sex: String): Boolean =
+        when (type) {
             SelfExaminationTypeDto.BREAST -> sex == SexDto.FEMALE.name
             SelfExaminationTypeDto.TESTICULAR -> sex == SexDto.MALE.name
         }
-    }
 }
