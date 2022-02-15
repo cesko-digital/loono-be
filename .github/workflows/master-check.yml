@@ -1,14 +1,6 @@
 name: 'Build and Test'
 
-on:
-  pull_request:
-    branches:
-      - master
-  push:
-    paths-ignore:
-      - '.github/**'
-      - '.gitignore'
-      - 'README.md'
+on: [push, pull_request]
 
 jobs:
   build:
@@ -22,7 +14,7 @@ jobs:
         with:
           java-version: 17
           distribution: 'adopt'
-      
+
       - name: Build with Gradle
         run: |
           ./gradlew build
