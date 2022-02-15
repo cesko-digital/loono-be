@@ -107,7 +107,7 @@ class PreventionService(
             val filteredExams = selfExams.filter { exam -> exam.type == type }
             val rewards = BadgesPointsProvider.getBadgesAndPoints(type, SexDto.valueOf(account.userAuxiliary.sex))
             if (filteredExams.isNotEmpty() && rewards != null) {
-                val plannedExam = filteredExams.filter { exam -> exam.status == SelfExaminationStatusDto.PLANNED }[0]
+                val plannedExam = filteredExams.filter { exam -> exam.status == SelfExaminationStatusDto.PLANNED }.first()
                 result.add(
                     SelfExaminationPreventionStatusDto(
                         lastExamUuid = plannedExam.uuid,
