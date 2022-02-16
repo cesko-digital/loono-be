@@ -212,25 +212,24 @@ class ExaminationRecordService(
         return examinationRecordRepository.save(exam).toExaminationRecordDto()
     }
 
-    private fun updateWithBadgeAndPoints(badgeToPoints: Pair<BadgeTypeDto, Int>, account: Account): Account =
-        account.userAuxiliary.sex.let {
-            val badgeType = badgeToPoints.first.toString()
-            val points = badgeToPoints.second
+    private fun updateWithBadgeAndPoints(badgeToPoints: Pair<BadgeTypeDto, Int>, account: Account): Account {
+        val badgeType = badgeToPoints.first.toString()
+        val points = badgeToPoints.second
 
-            // Increment badge level by 1 if badge already exists, add this badge as new one otherwise
-            val badgeToIncrement = account.badges.find { it.type.equals(badgeType, ignoreCase = true) }
-            val badgesToCopy = badgeToIncrement?.let { toIncrement ->
-                // Due to immutability first removing badge, then coping old badge with incremented level
-                val badgesWithoutToIncrement = account.badges
-                    .minus(toIncrement)
-                    .toMutableSet()
-                badgesWithoutToIncrement.apply { add(toIncrement.copy(level = toIncrement.level.inc())) }
-            } ?: account.badges.plus(
-                Badge(badgeType, account.id, STARTING_LEVEL, account, clock.instant().toLocalDateTime())
-            )
+        // Increment badge level by 1 if badge already exists, add this badge as new one otherwise
+        val badgeToIncrement = account.badges.find { it.type.equals(badgeType, ignoreCase = true) }
+        val badgesToCopy = badgeToIncrement?.let { toIncrement ->
+            // Due to immutability first removing badge, then coping old badge with incremented level
+            val badgesWithoutToIncrement = account.badges
+                .minus(toIncrement)
+                .toMutableSet()
+            badgesWithoutToIncrement.apply { add(toIncrement.copy(level = toIncrement.level.inc())) }
+        } ?: account.badges.plus(
+            Badge(badgeType, account.id, STARTING_LEVEL, account, clock.instant().toLocalDateTime())
+        )
 
-            account.copy(badges = badgesToCopy, points = account.points + points)
-        }
+        return account.copy(badges = badgesToCopy, points = account.points + points)
+    }
 
     fun ExaminationRecord.toExaminationRecordDto(): ExaminationRecordDto =
         ExaminationRecordDto(
