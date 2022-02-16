@@ -1,5 +1,6 @@
 package cz.loono.backend.api.service
 
+import cz.loono.backend.api.dto.BadgeTypeDto
 import cz.loono.backend.api.dto.ExaminationRecordDto
 import cz.loono.backend.api.dto.ExaminationStatusDto
 import cz.loono.backend.api.dto.ExaminationTypeDto
@@ -34,6 +35,7 @@ class ExaminationRecordService(
 
     companion object {
         private const val STARTING_LEVEL = 1
+        private const val SELF_EXAM_LEVEL_COUNT = 3
     }
 
     @Synchronized
@@ -82,14 +84,29 @@ class ExaminationRecordService(
             saveNewSelfExam(plannedExam)
         }
         val reward = BadgesPointsProvider.getBadgesAndPoints(type, SexDto.valueOf(account.userAuxiliary.sex))!!
-        val pointsIncrement = addPoints(reward.second, account)
-        val streak = streakCount(selfExams)
+        var count = 0
+        selfExams.forEach exams@{
+            when (it.status) {
+                SelfExaminationStatusDto.COMPLETED -> count++
+                SelfExaminationStatusDto.MISSED -> return@exams
+                else -> {
+                    // Do nothing
+                }
+            }
+        }
+        val updatedAccount = if (count == STARTING_LEVEL || count % SELF_EXAM_LEVEL_COUNT == 0) {
+            updateWithBadgeAndPoints(reward, account)
+        } else {
+            account.copy(points = account.points + reward.second)
+        }
+        val badgeLevel = updatedAccount.badges.find { it.type == BadgeTypeDto.SHIELD.toString() }?.level
+            ?: throw LoonoBackendException(HttpStatus.BAD_REQUEST)
         return SelfExaminationCompletionInformationDto(
-            points = pointsIncrement,
-            allPoints = account.points,
+            points = reward.second,
+            allPoints = updatedAccount.points,
             badgeType = reward.first,
-            badgeLevel = 0, // TODO badge level counting
-            streak = streak
+            badgeLevel = badgeLevel,
+            streak = count
         )
     }
 
@@ -107,17 +124,6 @@ class ExaminationRecordService(
                 "The self-examination cannot be completed."
             )
         }
-    }
-
-    private fun streakCount(selfExams: List<SelfExaminationRecord>): Int {
-        // TODO badges
-        return 0
-    }
-
-    private fun addPoints(points: Int, account: Account): Int {
-        val newSum = account.points + points
-        accountRepository.save(account.copy(points = newSum))
-        return points
     }
 
     private fun saveNewSelfExam(previousExam: SelfExaminationRecord) {
@@ -186,21 +192,26 @@ class ExaminationRecordService(
             HttpStatus.NOT_FOUND, "Account not found"
         )
 
-    private fun changeState(examUuid: String, accountUuid: String, state: ExaminationStatusDto): ExaminationRecordDto {
+    private fun changeState(
+        examUuid: String,
+        accountUuid: String,
+        state: ExaminationStatusDto
+    ): ExaminationRecordDto {
         val account = findAccount(accountUuid)
 
         val exam = examinationRecordRepository.findByUuidAndAccount(examUuid, account)
         exam.status = state
-        val updatedAccount = updateWithBadgeAndPoints(exam.type, account)
-        updatedAccount?.let {
+        val badgeToPoints =
+            BadgesPointsProvider.getBadgesAndPoints(exam.type, SexDto.valueOf(account.userAuxiliary.sex))
+        val updatedAccount = updateWithBadgeAndPoints(badgeToPoints, account)
+        updatedAccount.let {
             accountRepository.save(updatedAccount)
         }
         return examinationRecordRepository.save(exam).toExaminationRecordDto()
     }
 
-    private fun updateWithBadgeAndPoints(examType: ExaminationTypeDto, account: Account): Account? =
-        account.userAuxiliary.sex.let { sexString ->
-            val badgeToPoints = BadgesPointsProvider.getBadgesAndPoints(examType, SexDto.valueOf(sexString))
+    private fun updateWithBadgeAndPoints(badgeToPoints: Pair<BadgeTypeDto, Int>, account: Account): Account =
+        account.userAuxiliary.sex.let {
             val badgeType = badgeToPoints.first.toString()
             val points = badgeToPoints.second
 
