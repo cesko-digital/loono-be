@@ -1,4 +1,4 @@
-[![Build](https://github.com/cesko-digital/loono-be/actions/workflows/build_and_test_check.yml/badge.svg)](https://github.com/cesko-digital/loono-be/actions/workflows/master-check.yml)
+[![Build](https://github.com/cesko-digital/loono-be/actions/workflows/build_and_test_check.yml/badge.svg)](https://github.com/cesko-digital/loono-be/actions/workflows/build_and_test_check.yml)
 
 <h1 align="center"><img src="https://www.loono.cz/files/logo-loono-colour-01.svg" alt="Logo" width="120"> Backend</h1>
 <p align="justify">
