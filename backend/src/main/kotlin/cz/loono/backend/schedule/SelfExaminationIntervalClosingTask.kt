@@ -14,7 +14,7 @@ class SelfExaminationIntervalClosingTask(
     override fun run() {
         val now = LocalDate.now()
         selfExaminationRecordRepository.findAllByStatus(SelfExaminationStatusDto.PLANNED).forEach {
-            if (it.dueDate != null && now.isAfter(it.dueDate)) {
+            if (it.dueDate?.isBefore(now) == true) {
                 selfExaminationRecordRepository.save(it.copy(status = SelfExaminationStatusDto.MISSED))
                 selfExaminationRecordRepository.save(
                     SelfExaminationRecord(
