@@ -60,6 +60,7 @@ class ExaminationRecordService(
                 "This type of examination cannot applied for the account."
             )
         }
+        var count = 1
         val selfExams = selfExaminationRecordRepository.findAllByAccountAndTypeOrderByDueDateDesc(account, type)
         if (selfExams.isEmpty()) {
             val firstRecord = selfExaminationRecordRepository.save(
@@ -82,9 +83,9 @@ class ExaminationRecordService(
                 )
             )
             saveNewSelfExam(plannedExam)
+            count--
         }
         val reward = BadgesPointsProvider.getBadgesAndPoints(type, SexDto.valueOf(account.userAuxiliary.sex))!!
-        var count = 0
         selfExams.forEach exams@{
             when (it.status) {
                 SelfExaminationStatusDto.COMPLETED -> count++
@@ -99,6 +100,7 @@ class ExaminationRecordService(
         } else {
             account.copy(points = account.points + reward.second)
         }
+        accountRepository.save(updatedAccount)
         val badgeLevel = updatedAccount.badges.find { it.type == BadgeTypeDto.SHIELD.toString() }?.level
             ?: throw LoonoBackendException(HttpStatus.BAD_REQUEST)
         return SelfExaminationCompletionInformationDto(
