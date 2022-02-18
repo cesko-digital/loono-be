@@ -760,9 +760,11 @@
                         "type": "string",
                         "format": "date"
                     },
-                    "profileImageUrl": {
-                        "type": "string",
-                        "nullable": true
+                    "examinations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ExaminationRecord"
+                        }
                     }
                 },
                 "required": [
@@ -770,7 +772,7 @@
                     "sex",
                     "preferredEmail",
                     "birthdate",
-                    "profileImageUrl"
+                    "examinations"
                 ],
                 "readOnly": true
             },
@@ -796,9 +798,8 @@
                 "type": "object",
                 "description": "A examination identification.\n\n`month` and `year` are optional and nullable. If any of them is missing or `null`, API defaults to `LocalDate.now()` - the current year and month.",
                 "properties": {
-                    "uuid": {
-                        "type": "string",
-                        "description": "Must not be in the future"
+                    "uid": {
+                        "type": "string"
                     }
                 }
             },

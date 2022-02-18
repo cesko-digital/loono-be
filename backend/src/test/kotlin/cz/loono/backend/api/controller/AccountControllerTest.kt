@@ -8,6 +8,7 @@ import cz.loono.backend.api.service.FirebaseAuthService
 import cz.loono.backend.createAccount
 import cz.loono.backend.createBasicUser
 import cz.loono.backend.db.repository.AccountRepository
+import cz.loono.backend.db.repository.ExaminationRecordRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
@@ -21,7 +22,8 @@ import org.springframework.http.HttpStatus
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 class AccountControllerTest(
-    private val repo: AccountRepository
+    private val repo: AccountRepository,
+    private val examRepo: ExaminationRecordRepository
 ) {
 
     private val firebaseAuthService: FirebaseAuthService = mock()
@@ -43,7 +45,7 @@ class AccountControllerTest(
     @Test
     fun `getAccount with existing account`() {
         // Arrange
-        val service = AccountService(repo, firebaseAuthService)
+        val service = AccountService(repo, firebaseAuthService, examRepo)
         val controller = AccountController(service, repo)
         val basicUser = createBasicUser()
         val existingAccount = createAccount()
@@ -72,7 +74,7 @@ class AccountControllerTest(
     @Test
     fun `delete non-existing account`() {
         // Arrange
-        val service = AccountService(repo, firebaseAuthService)
+        val service = AccountService(repo, firebaseAuthService, examRepo)
         val controller = AccountController(service, repo)
 
         // Act
@@ -84,7 +86,7 @@ class AccountControllerTest(
     @Test
     fun `delete existing account`() {
         // Arrange
-        val service = AccountService(repo, firebaseAuthService)
+        val service = AccountService(repo, firebaseAuthService, examRepo)
         val controller = AccountController(service, repo)
         val basicUser = createBasicUser()
         val existingAccount = createAccount()

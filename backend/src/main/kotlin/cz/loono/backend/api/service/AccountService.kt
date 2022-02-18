@@ -5,10 +5,13 @@ import cz.loono.backend.api.dto.AccountOnboardingDto
 import cz.loono.backend.api.dto.AccountUpdateDto
 import cz.loono.backend.api.dto.BadgeDto
 import cz.loono.backend.api.dto.BadgeTypeDto
+import cz.loono.backend.api.dto.ExaminationStatusDto
 import cz.loono.backend.api.dto.SexDto
 import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.db.model.Account
+import cz.loono.backend.db.model.ExaminationRecord
 import cz.loono.backend.db.repository.AccountRepository
+import cz.loono.backend.db.repository.ExaminationRecordRepository
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -17,7 +20,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class AccountService(
     private val accountRepository: AccountRepository,
-    private val firebaseAuthService: FirebaseAuthService
+    private val firebaseAuthService: FirebaseAuthService,
+    private val examinationRecordRepository: ExaminationRecordRepository
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -26,16 +30,31 @@ class AccountService(
         if (accountRepository.existsByUid(uid)) {
             throw LoonoBackendException(HttpStatus.BAD_REQUEST, "400", "Account already exists.")
         }
-        return transformToAccountDTO(
-            accountRepository.save(
-                Account(
-                    uid = uid,
-                    nickname = account.nickname,
-                    sex = account.sex.name,
-                    birthdate = account.birthdate,
-                    profileImageUrl = account.profileImageUrl,
-                    preferredEmail = account.preferredEmail
+        val storedAccount = accountRepository.save(
+            Account(
+                uid = uid,
+                nickname = account.nickname,
+                sex = account.sex.name,
+                birthdate = account.birthdate,
+                preferredEmail = account.preferredEmail
+            )
+        )
+        examinationRecordRepository.saveAll(
+            account.examinations.map {
+                ExaminationRecord(
+                    account = storedAccount,
+                    type = it.type,
+                    plannedDate = it.date,
+                    status = it.status ?: ExaminationStatusDto.UNKNOWN,
+                    firstExam = it.firstExam ?: false
                 )
+            }
+        )
+        return transformToAccountDTO(
+            accountRepository.findByUid(storedAccount.uid) ?: throw LoonoBackendException(
+                HttpStatus.NOT_FOUND,
+                "404",
+                "Account not found."
             )
         )
     }
@@ -70,16 +89,20 @@ class AccountService(
             updatedAccount = accountRepository.save(updatedAccount.copy(preferredEmail = accountUpdate.prefferedEmail))
         }
         accountUpdate.leaderboardAnonymizationOptIn?.let {
-            updatedAccount = accountRepository.save(updatedAccount.copy(leaderboardAnonymizationOptIn = accountUpdate.leaderboardAnonymizationOptIn))
+            updatedAccount =
+                accountRepository.save(updatedAccount.copy(leaderboardAnonymizationOptIn = accountUpdate.leaderboardAnonymizationOptIn))
         }
         accountUpdate.appointmentReminderEmailsOptIn?.let {
-            updatedAccount = accountRepository.save(updatedAccount.copy(appointmentReminderEmailsOptIn = accountUpdate.appointmentReminderEmailsOptIn))
+            updatedAccount =
+                accountRepository.save(updatedAccount.copy(appointmentReminderEmailsOptIn = accountUpdate.appointmentReminderEmailsOptIn))
         }
         accountUpdate.newsletterOptIn?.let {
-            updatedAccount = accountRepository.save(updatedAccount.copy(newsletterOptIn = accountUpdate.newsletterOptIn))
+            updatedAccount =
+                accountRepository.save(updatedAccount.copy(newsletterOptIn = accountUpdate.newsletterOptIn))
         }
         if (updatedAccount.profileImageUrl != accountUpdate.profileImageUrl) {
-            updatedAccount = accountRepository.save(updatedAccount.copy(profileImageUrl = accountUpdate.profileImageUrl))
+            updatedAccount =
+                accountRepository.save(updatedAccount.copy(profileImageUrl = accountUpdate.profileImageUrl))
         }
         return transformToAccountDTO(updatedAccount)
     }

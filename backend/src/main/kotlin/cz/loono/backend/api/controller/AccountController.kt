@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/account", produces = [MediaType.APPLICATION_JSON_VALUE])
 class AccountController(
     private val accountService: AccountService,
-    private val accountRepository: AccountRepository,
+    private val accountRepository: AccountRepository
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
