@@ -6,6 +6,7 @@ import cz.loono.backend.api.dto.AccountUpdateDto
 import cz.loono.backend.api.dto.BadgeDto
 import cz.loono.backend.api.dto.BadgeTypeDto
 import cz.loono.backend.api.dto.ExaminationStatusDto
+import cz.loono.backend.api.dto.ExaminationTypeDto
 import cz.loono.backend.api.dto.SexDto
 import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.db.model.Account
@@ -39,8 +40,13 @@ class AccountService(
                 preferredEmail = account.preferredEmail
             )
         )
+        val acceptedExams = account.examinations.filter {
+            it.type == ExaminationTypeDto.GENERAL_PRACTITIONER
+                || it.type == ExaminationTypeDto.DENTIST
+                || (it.type == ExaminationTypeDto.GYNECOLOGIST && account.sex == SexDto.FEMALE)
+        }
         examinationRecordRepository.saveAll(
-            account.examinations.map {
+            acceptedExams.map {
                 ExaminationRecord(
                     account = storedAccount,
                     type = it.type,
