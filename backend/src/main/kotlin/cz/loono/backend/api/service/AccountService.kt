@@ -41,9 +41,9 @@ class AccountService(
             )
         )
         val acceptedExams = account.examinations.filter {
-            it.type == ExaminationTypeDto.GENERAL_PRACTITIONER
-                || it.type == ExaminationTypeDto.DENTIST
-                || (it.type == ExaminationTypeDto.GYNECOLOGIST && account.sex == SexDto.FEMALE)
+            it.type == ExaminationTypeDto.GENERAL_PRACTITIONER ||
+                it.type == ExaminationTypeDto.DENTIST ||
+                (it.type == ExaminationTypeDto.GYNECOLOGIST && account.sex == SexDto.FEMALE)
         }
         examinationRecordRepository.saveAll(
             acceptedExams.map {
