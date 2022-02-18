@@ -800,10 +800,7 @@
                         "type": "string",
                         "description": "Must not be in the future"
                     }
-                },
-                "required": [
-                    "uuid"
-                ]
+                }
             },
             "LeaderboardUser": {
                 "title": "Leaderboard user",
