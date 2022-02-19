@@ -68,7 +68,7 @@ class AccountService(
     }
 
     @Transactional(rollbackFor = [Exception::class])
-    fun updateAccount(uid: String, accountUpdate: AccountUpdateDto): AccountDto {
+    fun updateAccount(uuid: String, accountUpdate: AccountUpdateDto): AccountDto {
         val account = accountRepository.findByUid(uid)
         if (account == null) {
             logger.error(
