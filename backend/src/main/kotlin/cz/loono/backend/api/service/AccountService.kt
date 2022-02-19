@@ -25,12 +25,12 @@ class AccountService(
 
     @Transactional(rollbackFor = [Exception::class])
     fun onboardAccount(uuid: String, account: AccountOnboardingDto): AccountDto {
-        if (accountRepository.existsByUid(uid)) {
+        if (accountRepository.existsByUid(uuid)) {
             throw LoonoBackendException(HttpStatus.BAD_REQUEST, "400", "Account already exists.")
         }
         val storedAccount = accountRepository.save(
             Account(
-                uid = uid,
+                uid = uuid,
                 nickname = account.nickname,
                 sex = account.sex.name,
                 birthdate = account.birthdate,
@@ -69,12 +69,12 @@ class AccountService(
 
     @Transactional(rollbackFor = [Exception::class])
     fun updateAccount(uuid: String, accountUpdate: AccountUpdateDto): AccountDto {
-        val account = accountRepository.findByUid(uid)
+        val account = accountRepository.findByUid(uuid)
         if (account == null) {
             logger.error(
-                "Tried to update Account Settings for uid: $uid but no such account exists."
+                "Tried to update Account Settings for uid: $uuid but no such account exists."
             )
-            throw IllegalStateException("Tried to update Account Settings for uid: $uid but no such account exists.")
+            throw IllegalStateException("Tried to update Account Settings for uid: $uuid but no such account exists.")
         }
         var updatedAccount: Account = account
         accountUpdate.nickname?.let {
@@ -102,9 +102,9 @@ class AccountService(
         return transformToAccountDTO(updatedAccount)
     }
 
-    fun transformToAccountDTO(account: Account): AccountDto {
-        return AccountDto(
-            uuid = account.uid,
+    fun transformToAccountDTO(account: Account): AccountDto =
+        AccountDto(
+            uid = account.uid,
             nickname = account.nickname,
             sex = SexDto.valueOf(account.sex),
             birthdate = account.birthdate,
@@ -116,5 +116,4 @@ class AccountService(
             newsletterOptIn = account.newsletterOptIn,
             badges = account.badges.map { BadgeDto(type = BadgeTypeDto.valueOf(it.type), level = it.level) }
         )
-    }
 }

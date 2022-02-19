@@ -70,15 +70,12 @@ data class Account(
         return true
     }
 
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
+    override fun hashCode(): Int = id.hashCode()
 
-    override fun toString(): String {
-        return "Account(id=$id, uid='$uid', nickname=$nickname, preferredEmail=$preferredEmail, sex='$sex', " +
+    override fun toString(): String =
+        "Account(id=$id, uid='$uid', nickname=$nickname, preferredEmail=$preferredEmail, sex='$sex', " +
             "birthdate=$birthdate, profileImageUrl=$profileImageUrl, " +
             "leaderboardAnonymizationOptIn=$leaderboardAnonymizationOptIn, " +
             "appointmentReminderEmailsOptIn=$appointmentReminderEmailsOptIn, " +
             "newsletterOptIn=$newsletterOptIn, points=$points, examinationRecords=$examinationRecords)"
-    }
 }

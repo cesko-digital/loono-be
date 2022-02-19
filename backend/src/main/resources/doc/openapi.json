@@ -796,9 +796,9 @@
             "ExaminationId": {
                 "title": "ExaminationId",
                 "type": "object",
-                "description": "A examination identification.\n\n`month` and `year` are optional and nullable. If any of them is missing or `null`, API defaults to `LocalDate.now()` - the current year and month.",
+                "description": "A examination identification.",
                 "properties": {
-                    "uid": {
+                    "uuid": {
                         "type": "string"
                     }
                 }
