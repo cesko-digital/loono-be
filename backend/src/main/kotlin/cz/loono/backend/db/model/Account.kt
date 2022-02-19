@@ -5,6 +5,7 @@ import java.time.LocalDate
 import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
@@ -50,11 +51,11 @@ data class Account(
     @Column(nullable = false)
     val points: Int = 0,
 
-    @OneToMany(orphanRemoval = false, cascade = [CascadeType.ALL], mappedBy = "account")
+    @OneToMany(orphanRemoval = false, cascade = [CascadeType.ALL], mappedBy = "account", fetch = FetchType.EAGER)
     @Column(nullable = false, updatable = true, insertable = true)
     val examinationRecords: List<ExaminationRecord> = mutableListOf(),
 
-    @OneToMany(orphanRemoval = false, cascade = [CascadeType.ALL], mappedBy = "account")
+    @OneToMany(orphanRemoval = false, cascade = [CascadeType.ALL], mappedBy = "account", fetch = FetchType.EAGER)
     @Column(nullable = true, updatable = true, insertable = true)
     val badges: Set<Badge> = mutableSetOf()
 ) {

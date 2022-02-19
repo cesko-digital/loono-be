@@ -5,14 +5,11 @@ import cz.loono.backend.api.dto.AccountOnboardingDto
 import cz.loono.backend.api.dto.AccountUpdateDto
 import cz.loono.backend.api.dto.BadgeDto
 import cz.loono.backend.api.dto.BadgeTypeDto
-import cz.loono.backend.api.dto.ExaminationStatusDto
 import cz.loono.backend.api.dto.ExaminationTypeDto
 import cz.loono.backend.api.dto.SexDto
 import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.db.model.Account
-import cz.loono.backend.db.model.ExaminationRecord
 import cz.loono.backend.db.repository.AccountRepository
-import cz.loono.backend.db.repository.ExaminationRecordRepository
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -22,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional
 class AccountService(
     private val accountRepository: AccountRepository,
     private val firebaseAuthService: FirebaseAuthService,
-    private val examinationRecordRepository: ExaminationRecordRepository
+    private val examinationRecordService: ExaminationRecordService
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -45,17 +42,9 @@ class AccountService(
                 it.type == ExaminationTypeDto.DENTIST ||
                 (it.type == ExaminationTypeDto.GYNECOLOGIST && account.sex == SexDto.FEMALE)
         }
-        examinationRecordRepository.saveAll(
-            acceptedExams.map {
-                ExaminationRecord(
-                    account = storedAccount,
-                    type = it.type,
-                    plannedDate = it.date,
-                    status = it.status ?: ExaminationStatusDto.UNKNOWN,
-                    firstExam = it.firstExam ?: false
-                )
-            }
-        )
+        acceptedExams.forEach {
+            examinationRecordService.createOrUpdateExam(it, storedAccount.uid)
+        }
         return transformToAccountDTO(
             accountRepository.findByUid(storedAccount.uid) ?: throw LoonoBackendException(
                 HttpStatus.NOT_FOUND,

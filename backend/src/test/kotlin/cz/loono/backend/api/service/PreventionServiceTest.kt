@@ -47,7 +47,7 @@ class PreventionServiceTest {
 
         whenever(accountRepository.findByUid(uuid)).thenReturn(account)
         whenever(examinationRecordRepository.findAllByAccountOrderByPlannedDateDesc(account)).thenReturn(
-            setOf(
+            listOf(
                 ExaminationRecord(
                     id = 1,
                     plannedDate = now,
