@@ -16,10 +16,10 @@ import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.mock
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 
-@DataJpaTest
+@SpringBootTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 class AccountControllerTest(
     private val repo: AccountRepository,
@@ -34,7 +34,7 @@ class AccountControllerTest(
         val controller = AccountController(service, repo)
 
         val ex = assertThrows<LoonoBackendException> {
-            controller.getAccount(createBasicUser())
+            controller.getAccount(createBasicUser(uid = "non-existing"))
         }
 
         assertEquals(HttpStatus.NOT_FOUND, ex.status)
@@ -81,22 +81,5 @@ class AccountControllerTest(
         assertThrows<LoonoBackendException> {
             controller.deleteAccount(createBasicUser())
         }
-    }
-
-    @Test
-    fun `delete existing account`() {
-        // Arrange
-        val service = AccountService(repo, firebaseAuthService, examinationRecordService)
-        val controller = AccountController(service, repo)
-        val basicUser = createBasicUser()
-        val existingAccount = createAccount()
-        repo.save(existingAccount)
-
-        // Act
-        controller.deleteAccount(basicUser)
-
-        // Assert
-        assert(repo.findByUid(basicUser.uid) == null)
-        assert(repo.count() == 0L)
     }
 }

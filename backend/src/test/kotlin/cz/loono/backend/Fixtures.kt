@@ -6,8 +6,8 @@ import cz.loono.backend.db.model.Account
 import java.net.URL
 import java.time.LocalDate
 
-internal fun createBasicUser() = BasicUser(
-    "uid",
+internal fun createBasicUser(uid: String = "uid") = BasicUser(
+    uid,
     "zilvar@example.com",
     "Zilvar z chudobince",
     URL("https://example.com")

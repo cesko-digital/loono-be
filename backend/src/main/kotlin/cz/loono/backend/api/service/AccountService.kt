@@ -56,14 +56,12 @@ class AccountService(
 
     @Transactional(rollbackFor = [Exception::class])
     fun deleteAccount(uid: String) {
-        val deletedCount = accountRepository.deleteAccountByUid(uid)
-        if (deletedCount == 0L) {
-            throw LoonoBackendException(
-                status = HttpStatus.NOT_FOUND,
-                errorCode = "404",
-                errorMessage = "The account not found."
-            )
-        }
+        val account = accountRepository.findByUid(uid) ?: throw LoonoBackendException(
+            status = HttpStatus.NOT_FOUND,
+            errorCode = "404",
+            errorMessage = "The account not found."
+        )
+        accountRepository.delete(account)
         firebaseAuthService.deleteAccount(uid)
     }
 

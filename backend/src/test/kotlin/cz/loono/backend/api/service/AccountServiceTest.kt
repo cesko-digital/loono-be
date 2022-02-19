@@ -17,7 +17,7 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 
 @SpringBootTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -151,22 +151,22 @@ class AccountServiceTest(
         val uid = UUID.randomUUID().toString()
         val account = createAccount(uid = uid)
         val service = AccountService(repo, firebaseAuthService, examinationRecordService)
-        repo.save(account)
+        val storedAccount = repo.save(account)
 
-        val accountDto = service.updateAccount(uid, AccountUpdateDto(uid))
+        val accountDto = service.updateAccount(storedAccount.uid, AccountUpdateDto(storedAccount.uid))
 
         assert(
             accountDto == AccountDto(
-                uid = account.uid,
+                uid = storedAccount.uid,
                 nickname = account.nickname,
                 sex = SexDto.valueOf(account.sex),
                 prefferedEmail = account.preferredEmail,
                 birthdate = account.birthdate,
                 points = 0,
                 badges = emptyList(),
-                newsletterOptIn = false,
-                appointmentReminderEmailsOptIn = true,
-                leaderboardAnonymizationOptIn = true,
+                newsletterOptIn = true,
+                appointmentReminderEmailsOptIn = false,
+                leaderboardAnonymizationOptIn = false,
                 profileImageUrl = null
             )
         )
@@ -177,22 +177,23 @@ class AccountServiceTest(
         val uid = UUID.randomUUID().toString()
         val account = createAccount(uid = uid)
         val service = AccountService(repo, firebaseAuthService, examinationRecordService)
-        repo.save(account)
+        val storedAccount = repo.save(account)
 
-        val accountDto = service.updateAccount(uid, AccountUpdateDto(uid, nickname = "Boss"))
+        val accountDto =
+            service.updateAccount(storedAccount.uid, AccountUpdateDto(storedAccount.uid, nickname = "Boss"))
 
         assert(
             accountDto == AccountDto(
-                uid = account.uid,
+                uid = storedAccount.uid,
                 nickname = "Boss",
                 sex = SexDto.valueOf(account.sex),
                 prefferedEmail = account.preferredEmail,
                 birthdate = account.birthdate,
                 points = 0,
                 badges = emptyList(),
-                newsletterOptIn = false,
-                appointmentReminderEmailsOptIn = true,
-                leaderboardAnonymizationOptIn = true,
+                newsletterOptIn = true,
+                appointmentReminderEmailsOptIn = false,
+                leaderboardAnonymizationOptIn = false,
                 profileImageUrl = null
             )
         )
@@ -271,33 +272,47 @@ class AccountServiceTest(
 
     @Test
     fun `update account remove image`() {
-        val uid = UUID.randomUUID().toString()
-        val account = createAccount(uid = uid, profileImageUrl = "image")
+        val account = createAccount(profileImageUrl = "image")
         val service = AccountService(repo, firebaseAuthService, examinationRecordService)
-        repo.save(account)
+        val storedAccount = repo.save(account)
 
         val accountDto = service.updateAccount(
-            uid,
+            storedAccount.uid,
             AccountUpdateDto(
-                uid,
+                storedAccount.uid,
                 profileImageUrl = null
             )
         )
 
         assert(
             accountDto == AccountDto(
-                uid = account.uid,
+                uid = storedAccount.uid,
                 nickname = account.nickname,
                 sex = SexDto.valueOf(account.sex),
                 prefferedEmail = account.preferredEmail,
                 birthdate = account.birthdate,
                 points = 0,
                 badges = emptyList(),
-                newsletterOptIn = false,
-                appointmentReminderEmailsOptIn = true,
-                leaderboardAnonymizationOptIn = true,
+                newsletterOptIn = true,
+                appointmentReminderEmailsOptIn = false,
+                leaderboardAnonymizationOptIn = false,
                 profileImageUrl = null
             )
         )
+    }
+
+
+    @Test
+    fun `delete existing account`() {
+        // Arrange
+        val service = AccountService(repo, firebaseAuthService, examinationRecordService)
+        val existingAccount = createAccount("toDelete")
+        repo.save(existingAccount)
+
+        // Act
+        service.deleteAccount(uid = existingAccount.uid)
+
+        // Assert
+        assert(repo.findByUid(existingAccount.uid) == null)
     }
 }
