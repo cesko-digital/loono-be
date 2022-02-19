@@ -24,7 +24,7 @@ class AccountService(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @Transactional(rollbackFor = [Exception::class])
-    fun onboardAccount(uid: String, account: AccountOnboardingDto): AccountDto {
+    fun onboardAccount(uuid: String, account: AccountOnboardingDto): AccountDto {
         if (accountRepository.existsByUid(uid)) {
             throw LoonoBackendException(HttpStatus.BAD_REQUEST, "400", "Account already exists.")
         }
