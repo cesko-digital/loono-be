@@ -272,7 +272,7 @@ class AccountServiceTest(
 
     @Test
     fun `update account remove image`() {
-        val account = createAccount(profileImageUrl = "image")
+        val account = createAccount(uid = "102", profileImageUrl = "image")
         val service = AccountService(repo, firebaseAuthService, examinationRecordService)
         val storedAccount = repo.save(account)
 
