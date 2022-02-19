@@ -104,7 +104,7 @@ class AccountService(
 
     fun transformToAccountDTO(account: Account): AccountDto {
         return AccountDto(
-            uid = account.uid,
+            uuid = account.uid,
             nickname = account.nickname,
             sex = SexDto.valueOf(account.sex),
             birthdate = account.birthdate,
