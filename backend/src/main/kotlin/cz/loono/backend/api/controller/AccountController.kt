@@ -34,9 +34,7 @@ class AccountController(
 
         @RequestBody
         account: AccountOnboardingDto
-    ): AccountDto {
-        return accountService.onboardAccount(basicUser.uid, account)
-    }
+    ): AccountDto = accountService.onboardAccount(basicUser.uid, account)
 
     @GetMapping
     fun getAccount(
