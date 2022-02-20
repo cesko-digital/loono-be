@@ -9,6 +9,5 @@ import org.springframework.stereotype.Repository
 interface AccountRepository : JpaRepository<Account, Long> {
     fun existsByUid(uid: String): Boolean
     fun findByUid(uid: String): Account?
-    fun deleteAccountByUid(uid: String): Long
     fun findAllByOrderByPointsDesc(pageable: Pageable): List<Account>
 }
