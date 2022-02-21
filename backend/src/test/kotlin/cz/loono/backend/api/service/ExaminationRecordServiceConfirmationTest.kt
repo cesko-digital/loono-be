@@ -105,7 +105,7 @@ class ExaminationRecordServiceConfirmationTest {
     }
 
     @Test
-    fun `invalid result for first one` () {
+    fun `invalid result for first one`() {
         val account = createAccount(
             uid = "101",
             sex = SexDto.FEMALE.name
@@ -124,7 +124,7 @@ class ExaminationRecordServiceConfirmationTest {
     }
 
     @Test
-    fun `invalid result for second one` () {
+    fun `invalid result for second one`() {
         val account = createAccount(
             uid = "101",
             sex = SexDto.FEMALE.name
