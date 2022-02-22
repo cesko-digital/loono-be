@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
 @Component
-class ExaminationCancellationTask(
+class ExaminationCancellationTaskDaily(
     private val preventionService: PreventionService,
     private val examinationRecordService: ExaminationRecordService,
     private val examinationRecordRepository: ExaminationRecordRepository
-) : SchedulerTask {
+) : DailySchedulerTask {
 
     override fun run() {
         val exams = examinationRecordRepository.findAll()

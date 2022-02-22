@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component
 import java.time.LocalDate
 
 @Component
-class SelfExaminationWaitingTask(
+class SelfExaminationWaitingTaskDaily(
     private val selfExaminationRecordRepository: SelfExaminationRecordRepository
-) : SchedulerTask {
+) : DailySchedulerTask {
 
     override fun run() {
         selfExaminationRecordRepository.findAllByStatus(SelfExaminationStatusDto.WAITING_FOR_CHECKUP).forEach {

@@ -1,5 +1,5 @@
 package cz.loono.backend.schedule
 
-interface SchedulerTask {
+interface DailySchedulerTask {
     fun run()
 }

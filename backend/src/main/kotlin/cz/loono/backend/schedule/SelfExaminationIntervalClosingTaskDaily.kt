@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component
 import java.time.LocalDate
 
 @Component
-class SelfExaminationIntervalClosingTask(
+class SelfExaminationIntervalClosingTaskDaily(
     private val selfExaminationRecordRepository: SelfExaminationRecordRepository
-) : SchedulerTask {
+) : DailySchedulerTask {
 
     override fun run() {
         val now = LocalDate.now()

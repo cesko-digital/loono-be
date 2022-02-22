@@ -19,7 +19,7 @@ class SelfExaminationWaitingTaskTest {
 
     @Test
     fun `still waiting`() {
-        val selfExaminationWaitingTask = SelfExaminationWaitingTask(selfExaminationRecordRepository)
+        val selfExaminationWaitingTask = SelfExaminationWaitingTaskDaily(selfExaminationRecordRepository)
         `when`(selfExaminationRecordRepository.findAllByStatus(any()))
             .thenReturn(
                 setOf(
@@ -39,7 +39,7 @@ class SelfExaminationWaitingTaskTest {
 
     @Test
     fun `waiting finished`() {
-        val selfExaminationWaitingTask = SelfExaminationWaitingTask(selfExaminationRecordRepository)
+        val selfExaminationWaitingTask = SelfExaminationWaitingTaskDaily(selfExaminationRecordRepository)
         `when`(selfExaminationRecordRepository.findAllByStatus(any()))
             .thenReturn(
                 setOf(

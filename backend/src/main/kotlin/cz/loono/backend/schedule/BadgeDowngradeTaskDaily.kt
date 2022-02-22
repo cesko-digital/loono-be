@@ -18,7 +18,7 @@ import java.time.Clock
 import java.time.LocalDateTime
 
 @Component
-class BadgeDowngradeTask(
+class BadgeDowngradeTaskDaily(
     @Value("\${task.badge-downgrade.tolerance-months}")
     private val toleranceMonths: Long,
     @Value("\${task.badge-downgrade.page-size}")
@@ -26,7 +26,7 @@ class BadgeDowngradeTask(
     private val accountRepository: AccountRepository,
     private val preventionService: PreventionService,
     private val clock: Clock,
-) : SchedulerTask {
+) : DailySchedulerTask {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 

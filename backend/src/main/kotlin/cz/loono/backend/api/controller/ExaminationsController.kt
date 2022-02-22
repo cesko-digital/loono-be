@@ -11,6 +11,7 @@ import cz.loono.backend.api.dto.SelfExaminationTypeDto
 import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.api.service.ExaminationRecordService
 import cz.loono.backend.api.service.PreventionService
+import javax.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestAttribute
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import javax.validation.Valid
 
 @RestController
 @RequestMapping("/examinations", produces = [MediaType.APPLICATION_JSON_VALUE])
@@ -36,11 +36,9 @@ class ExaminationsController(
         @RequestBody
         examinationIdDto: ExaminationIdDto
     ): ExaminationRecordDto =
-        if (examinationIdDto.uuid != null) {
+        examinationIdDto.uuid?.let {
             recordService.confirmExam(examinationIdDto.uuid, basicUser.uid)
-        } else {
-            throw LoonoBackendException(HttpStatus.BAD_REQUEST)
-        }
+        } ?: throw LoonoBackendException(HttpStatus.BAD_REQUEST)
 
     @PostMapping("/{self-type}/self")
     fun confirmSelf(

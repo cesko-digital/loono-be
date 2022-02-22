@@ -17,11 +17,12 @@ import cz.loono.backend.db.repository.AccountRepository
 import cz.loono.backend.db.repository.ExaminationRecordRepository
 import cz.loono.backend.db.repository.SelfExaminationRecordRepository
 import cz.loono.backend.extensions.toLocalDateTime
+import java.time.Clock
+import java.time.LocalDate
+import java.time.LocalDateTime
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.Clock
-import java.time.LocalDate
 
 @Service
 class ExaminationRecordService(
@@ -193,6 +194,7 @@ class ExaminationRecordService(
     fun createOrUpdateExam(examinationRecordDto: ExaminationRecordDto, accountUuid: String): ExaminationRecordDto {
         validateAccountPrerequisites(examinationRecordDto, accountUuid)
         val record = validateUpdateAttempt(examinationRecordDto, accountUuid)
+        addRewardIfEligible(examinationRecordDto, accountUuid)
         return examinationRecordRepository.save(
             ExaminationRecord(
                 id = record.id,
@@ -263,9 +265,8 @@ class ExaminationRecordService(
         val badgeToPoints =
             BadgesPointsProvider.getBadgesAndPoints(exam.type, SexDto.valueOf(account.sex))
         val updatedAccount = updateWithBadgeAndPoints(badgeToPoints, account)
-        updatedAccount.let {
-            accountRepository.save(updatedAccount)
-        }
+        accountRepository.save(updatedAccount)
+
         return examinationRecordRepository.save(exam).toExaminationRecordDto()
     }
 
@@ -287,6 +288,20 @@ class ExaminationRecordService(
 
         return account.copy(badges = badgesToCopy, points = account.points + points)
     }
+
+    private fun addRewardIfEligible(examinationRecordDto: ExaminationRecordDto, accountUuid: String) {
+        if (isEligibleForReward(examinationRecordDto)) {
+            // Validation done before this function called, thus using double-bang operator
+            val acc = accountRepository.findByUid(accountUuid)!!
+            val reward = BadgesPointsProvider.getBadgesAndPoints(examinationRecordDto.type, SexDto.valueOf(acc.sex))
+            val accWithReward = updateWithBadgeAndPoints(reward, acc)
+            accountRepository.save(accWithReward)
+        }
+    }
+
+    private fun isEligibleForReward(examinationRecordDto: ExaminationRecordDto) =
+        (examinationRecordDto.status in setOf(ExaminationStatusDto.CONFIRMED, ExaminationStatusDto.UNKNOWN)) &&
+            examinationRecordDto.date?.plusYears(2)?.isAfter(LocalDateTime.now()) ?: false
 
     fun ExaminationRecord.toExaminationRecordDto(): ExaminationRecordDto =
         ExaminationRecordDto(
