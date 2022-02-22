@@ -294,8 +294,8 @@ class ExaminationRecordService(
             // Validation done before this function called, thus using double-bang operator
             val acc = accountRepository.findByUid(accountUuid)!!
             val reward = BadgesPointsProvider.getBadgesAndPoints(examinationRecordDto.type, SexDto.valueOf(acc.sex))
-            val accWithReward = updateWithBadgeAndPoints(reward, acc)
-            accountRepository.save(accWithReward)
+            val updatedAccount = updateWithBadgeAndPoints(reward, acc)
+            accountRepository.save(updatedAccount)
         }
     }
 
