@@ -18,12 +18,12 @@ import cz.loono.backend.db.repository.AccountRepository
 import cz.loono.backend.db.repository.ExaminationRecordRepository
 import cz.loono.backend.db.repository.SelfExaminationRecordRepository
 import cz.loono.backend.extensions.toLocalDateTime
-import java.time.Clock
-import java.time.LocalDate
-import java.time.LocalDateTime
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Clock
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Service
 class ExaminationRecordService(
@@ -341,7 +341,7 @@ class ExaminationRecordService(
 
     private fun addRewardIfEligible(examinationRecordDto: ExaminationRecordDto, accountUuid: String) {
         if (isEligibleForReward(examinationRecordDto)) {
-            // Validation done before this function called, thus using double-bang operator
+            // Null validation done before this function called, thus using double-bang operator
             val acc = accountRepository.findByUid(accountUuid)!!
             val reward = BadgesPointsProvider.getBadgesAndPoints(examinationRecordDto.type, SexDto.valueOf(acc.sex))
             val updatedAccount = updateWithBadgeAndPoints(reward, acc)
