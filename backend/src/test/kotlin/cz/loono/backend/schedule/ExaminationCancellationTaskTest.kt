@@ -29,7 +29,7 @@ class ExaminationCancellationTaskTest {
 
     @Test
     fun `examination cancellation`() {
-        val examinationCancellationTask = ExaminationCancellationTaskDaily(
+        val examinationCancellationTask = ExaminationCancellationTask(
             preventionService,
             examinationRecordService,
             examinationRecordRepository
@@ -55,7 +55,7 @@ class ExaminationCancellationTaskTest {
 
     @Test
     fun `filter examinations to cancel`() {
-        val examinationCancellationTask = ExaminationCancellationTaskDaily(
+        val examinationCancellationTask = ExaminationCancellationTask(
             preventionService,
             examinationRecordService,
             examinationRecordRepository
@@ -89,7 +89,7 @@ class ExaminationCancellationTaskTest {
 
     @Test
     fun `examination is valid`() {
-        val examinationCancellationTask = ExaminationCancellationTaskDaily(
+        val examinationCancellationTask = ExaminationCancellationTask(
             preventionService,
             examinationRecordService,
             examinationRecordRepository

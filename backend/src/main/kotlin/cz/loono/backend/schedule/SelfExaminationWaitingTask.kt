@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 import java.time.LocalDate
 
 @Component
-class SelfExaminationWaitingTaskDaily(
+class SelfExaminationWaitingTask(
     private val selfExaminationRecordRepository: SelfExaminationRecordRepository
 ) : DailySchedulerTask {
 

@@ -19,7 +19,7 @@ class SelfExaminationIntervalClosingTaskTest {
 
     @Test
     fun `closing because time left`() {
-        val selfExaminationIntervalClosingTask = SelfExaminationIntervalClosingTaskDaily(selfExaminationRecordRepository)
+        val selfExaminationIntervalClosingTask = SelfExaminationIntervalClosingTask(selfExaminationRecordRepository)
         `when`(selfExaminationRecordRepository.findAllByStatus(any()))
             .thenReturn(
                 setOf(
@@ -39,7 +39,7 @@ class SelfExaminationIntervalClosingTaskTest {
 
     @Test
     fun `no closing of self-exam`() {
-        val selfExaminationIntervalClosingTask = SelfExaminationIntervalClosingTaskDaily(selfExaminationRecordRepository)
+        val selfExaminationIntervalClosingTask = SelfExaminationIntervalClosingTask(selfExaminationRecordRepository)
         `when`(selfExaminationRecordRepository.findAllByStatus(any()))
             .thenReturn(
                 setOf(

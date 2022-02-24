@@ -25,10 +25,10 @@ import java.time.Instant
 import java.time.LocalDateTime
 
 @DataJpaTest
-@Import(BadgeDowngradeTaskDaily::class, PreventionService::class, ClockConfiguration::class)
+@Import(BadgeDowngradeTask::class, PreventionService::class, ClockConfiguration::class)
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 class BadgeDowngradeTaskTest(
-    private val badgeDowngradeTask: BadgeDowngradeTaskDaily,
+    private val badgeDowngradeTask: BadgeDowngradeTask,
     private val accountRepository: AccountRepository,
 ) {
 

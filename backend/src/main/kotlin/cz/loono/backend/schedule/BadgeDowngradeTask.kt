@@ -18,7 +18,7 @@ import java.time.Clock
 import java.time.LocalDateTime
 
 @Component
-class BadgeDowngradeTaskDaily(
+class BadgeDowngradeTask(
     @Value("\${task.badge-downgrade.tolerance-months}")
     private val toleranceMonths: Long,
     @Value("\${task.badge-downgrade.page-size}")
