@@ -1,4 +1,4 @@
-val logbackVersion = "1.3.+"
+val logbackVersion = "1.2.+"
 val hibernateVersion = "6.0.+"
 
 plugins {
