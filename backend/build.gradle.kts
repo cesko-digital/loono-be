@@ -1,12 +1,16 @@
+val logbackVersion = "1.3.+"
+val hibernateVersion = "6.0.+"
+
 plugins {
-    id("org.springframework.boot") version "2.5.7"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    id("org.jlleitschuh.gradle.ktlint") version "10.2.0"
-    id("org.openapi.generator") version "5.3.0"
-    id("de.undercouch.download") version "4.1.2"
-    id("org.jetbrains.kotlin.plugin.jpa") version "1.6.10"
-    kotlin("jvm") version "1.6.10"
-    kotlin("plugin.spring") version "1.6.10"
+    id("org.springframework.boot") version "2.6.+"
+    id("io.spring.dependency-management") version "1.0.+"
+    id("org.jlleitschuh.gradle.ktlint") version "10.2.+"
+    id("org.openapi.generator") version "5.4.+"
+    id("de.undercouch.download") version "5.0.+"
+    id("org.jetbrains.kotlin.plugin.jpa") version "1.6.+"
+    id("org.owasp.dependencycheck") version "6.5.+"
+    kotlin("jvm") version "1.6.+"
+    kotlin("plugin.spring") version "1.6.+"
     jacoco
 }
 
@@ -29,22 +33,22 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-security")
 
-    implementation("com.google.firebase:firebase-admin:8.1.0")
-    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("com.google.firebase:firebase-admin:8.1.+")
+    implementation("com.squareup.okhttp3:okhttp:5.0.+")
 
-    implementation("org.slf4j:slf4j-api:1.7.32")
-    implementation("ch.qos.logback:logback-classic:1.2.9")
-    implementation("ch.qos.logback:logback-core:1.2.9")
+    implementation("org.slf4j:slf4j-api:2.0.+")
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("ch.qos.logback:logback-core:$logbackVersion")
 
     runtimeOnly("org.postgresql:postgresql")
-    implementation("org.hibernate:hibernate-envers:5.4.32.Final")
-    implementation("org.hibernate:hibernate-entitymanager:5.4.32.Final")
+    implementation("org.hibernate:hibernate-envers:$hibernateVersion")
+    implementation("org.hibernate:hibernate-entitymanager:$hibernateVersion")
 
     testRuntimeOnly("com.h2database:h2")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.+")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.+")
 }
 
 val artifactFinalName = "loono-be.jar"
@@ -123,4 +127,8 @@ fun setUpOpenApiGenerator() {
         inputSpec.set(localSpecFile.toString())
         typeMappings.put("java.time.OffsetDateTime", "java.time.LocalDateTime")
     }
+}
+
+dependencyCheck {
+    failBuildOnCVSS = 0.0f
 }
