@@ -1,5 +1,5 @@
 val logbackVersion = "1.2.+"
-val hibernateVersion = "6.0.+"
+val hibernateVersion = "5.6.+"
 
 plugins {
     id("org.springframework.boot") version "2.6.+"
