@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
 import java.time.LocalDate
-import java.time.LocalDateTime
+import java.time.LocalDateTime.now
 
 @Service
 class ExaminationRecordService(
@@ -244,6 +244,7 @@ class ExaminationRecordService(
     fun createOrUpdateExam(examinationRecordDto: ExaminationRecordDto, accountUuid: String): ExaminationRecordDto {
         validateAccountPrerequisites(examinationRecordDto, accountUuid)
         val record = validateUpdateAttempt(examinationRecordDto, accountUuid)
+        validateDateInterval(examinationRecordDto)
         addRewardIfEligible(examinationRecordDto, accountUuid)
         return examinationRecordRepository.save(
             ExaminationRecord(
@@ -256,6 +257,22 @@ class ExaminationRecordService(
                 status = examinationRecordDto.status ?: ExaminationStatusDto.NEW
             )
         ).toExaminationRecordDto()
+    }
+
+    private fun validateDateInterval(record: ExaminationRecordDto) {
+        if (record.date == null) {
+            return
+        }
+        val today = now()
+        if ((record.firstExam == true && (record.date.isAfter(today) || record.date.isBefore(today.minusYears(2)))) ||
+            (record.firstExam == false && record.date.isBefore(today))
+        ) {
+            throw LoonoBackendException(
+                HttpStatus.BAD_REQUEST,
+                "404",
+                "Unsupported date interval."
+            )
+        }
     }
 
     private fun validateAccountPrerequisites(record: ExaminationRecordDto, accountUuid: String) {
@@ -351,7 +368,7 @@ class ExaminationRecordService(
 
     private fun isEligibleForReward(examinationRecordDto: ExaminationRecordDto) =
         (examinationRecordDto.status in setOf(ExaminationStatusDto.CONFIRMED, ExaminationStatusDto.UNKNOWN)) &&
-            examinationRecordDto.date?.plusYears(2)?.isAfter(LocalDateTime.now()) ?: false
+            examinationRecordDto.date?.plusYears(2)?.isAfter(now()) ?: false
 
     fun ExaminationRecord.toExaminationRecordDto(): ExaminationRecordDto =
         ExaminationRecordDto(
