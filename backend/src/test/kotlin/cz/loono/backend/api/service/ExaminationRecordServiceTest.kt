@@ -138,8 +138,9 @@ class ExaminationRecordServiceTest(
                 clock
             )
         val exam = ExaminationRecordDto(
+            firstExam = true,
             type = ExaminationTypeDto.GENERAL_PRACTITIONER,
-            date = LocalDateTime.now().plusDays(1)
+            date = LocalDateTime.now().minusDays(1)
         )
 
         examinationRecordService.createOrUpdateExam(exam, uid)
