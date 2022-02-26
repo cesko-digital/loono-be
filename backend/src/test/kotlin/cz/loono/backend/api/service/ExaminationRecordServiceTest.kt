@@ -176,9 +176,8 @@ class ExaminationRecordServiceTest(
         examinationRecordService.createOrUpdateExam(exam, uid)
         val actual = accountRepository.findByUid(uid)
 
-        // FIXME IS points and badge calculation in this test correct? Creation of a new in future shouldn't add points.
-        assertThat(actual?.points).isEqualTo(200)
-        assertThat(actual?.badges).hasSize(1)
+        assertThat(actual?.points).isEqualTo(0)
+        assertThat(actual?.badges).isEmpty()
     }
 
     @Test

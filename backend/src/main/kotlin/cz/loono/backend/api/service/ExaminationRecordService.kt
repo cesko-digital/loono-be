@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime.now
+import java.time.temporal.ChronoUnit
 
 @Service
 class ExaminationRecordService(
@@ -366,9 +367,11 @@ class ExaminationRecordService(
         }
     }
 
-    private fun isEligibleForReward(examinationRecordDto: ExaminationRecordDto) =
-        (examinationRecordDto.status in setOf(ExaminationStatusDto.CONFIRMED, ExaminationStatusDto.UNKNOWN)) &&
-            examinationRecordDto.date?.plusYears(2)?.isAfter(now()) ?: false
+    private fun isEligibleForReward(erd: ExaminationRecordDto) =
+        now().let { now ->
+            (erd.status in setOf(ExaminationStatusDto.CONFIRMED, ExaminationStatusDto.UNKNOWN)) &&
+                (erd.date?.isBefore(now) ?: false && ChronoUnit.YEARS.between(now, erd.date) < 2)
+        }
 
     fun ExaminationRecord.toExaminationRecordDto(): ExaminationRecordDto =
         ExaminationRecordDto(
