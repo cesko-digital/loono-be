@@ -1,16 +1,16 @@
-val logbackVersion = "1.2.+"
-val hibernateVersion = "5.6.+"
+val logbackVersion = "1.2.10"
+val hibernateVersion = "5.6.5.Final"
 
 plugins {
-    id("org.springframework.boot") version "2.6.+"
-    id("io.spring.dependency-management") version "1.0.+"
-    id("org.jlleitschuh.gradle.ktlint") version "10.2.+"
-    id("org.openapi.generator") version "5.4.+"
-    id("de.undercouch.download") version "5.0.+"
-    id("org.jetbrains.kotlin.plugin.jpa") version "1.6.+"
-    id("org.owasp.dependencycheck") version "6.5.+"
-    kotlin("jvm") version "1.6.+"
-    kotlin("plugin.spring") version "1.6.+"
+    id("org.springframework.boot") version "2.6.4"
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
+    id("org.openapi.generator") version "5.4.0"
+    id("de.undercouch.download") version "5.0.1"
+    id("org.owasp.dependencycheck") version "6.5.3"
+    kotlin("jvm") version "1.6.20-RC"
+    kotlin("plugin.spring") version "1.6.20-RC"
+    kotlin("plugin.jpa") version "1.6.20-RC"
     jacoco
 }
 
@@ -33,10 +33,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-security")
 
-    implementation("com.google.firebase:firebase-admin:8.1.+")
-    implementation("com.squareup.okhttp3:okhttp:5.0.+")
+    implementation("com.google.firebase:firebase-admin:8.1.0")
+    implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.5")
 
-    implementation("org.slf4j:slf4j-api:2.0.+")
+    implementation("org.slf4j:slf4j-api:2.0.0-alpha6")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("ch.qos.logback:logback-core:$logbackVersion")
 
@@ -47,8 +47,8 @@ dependencies {
     testRuntimeOnly("com.h2database:h2")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.+")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.+")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
 }
 
 val artifactFinalName = "loono-be.jar"
