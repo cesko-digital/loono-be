@@ -260,22 +260,22 @@ class ExaminationRecordService(
         ).toExaminationRecordDto()
     }
 
-    private fun validateDateInterval(record: ExaminationRecordDto) {
-        if (record.date == null) {
-            return
+    private fun validateDateInterval(record: ExaminationRecordDto) =
+        record.date?.let {
+            record.firstExam?.let { isFirstExam ->
+                val today = now()
+                if (
+                    (isFirstExam && (it.isAfter(today) || it.isBefore(today.minusYears(2)))) ||
+                    !isFirstExam && it.isBefore(today)
+                ) {
+                    throw LoonoBackendException(
+                        HttpStatus.BAD_REQUEST,
+                        "404",
+                        "Unsupported date interval."
+                    )
+                }
+            }
         }
-        val today = now()
-        if ((record.firstExam == true && (record.date.isAfter(today) || record.date.isBefore(today.minusYears(2)))) ||
-            (record.firstExam == false && record.date.isBefore(today))
-        ) {
-            throw LoonoBackendException(
-                HttpStatus.BAD_REQUEST,
-                "404",
-                "Unsupported date interval."
-            )
-        }
-    }
-
     private fun validateAccountPrerequisites(record: ExaminationRecordDto, accountUuid: String) {
         val account = accountRepository.findByUid(accountUuid) ?: throw LoonoBackendException(
             HttpStatus.NOT_FOUND,
