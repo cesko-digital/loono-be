@@ -275,7 +275,7 @@ class ExaminationRecordService(
                 ) {
                     throw LoonoBackendException(
                         HttpStatus.BAD_REQUEST,
-                        "404",
+                        "400",
                         "Unsupported date interval."
                     )
                 }
