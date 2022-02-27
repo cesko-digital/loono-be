@@ -12,6 +12,7 @@ interface AccountRepository : JpaRepository<Account, Long> {
     fun existsByUid(uid: String): Boolean
     fun findByUid(uid: String): Account?
     fun findAllByOrderByPointsDesc(pageable: Pageable): List<Account>
+    // Looks for first account which has more and fewer points than current one
     @Language("SQL")
     @Query(
         """

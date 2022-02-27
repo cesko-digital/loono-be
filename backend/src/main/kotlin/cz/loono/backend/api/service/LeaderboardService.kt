@@ -12,11 +12,12 @@ class LeaderboardService(
     private val accountRepository: AccountRepository
 ) {
 
-    fun getLeaderboard(uid: String): LeaderboardDto {
-        val top3 = findTop3Accounts(uid)
-        val currentAcc = accountRepository.findByUid(uid)
-        val myOrder = currentAcc?.points?.let { accountRepository.findMyPosition(currentAcc.points) + 1 } ?: 0
-        val peers = accountRepository.findPeers(currentAcc?.points ?: 0).map { prepareLeaderboardUser(uid, it) }
+    fun getLeaderboard(uuid: String): LeaderboardDto {
+        val top3 = findTop3Accounts(uuid)
+        val currentAcc = accountRepository.findByUid(uuid)
+        val (myOrder, peers) = currentAcc?.points?.let { points ->
+            positionInLeaderBoard(points) to findAccountPeers(points, uuid)
+        } ?: (0 to emptyList())
 
         return LeaderboardDto(
             top = top3,
@@ -24,6 +25,13 @@ class LeaderboardService(
             myOrder = myOrder
         )
     }
+
+    private fun findAccountPeers(
+        points: Int,
+        uuid: String
+    ): List<LeaderboardUserDto> = accountRepository.findPeers(points).map { prepareLeaderboardUser(uuid, it) }
+
+    private fun positionInLeaderBoard(points: Int) = accountRepository.findMyPosition(points) + 1
 
     private fun findTop3Accounts(uid: String) = accountRepository.findAllByOrderByPointsDesc(PageRequest.of(0, 3)).map {
         prepareLeaderboardUser(uid, it)
