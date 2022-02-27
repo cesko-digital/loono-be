@@ -30,5 +30,5 @@ interface AccountRepository : JpaRepository<Account, Long> {
         """,
         nativeQuery = true
     )
-    fun findMyPosition(points: Int): Int
+    fun findNumberOfAccountsAbove(points: Int): Int
 }

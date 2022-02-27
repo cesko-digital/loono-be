@@ -31,7 +31,7 @@ class LeaderboardService(
         uuid: String
     ): List<LeaderboardUserDto> = accountRepository.findPeers(points).map { prepareLeaderboardUser(uuid, it) }
 
-    private fun positionInLeaderBoard(points: Int) = accountRepository.findMyPosition(points) + 1
+    private fun positionInLeaderBoard(points: Int) = accountRepository.findNumberOfAccountsAbove(points) + 1
 
     private fun findTop3Accounts(uid: String) = accountRepository.findAllByOrderByPointsDesc(PageRequest.of(0, 3)).map {
         prepareLeaderboardUser(uid, it)
