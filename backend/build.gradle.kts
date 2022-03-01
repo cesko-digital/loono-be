@@ -36,14 +36,13 @@ dependencies {
     implementation("com.google.firebase:firebase-admin:8.1.0")
     implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.5")
 
-    implementation("org.slf4j:slf4j-api:1.7.36")
+    implementation("org.slf4j:slf4j-api:1.7.0-beta4")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("ch.qos.logback:logback-core:$logbackVersion")
 
     runtimeOnly("org.postgresql:postgresql")
     implementation("org.hibernate:hibernate-envers:$hibernateVersion")
     implementation("org.hibernate:hibernate-entitymanager:$hibernateVersion")
-    implementation("org.flywaydb:flyway-core:8.5.1")
 
     testRuntimeOnly("com.h2database:h2")
 
