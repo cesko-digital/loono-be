@@ -3,13 +3,13 @@ spring:
   # Database
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${POSTGRE_URL}
-    username: ${POSTGRE_USER}
-    password: ${POSTGRE_PWD}
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
   # JPA properties
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: false
     database: postgresql
     generate-ddl: true
@@ -29,6 +29,7 @@ logging:
     cz.loono.backend: INFO
     org.springframework: WARN
     org.hibernate: WARN
+    org.flywaydb: INFO
 # Server configuration
 server:
   port: 8080
