@@ -43,6 +43,7 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     implementation("org.hibernate:hibernate-envers:$hibernateVersion")
     implementation("org.hibernate:hibernate-entitymanager:$hibernateVersion")
+    implementation("org.flywaydb:flyway-core:8.5.1")
 
     testRuntimeOnly("com.h2database:h2")
 
