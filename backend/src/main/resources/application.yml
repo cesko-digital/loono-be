@@ -29,7 +29,6 @@ logging:
     cz.loono.backend: INFO
     org.springframework: WARN
     org.hibernate: WARN
-    org.flywaydb: INFO
 # Server configuration
 server:
   port: 8080
