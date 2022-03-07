@@ -90,7 +90,7 @@ fun setUpOpenApiGenerator() {
         dependsOn("downloadOpenApiSpec")
     }
 
-    val localSpecFile = projectDir.toPath().resolve("build/tmp/openapi.json")
+    val localSpecFile = projectDir.toPath().resolve("src/main/resources/doc/openapi.json")
 
     tasks.register<de.undercouch.gradle.tasks.download.Download>("downloadOpenApiSpec") {
         src("https://raw.githubusercontent.com/cesko-digital/loono-api/main/openapi.json")
