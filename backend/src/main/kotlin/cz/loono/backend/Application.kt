@@ -19,7 +19,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @EnableScheduling
 class Application
 
-//change to trigger github action
 fun main(args: Array<String>) {
     runApplication<Application>(*args)
 }
