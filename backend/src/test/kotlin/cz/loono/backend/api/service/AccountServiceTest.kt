@@ -19,12 +19,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.kotlin.mock
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
 @SpringBootTest(properties = ["spring.profiles.active=test"])
-
+@Transactional
 class AccountServiceTest(
     private val repo: AccountRepository,
     private val examinationRecordService: ExaminationRecordService,

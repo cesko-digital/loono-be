@@ -24,7 +24,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @SpringBootTest(properties = ["spring.profiles.active=test"])
-
 @Transactional
 class ExaminationRecordServiceTest(
     private val accountRepository: AccountRepository,

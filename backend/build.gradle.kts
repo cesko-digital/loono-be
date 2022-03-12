@@ -1,5 +1,6 @@
 val logbackVersion = "1.2.10"
 val hibernateVersion = "5.6.5.Final"
+val tomcatVersion = "10.0.17"
 
 plugins {
     id("org.springframework.boot") version "2.5.7"
@@ -9,6 +10,7 @@ plugins {
     id("de.undercouch.download") version "5.0.1"
     id("org.owasp.dependencycheck") version "6.5.3"
     id("com.avast.gradle.docker-compose") version "0.15.1"
+    id("org.flywaydb.flyway") version "8.5.2"
     kotlin("jvm") version "1.6.20-RC"
     kotlin("plugin.spring") version "1.6.20-RC"
     kotlin("plugin.jpa") version "1.6.20-RC"
@@ -40,6 +42,9 @@ dependencies {
     implementation("org.slf4j:slf4j-api:1.7.36")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("ch.qos.logback:logback-core:$logbackVersion")
+    implementation("io.grpc:grpc-netty-shaded:1.45.0")
+    implementation("org.apache.tomcat.embed:tomcat-embed-core:$tomcatVersion")
+    implementation("org.apache.tomcat.embed:tomcat-embed-websocket:$tomcatVersion")
 
     runtimeOnly("org.postgresql:postgresql")
     implementation("org.hibernate:hibernate-envers:$hibernateVersion")
@@ -138,6 +143,7 @@ fun setUpOpenApiGenerator() {
 
 dependencyCheck {
     failBuildOnCVSS = 0.0f
+    suppressionFile = "cve-suppress.xml"
 }
 
 dockerCompose {
@@ -145,4 +151,11 @@ dockerCompose {
         listOf("../docker-compose.yml")
     )
     isRequiredBy(tasks.test)
+}
+
+flyway {
+    url = "jdbc:postgresql://localhost:5432/postgres"
+    user = "postgres"
+    password = "postgres"
+    locations = arrayOf("classpath:db/migration")
 }

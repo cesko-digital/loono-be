@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Profile
 import org.springframework.transaction.annotation.Transactional
 import java.nio.file.Path
 import java.time.LocalDate
@@ -23,7 +24,6 @@ import kotlin.io.path.fileSize
 import kotlin.io.path.getLastModifiedTime
 
 @SpringBootTest(properties = ["spring.profiles.active=test"])
-
 @Transactional
 class HealthcareProvidersServiceTest(
     private val healthcareProviderRepository: HealthcareProviderRepository,
