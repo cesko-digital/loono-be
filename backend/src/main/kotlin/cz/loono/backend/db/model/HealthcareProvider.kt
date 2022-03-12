@@ -1,6 +1,7 @@
 package cz.loono.backend.db.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import org.hibernate.envers.Audited
 import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -14,7 +15,8 @@ import javax.persistence.Table
 
 @Entity
 @IdClass(HealthcareProviderId::class)
-@Table(name = "\"healthcare_provider\"")
+@Table(name = "healthcare_provider")
+@Audited
 data class HealthcareProvider(
 
     @Id
@@ -160,11 +162,10 @@ data class HealthcareProvider(
         return result
     }
 
-    override fun toString(): String {
-        return "$locationId,$institutionId,$code,$title,$institutionType,$city,$postalCode,$street,$houseNumber,$region," +
+    override fun toString(): String =
+        "$locationId,$institutionId,$code,$title,$institutionType,$city,$postalCode,$street,$houseNumber,$region," +
             "$regionCode,$district,$districtCode,$administrativeDistrict,$phoneNumber,$fax,$email,$website,$ico," +
             "$personTypeCode,$lawyerFormCode,$layerForm,$personType,$hqRegion,$hqRegionCode,$hqDistrict,$hqDistrictCode," +
             "$hqCity,$hqPostalCode,$hqStreet,$hqHouseNumber,$specialization,$category,$careForm,$careType,$substitute," +
             "$lat,$lng"
-    }
 }

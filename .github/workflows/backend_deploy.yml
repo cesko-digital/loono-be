@@ -1,5 +1,6 @@
 name: 'Deploy backend to ECS'
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
