@@ -9,7 +9,7 @@ spring:
   # JPA properties
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     show-sql: false
     database: postgresql
     generate-ddl: true
@@ -25,11 +25,11 @@ logging:
   pattern:
     console: "%d %-5level %logger : %msg%n"
   level:
-    root: DEBUG
-#    cz.loono.backend: DEBUG
-#    org.springframework: WARN
-#    org.hibernate: WARN
-#    org.flywaydb: INFO
+    root: WARN
+    cz.loono.backend: INFO
+    org.springframework: WARN
+    org.hibernate: WARN
+    org.flywaydb: INFO
 # Server configuration
 server:
   port: 8080
