@@ -2,12 +2,13 @@ val logbackVersion = "1.2.10"
 val hibernateVersion = "5.6.5.Final"
 
 plugins {
-    id("org.springframework.boot") version "2.6.4"
+    id("org.springframework.boot") version "2.5.7"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
     id("org.openapi.generator") version "5.4.0"
     id("de.undercouch.download") version "5.0.1"
     id("org.owasp.dependencycheck") version "6.5.3"
+    id("com.avast.gradle.docker-compose") version "0.15.1"
     kotlin("jvm") version "1.6.20-RC"
     kotlin("plugin.spring") version "1.6.20-RC"
     kotlin("plugin.jpa") version "1.6.20-RC"
@@ -43,6 +44,7 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     implementation("org.hibernate:hibernate-envers:$hibernateVersion")
     implementation("org.hibernate:hibernate-entitymanager:$hibernateVersion")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.flywaydb:flyway-core:8.5.1")
 
     testRuntimeOnly("com.h2database:h2")
@@ -136,4 +138,11 @@ fun setUpOpenApiGenerator() {
 
 dependencyCheck {
     failBuildOnCVSS = 0.0f
+}
+
+dockerCompose {
+    useComposeFiles.set(
+        listOf("../docker-compose.yml")
+    )
+    isRequiredBy(tasks.test)
 }
