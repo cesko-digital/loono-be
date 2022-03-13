@@ -118,7 +118,7 @@ ALTER TABLE ONLY healthcare_category_aud
     ADD CONSTRAINT pkey_healthcare_category_aud PRIMARY KEY (id, rev);
 
 ALTER TABLE ONLY healthcare_provider_aud
-    ADD CONSTRAINT healthcare_provider_aud_pkey PRIMARY KEY (institution_id, location_id, rev);
+    ADD CONSTRAINT pkey_healthcare_provider_aud PRIMARY KEY (institution_id, location_id, rev);
 
 ALTER TABLE ONLY healthcare_provider_category_aud
     ADD CONSTRAINT pkey_healthcare_provider_category_aud PRIMARY KEY (rev, institution_id, location_id, id);
