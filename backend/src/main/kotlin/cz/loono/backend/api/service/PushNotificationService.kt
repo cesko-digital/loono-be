@@ -96,9 +96,7 @@ class PushNotificationService {
         return Gson().fromJson(call.execute().body!!.string(), NotificationResponse::class.java).id
     }
 
-    private fun Request.Builder.addAuthenticationHeader(): Request.Builder {
-        return this.addHeader("Authorization", "Basic $ONESIGNAL_API_KEY")
-    }
+    private fun Request.Builder.addAuthenticationHeader(): Request.Builder = this.addHeader("Authorization", "Basic $ONESIGNAL_API_KEY")
 
     private fun Request.Builder.addContentTypeHeader(): Request.Builder {
         return this.addHeader("Content-Type", "application/json; charset=utf-8")
