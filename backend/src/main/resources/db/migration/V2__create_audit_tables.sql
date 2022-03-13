@@ -106,43 +106,22 @@ CREATE TABLE selfexamination_record_aud (
 );
 
 ALTER TABLE ONLY account_aud
-    ADD CONSTRAINT account_aud_pkey PRIMARY KEY (id, rev);
+    ADD CONSTRAINT pkey_account_aud PRIMARY KEY (id, rev);
 
 ALTER TABLE ONLY badge_aud
-    ADD CONSTRAINT badge_aud_pkey PRIMARY KEY (account_id, type, rev);
+    ADD CONSTRAINT pkey_badge_aud PRIMARY KEY (account_id, type, rev);
 
 ALTER TABLE ONLY examination_record_aud
-    ADD CONSTRAINT examination_record_aud_pkey PRIMARY KEY (id, rev);
+    ADD CONSTRAINT pkey_examination_record_aud PRIMARY KEY (id, rev);
 
 ALTER TABLE ONLY healthcare_category_aud
-    ADD CONSTRAINT healthcare_category_aud_pkey PRIMARY KEY (id, rev);
+    ADD CONSTRAINT pkey_healthcare_category_aud PRIMARY KEY (id, rev);
 
 ALTER TABLE ONLY healthcare_provider_aud
     ADD CONSTRAINT healthcare_provider_aud_pkey PRIMARY KEY (institution_id, location_id, rev);
 
 ALTER TABLE ONLY healthcare_provider_category_aud
-    ADD CONSTRAINT healthcare_provider_category_aud_pkey PRIMARY KEY (rev, institution_id, location_id, id);
+    ADD CONSTRAINT pkey_healthcare_provider_category_aud PRIMARY KEY (rev, institution_id, location_id, id);
 
 ALTER TABLE ONLY selfexamination_record_aud
-    ADD CONSTRAINT selfexamination_record_aud_pkey PRIMARY KEY (id, rev);
-
-ALTER TABLE ONLY examination_record_aud
-    ADD CONSTRAINT exam_record_aud_pkey FOREIGN KEY (rev) REFERENCES revinfo(rev);
-
-ALTER TABLE ONLY account_aud
-    ADD CONSTRAINT account_aud_pkey FOREIGN KEY (rev) REFERENCES revinfo(rev);
-
-ALTER TABLE ONLY selfexamination_record_aud
-    ADD CONSTRAINT selfexam_record_aud_pkey FOREIGN KEY (rev) REFERENCES revinfo(rev);
-
-ALTER TABLE ONLY healthcare_provider_category_aud
-    ADD CONSTRAINT health_provider_category_aud_pkey FOREIGN KEY (rev) REFERENCES revinfo(rev);
-
-ALTER TABLE ONLY healthcare_category_aud
-    ADD CONSTRAINT health_category_aud_pkey FOREIGN KEY (rev) REFERENCES revinfo(rev);
-
-ALTER TABLE ONLY badge_aud
-    ADD CONSTRAINT badge_aud_pkey FOREIGN KEY (rev) REFERENCES revinfo(rev);
-
-ALTER TABLE ONLY healthcare_provider_aud
-    ADD CONSTRAINT health_provider_aud_pkey FOREIGN KEY (rev) REFERENCES revinfo(rev);
+    ADD CONSTRAINT pkey_selfexamination_record_aud PRIMARY KEY (id, rev);

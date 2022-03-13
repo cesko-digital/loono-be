@@ -112,14 +112,14 @@ CREATE TABLE server_properties (
 
 
 ALTER TABLE ONLY badge
-    ADD CONSTRAINT badge_pkey PRIMARY KEY (account_id, type);
+    ADD CONSTRAINT pkey_badge PRIMARY KEY (account_id, type);
 
 
 ALTER TABLE ONLY healthcare_provider_category
-    ADD CONSTRAINT healthcare_provider_category_pkey PRIMARY KEY (institution_id, location_id, id);
+    ADD CONSTRAINT pkey_healthcare_provider_category PRIMARY KEY (institution_id, location_id, id);
 
 ALTER TABLE ONLY healthcare_provider
-    ADD CONSTRAINT healthcare_provider_pkey PRIMARY KEY (institution_id, location_id);
+    ADD CONSTRAINT pkey_healthcare_provider PRIMARY KEY (institution_id, location_id);
 
 ALTER TABLE ONLY account
     ADD CONSTRAINT uk_account UNIQUE (uid);
