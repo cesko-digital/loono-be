@@ -127,22 +127,22 @@ ALTER TABLE ONLY selfexamination_record_aud
     ADD CONSTRAINT selfexamination_record_aud_pkey PRIMARY KEY (id, rev);
 
 ALTER TABLE ONLY examination_record_aud
-    ADD CONSTRAINT fk5lxlg92fn2q6mul14ly8n5fbr FOREIGN KEY (rev) REFERENCES revinfo(rev);
+    ADD CONSTRAINT exam_record_aud_pkey FOREIGN KEY (rev) REFERENCES revinfo(rev);
 
 ALTER TABLE ONLY account_aud
-    ADD CONSTRAINT fkaexie5n0kol2mjlvo03ii45d0 FOREIGN KEY (rev) REFERENCES revinfo(rev);
+    ADD CONSTRAINT account_aud_pkey FOREIGN KEY (rev) REFERENCES revinfo(rev);
 
 ALTER TABLE ONLY selfexamination_record_aud
-    ADD CONSTRAINT fkg1uyxqsvkobw6dnx74h1nj2x2 FOREIGN KEY (rev) REFERENCES revinfo(rev);
+    ADD CONSTRAINT selfexam_record_aud_pkey FOREIGN KEY (rev) REFERENCES revinfo(rev);
 
 ALTER TABLE ONLY healthcare_provider_category_aud
-    ADD CONSTRAINT fkivi6tglk4kbdxq4sa25n6s43f FOREIGN KEY (rev) REFERENCES revinfo(rev);
+    ADD CONSTRAINT health_provider_category_aud_pkey FOREIGN KEY (rev) REFERENCES revinfo(rev);
 
 ALTER TABLE ONLY healthcare_category_aud
-    ADD CONSTRAINT fkj0f3nuqp8iv9ms2w6h6025soe FOREIGN KEY (rev) REFERENCES revinfo(rev);
+    ADD CONSTRAINT health_category_aud_pkey FOREIGN KEY (rev) REFERENCES revinfo(rev);
 
 ALTER TABLE ONLY badge_aud
-    ADD CONSTRAINT fkk8lubwsfxvhhsm8ttaou0m0yt FOREIGN KEY (rev) REFERENCES revinfo(rev);
+    ADD CONSTRAINT badge_aud_pkey FOREIGN KEY (rev) REFERENCES revinfo(rev);
 
 ALTER TABLE ONLY healthcare_provider_aud
-    ADD CONSTRAINT fkpwg1gu7dho1u49ie27xc4jif8 FOREIGN KEY (rev) REFERENCES revinfo(rev);
+    ADD CONSTRAINT health_provider_aud_pkey FOREIGN KEY (rev) REFERENCES revinfo(rev);
