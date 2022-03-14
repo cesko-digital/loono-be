@@ -96,15 +96,13 @@ class PushNotificationService {
         return Gson().fromJson(call.execute().body!!.string(), NotificationResponse::class.java).id
     }
 
-    private fun Request.Builder.addAuthenticationHeader(): Request.Builder = this.addHeader("Authorization", "Basic $ONESIGNAL_API_KEY")
+    private fun Request.Builder.addAuthenticationHeader(): Request.Builder =
+        this.addHeader("Authorization", "Basic $ONESIGNAL_API_KEY")
 
-    private fun Request.Builder.addContentTypeHeader(): Request.Builder {
-        return this.addHeader("Content-Type", "application/json; charset=utf-8")
-    }
+    private fun Request.Builder.addContentTypeHeader(): Request.Builder =
+        this.addHeader("Content-Type", "application/json; charset=utf-8")
 
-    private fun composeUrl(endpoint: String): String {
-        return "$ONESIGNAL_API_URL/$API_VERSION/$endpoint"
-    }
+    private fun composeUrl(endpoint: String): String = "$ONESIGNAL_API_URL/$API_VERSION/$endpoint"
 
     companion object {
         val ONESIGNAL_API_KEY: String = System.getenv("ONESIGNAL_API_KEY")
