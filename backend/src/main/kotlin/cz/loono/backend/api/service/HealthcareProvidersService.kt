@@ -261,8 +261,8 @@ class HealthcareProvidersService(
             city = city,
             postalCode = postalCode,
             category = category.map(HealthcareCategory::value)
-                .ifEmpty { correctedCategory.map { HealthcareCategory::value } }
-                .filter { !removedCategories.contains(it) } as List<String>,
+                .ifEmpty { correctedCategory.map(HealthcareCategory::value) }
+                .filterNot(removedCategories::contains)
             specialization = specialization,
             lat = lat ?: correctedLat!!,
             lng = lng ?: correctedLng!!
