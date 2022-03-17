@@ -3,8 +3,6 @@ package cz.loono.backend
 import cz.loono.backend.api.BasicUser
 import cz.loono.backend.api.dto.SexDto
 import cz.loono.backend.db.model.Account
-import cz.loono.backend.db.model.Badge
-import cz.loono.backend.db.model.ExaminationRecord
 import java.net.URL
 import java.time.LocalDate
 
@@ -22,9 +20,7 @@ internal fun createAccount(
     points: Int = 0,
     nickname: String = "Zilvar z chudobince",
     profileImageUrl: String = "https://example.com",
-    created: LocalDate = LocalDate.now(),
-    badges: Set<Badge> = emptySet(),
-    examinationRecords: List<ExaminationRecord> = emptyList()
+    created: LocalDate = LocalDate.now()
 ) = Account(
     uid = uid,
     nickname = nickname,
@@ -36,7 +32,5 @@ internal fun createAccount(
     appointmentReminderEmailsOptIn = false,
     newsletterOptIn = true,
     points = points,
-    created = created,
-    badges = badges,
-    examinationRecords = examinationRecords
+    created = created
 )
