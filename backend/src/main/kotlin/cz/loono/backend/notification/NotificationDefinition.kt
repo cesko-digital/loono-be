@@ -3,20 +3,21 @@ package cz.loono.backend.notification
 import cz.loono.backend.api.dto.BadgeTypeDto
 import cz.loono.backend.api.dto.ExaminationTypeDto
 import cz.loono.backend.api.dto.SexDto
-import cz.loono.backend.api.exception.LoonoBackendException
 import cz.loono.backend.db.model.Account
-import org.springframework.http.HttpStatus
 
 object NotificationDefinition {
 
     private const val ONESIGNAL_APP_ID = "234d9f26-44c2-4752-b2d3-24bd93059267"
     private const val MORNING_TIME_TO_NOTIFY = "8:00AM"
     private const val EVENING_TIME_TO_NOTIFY = "6:00PM"
+    private const val URL_TO_NOTIFICATION =
+        "https://loono-backend-lb-2117582078.eu-central-1.elb.amazonaws.com/notification/"
+    private val notificationTextManager = NotificationTextManager()
 
     fun getPreventionNotification(accounts: Set<Account>): PushNotification {
-        val name = "Prevevention notification"
-        val title = "Hola, hola, prevence volá!"
-        val text = "Mrkni, na které preventivní prohlídky se objednat."
+        val name = "Prevention notification"
+        val title = notificationTextManager.getText("prevention.title")
+        val text = notificationTextManager.getText("prevention.text")
         return PushNotification(
             appId = ONESIGNAL_APP_ID,
             name = name,
@@ -34,8 +35,8 @@ object NotificationDefinition {
         examinationTypeDto: ExaminationTypeDto
     ): PushNotification {
         val name = "Complete checkup notification"
-        val title = "Byl/a jsi na prohlídce?"
-        val text = "Potvrď preventivní prohlídku v aplikaci a získej odměnu."
+        val title = notificationTextManager.getText("completion.title")
+        val text = notificationTextManager.getText("completion.text")
         return PushNotification(
             appId = ONESIGNAL_APP_ID,
             name = name,
@@ -53,8 +54,8 @@ object NotificationDefinition {
         interval: Int
     ): PushNotification {
         val name = "Order reminder 2 months ahead notification"
-        val title = "Objednej se ${translateTypeToCzech(examinationTypeDto)}"
-        val text = "${intervalToCzech(interval)} utekl/y jako voda, je čas se objednat na preventivní prohlídku."
+        val title = notificationTextManager.getText("order.2months.ahead.title", examinationTypeDto)
+        val text = notificationTextManager.getText("order.2months.ahead.text", interval)
         return PushNotification(
             appId = ONESIGNAL_APP_ID,
             name = name,
@@ -73,10 +74,8 @@ object NotificationDefinition {
         badgeTypeDto: BadgeTypeDto
     ): PushNotification {
         val name = "Order reminder 1 month ahead notification"
-        val title = "Nejvyšší čas zajít ${translateTypeToCzech(examinationTypeDto)}"
-        val text =
-            "Jsou/je to už ${intervalToCzech(interval)} od poslední prohlídky. Objednej se ještě dnes, ať neztratíš " +
-                "${translateTypeToCzech(badgeTypeDto)}."
+        val title = notificationTextManager.getText("order.month.ahead.title", examinationTypeDto)
+        val text = notificationTextManager.getText("order.month.ahead.text", interval, badgeTypeDto)
         return PushNotification(
             appId = ONESIGNAL_APP_ID,
             name = name,
@@ -94,8 +93,8 @@ object NotificationDefinition {
         time: String
     ): PushNotification {
         val name = "Coming visit notification"
-        val title = "Zítra tě čeká prohlídka"
-        val text = "Za 24 hodin jdeš ${translateTypeToCzech(examinationTypeDto)} na preventivní prohlídku."
+        val title = notificationTextManager.getText("coming.visit.title")
+        val text = notificationTextManager.getText("coming.visit.text", examinationTypeDto)
         return PushNotification(
             appId = ONESIGNAL_APP_ID,
             name = name,
@@ -107,10 +106,11 @@ object NotificationDefinition {
         )
     }
 
-    fun getFirstSelfExamNotification(accounts: Set<Account>): PushNotification {
+    fun getFirstSelfExamNotification(accounts: Set<Account>, sex: SexDto): PushNotification {
         val name = "First self-exam notification"
-        val title = "První samovyšetření čeká"
-        val text = "Zvládne ho opravu každý a nezabere to ani pět minut."
+        val title = notificationTextManager.getText("self.first.title")
+        val text = notificationTextManager.getText("self.first.text")
+        val imageUrl = "${URL_TO_NOTIFICATION}self-${sex.name.lowercase()}.png"
         return PushNotification(
             appId = ONESIGNAL_APP_ID,
             name = name,
@@ -118,14 +118,17 @@ object NotificationDefinition {
             contents = MultipleLangString(cs = text, en = text),
             includeExternalUserIds = accounts.map { it.uid },
             scheduleTimeOfDay = EVENING_TIME_TO_NOTIFY,
-            data = NotificationData(screen = "self")
+            data = NotificationData(screen = "self"),
+            largeImage = imageUrl,
+            iosAttachments = NotificationAttachment(image = imageUrl)
         )
     }
 
     fun getSelfExamNotification(accounts: Set<Account>, sex: SexDto): PushNotification {
         val name = "Self-exam notification"
-        val title = "Je čas na samovyšetření"
-        val text = "Po měsíci přišel čas si sáhnout na ${selfExamObjects(sex)[0]}."
+        val title = notificationTextManager.getText("self.common.title")
+        val text = notificationTextManager.getText("self.common.text", sex)
+        val imageUrl = "${URL_TO_NOTIFICATION}self-${sex.name.lowercase()}.png"
         return PushNotification(
             appId = ONESIGNAL_APP_ID,
             name = name,
@@ -133,14 +136,16 @@ object NotificationDefinition {
             contents = MultipleLangString(cs = text, en = text),
             includeExternalUserIds = accounts.map { it.uid },
             scheduleTimeOfDay = EVENING_TIME_TO_NOTIFY,
-            data = NotificationData(screen = "self")
+            data = NotificationData(screen = "self"),
+            largeImage = imageUrl,
+            iosAttachments = NotificationAttachment(image = imageUrl)
         )
     }
 
     fun getSelfExamIssueResultNotification(accounts: Set<Account>, sex: SexDto): PushNotification {
         val name = "Issue result of self-exam notification"
-        val title = "Máš ${selfExamObjects(sex)[0]} zdravá?"
-        val text = "Před časem se ti na ${selfExamObjects(sex)[1]} něco nezdálo. Jak dopadla prohlídka u lékaře?"
+        val title = notificationTextManager.getText("self.result.title", sex)
+        val text = notificationTextManager.getText("self.result.text", sex)
         return PushNotification(
             appId = ONESIGNAL_APP_ID,
             name = name,
@@ -151,45 +156,4 @@ object NotificationDefinition {
             data = NotificationData(screen = "self")
         )
     }
-
-    private fun translateTypeToCzech(typeDto: ExaminationTypeDto): String =
-        when (typeDto) {
-            ExaminationTypeDto.GENERAL_PRACTITIONER -> "k praktickému lékaři"
-            ExaminationTypeDto.DENTIST -> "k zubaři"
-            ExaminationTypeDto.GYNECOLOGIST -> "ke gynekologovi"
-            ExaminationTypeDto.COLONOSCOPY -> "na kolonoskopii"
-            ExaminationTypeDto.DERMATOLOGIST -> "k dermatologovi"
-            ExaminationTypeDto.MAMMOGRAM -> "na mamograf"
-            ExaminationTypeDto.TOKS -> "na TOKS"
-            ExaminationTypeDto.OPHTHALMOLOGIST -> "k očnímu lékaři"
-            ExaminationTypeDto.ULTRASOUND_BREAST -> "na ultrazvuk prsu"
-            ExaminationTypeDto.UROLOGIST -> "k urologovi"
-            ExaminationTypeDto.VENEREAL_DISEASES -> "na kontrolu"
-        }
-
-    private fun translateTypeToCzech(badgeTypeDto: BadgeTypeDto): String =
-        when (badgeTypeDto) {
-            BadgeTypeDto.COAT -> "plášť"
-            BadgeTypeDto.SHIELD -> "štít"
-            BadgeTypeDto.GLASSES -> "brýle"
-            BadgeTypeDto.HEADBAND -> "čelenka"
-            BadgeTypeDto.GLOVES -> "rukavice"
-            BadgeTypeDto.BELT -> "pásek"
-            BadgeTypeDto.SHOES -> "boty"
-            BadgeTypeDto.TOP -> "brnění"
-        }
-
-    private fun intervalToCzech(interval: Int): String =
-        when (interval) {
-            1 -> "$interval rok"
-            2, 3, 4 -> "$interval roky"
-            in 5..100 -> "$interval let"
-            else -> throw LoonoBackendException(HttpStatus.BAD_REQUEST)
-        }
-
-    private fun selfExamObjects(sex: SexDto): Array<String> =
-        when (sex) {
-            SexDto.MALE -> arrayOf("varlata", "varlatech")
-            SexDto.FEMALE -> arrayOf("prsa", "prsou")
-        }
 }

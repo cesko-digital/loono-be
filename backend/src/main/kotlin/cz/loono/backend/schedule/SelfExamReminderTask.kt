@@ -22,7 +22,7 @@ class SelfExamReminderTask(
             val statuses = preventionService.getPreventionStatus(account.uid).selfexaminations
             statuses.forEach {
                 if (account.created.dayOfMonth == today.dayOfMonth && it.plannedDate == null) {
-                    notificationService.sendFirstSelfExamNotification(setOf<Account>(account))
+                    notificationService.sendFirstSelfExamNotification(setOf<Account>(account), SexDto.valueOf(account.sex))
                 }
                 if (it.plannedDate == today) {
                     notificationService.sendSelfExamNotification(setOf<Account>(account), SexDto.valueOf(account.sex))

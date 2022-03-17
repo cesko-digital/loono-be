@@ -15,7 +15,17 @@ data class PushNotification(
     val scheduleTimeOfDay: String,
     @SerializedName("delayed_option")
     val delayedOption: String = "timezone",
-    val data: NotificationData
+    val data: NotificationData,
+    // Android large icon
+    @SerializedName("large_icon")
+    val largeImage: String? = null,
+    // Android large icon
+    @SerializedName("ios_attachments")
+    val iosAttachments: NotificationAttachment? = null,
+)
+
+data class NotificationAttachment(
+    val image: String
 )
 
 data class MultipleLangString(

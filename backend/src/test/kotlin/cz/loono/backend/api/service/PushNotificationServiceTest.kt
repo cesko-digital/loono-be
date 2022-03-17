@@ -149,7 +149,8 @@ class PushNotificationServiceTest(
     fun `first self-exam notification`() {
         val account = createAccount()
 
-        val notificationId = pushNotificationService.sendFirstSelfExamNotification(setOf(account))
+        val notificationId =
+            pushNotificationService.sendFirstSelfExamNotification(setOf(account), SexDto.valueOf(account.sex))
 
         notifications.add(notificationId)
         val storedNotification = OneSignalTestClient.viewNotification(notificationId)
