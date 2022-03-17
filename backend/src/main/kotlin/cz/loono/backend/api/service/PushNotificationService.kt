@@ -74,8 +74,8 @@ class PushNotificationService {
         )
     )
 
-    fun sendFirstSelfExamNotification(accounts: Set<Account>): String =
-        sendPushNotification(NotificationDefinition.getFirstSelfExamNotification(accounts))
+    fun sendFirstSelfExamNotification(accounts: Set<Account>, sex: SexDto): String =
+        sendPushNotification(NotificationDefinition.getFirstSelfExamNotification(accounts, sex))
 
     fun sendSelfExamNotification(accounts: Set<Account>, sex: SexDto): String =
         sendPushNotification(NotificationDefinition.getSelfExamNotification(accounts, sex))

@@ -5,10 +5,11 @@ import cz.loono.backend.api.dto.ExaminationPreventionStatusDto
 import cz.loono.backend.api.dto.ExaminationStatusDto
 import cz.loono.backend.api.dto.ExaminationTypeDto
 import cz.loono.backend.api.dto.PreventionStatusDto
+import cz.loono.backend.api.service.AccountService
 import cz.loono.backend.api.service.PreventionService
 import cz.loono.backend.api.service.PushNotificationService
 import cz.loono.backend.createAccount
-import cz.loono.backend.db.repository.AccountRepository
+import cz.loono.backend.db.model.Account
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.any
@@ -19,16 +20,19 @@ import java.time.LocalDateTime
 
 class PlanNewExamReminderTaskTest {
 
-    private val accountRepository: AccountRepository = mock()
+    private val accountService: AccountService = mock()
     private val preventionService: PreventionService = mock()
     private val notificationService: PushNotificationService = mock()
 
     @Test
     fun `two months ahead notification`() {
-        val planNewExamReminderTask = PlanNewExamReminderTask(accountRepository, preventionService, notificationService)
+        val planNewExamReminderTask = PlanNewExamReminderTask(accountService, preventionService, notificationService)
         val user = createAccount()
 
-        `when`(accountRepository.findAll()).thenReturn(listOf(user))
+        `when`(accountService.paginateOverAccounts(any())).then { invocation ->
+            @Suppress("UNCHECKED_CAST")
+            (invocation.arguments[0] as (List<Account>) -> Unit).invoke(listOf(user))
+        }
         `when`(preventionService.getPreventionStatus(any())).thenReturn(
             PreventionStatusDto(
                 listOf(
@@ -61,10 +65,13 @@ class PlanNewExamReminderTaskTest {
 
     @Test
     fun `a month ahead notification`() {
-        val planNewExamReminderTask = PlanNewExamReminderTask(accountRepository, preventionService, notificationService)
+        val planNewExamReminderTask = PlanNewExamReminderTask(accountService, preventionService, notificationService)
         val user = createAccount()
 
-        `when`(accountRepository.findAll()).thenReturn(listOf(user))
+        `when`(accountService.paginateOverAccounts(any())).then { invocation ->
+            @Suppress("UNCHECKED_CAST")
+            (invocation.arguments[0] as (List<Account>) -> Unit).invoke(listOf(user))
+        }
         `when`(preventionService.getPreventionStatus(any())).thenReturn(
             PreventionStatusDto(
                 listOf(
@@ -98,10 +105,13 @@ class PlanNewExamReminderTaskTest {
 
     @Test
     fun `no last confirmed`() {
-        val planNewExamReminderTask = PlanNewExamReminderTask(accountRepository, preventionService, notificationService)
+        val planNewExamReminderTask = PlanNewExamReminderTask(accountService, preventionService, notificationService)
         val user = createAccount()
 
-        `when`(accountRepository.findAll()).thenReturn(listOf(user))
+        `when`(accountService.paginateOverAccounts(any())).then { invocation ->
+            @Suppress("UNCHECKED_CAST")
+            (invocation.arguments[0] as (List<Account>) -> Unit).invoke(listOf(user))
+        }
         `when`(preventionService.getPreventionStatus(any())).thenReturn(
             PreventionStatusDto(
                 listOf(
@@ -134,10 +144,13 @@ class PlanNewExamReminderTaskTest {
 
     @Test
     fun `without notification`() {
-        val planNewExamReminderTask = PlanNewExamReminderTask(accountRepository, preventionService, notificationService)
+        val planNewExamReminderTask = PlanNewExamReminderTask(accountService, preventionService, notificationService)
         val user = createAccount()
 
-        `when`(accountRepository.findAll()).thenReturn(listOf(user))
+        `when`(accountService.paginateOverAccounts(any())).then { invocation ->
+            @Suppress("UNCHECKED_CAST")
+            (invocation.arguments[0] as (List<Account>) -> Unit).invoke(listOf(user))
+        }
         `when`(preventionService.getPreventionStatus(any())).thenReturn(
             PreventionStatusDto(
                 listOf(

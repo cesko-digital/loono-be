@@ -10,6 +10,8 @@ object NotificationDefinition {
     private const val ONESIGNAL_APP_ID = "234d9f26-44c2-4752-b2d3-24bd93059267"
     private const val MORNING_TIME_TO_NOTIFY = "8:00AM"
     private const val EVENING_TIME_TO_NOTIFY = "6:00PM"
+    private const val URL_TO_NOTIFICATION =
+        "https://loono-backend-lb-2117582078.eu-central-1.elb.amazonaws.com/notification/"
     private val notificationTextManager = NotificationTextManager()
 
     fun getPreventionNotification(accounts: Set<Account>): PushNotification {
@@ -104,10 +106,11 @@ object NotificationDefinition {
         )
     }
 
-    fun getFirstSelfExamNotification(accounts: Set<Account>): PushNotification {
+    fun getFirstSelfExamNotification(accounts: Set<Account>, sex: SexDto): PushNotification {
         val name = "First self-exam notification"
         val title = notificationTextManager.getText("self.first.title")
         val text = notificationTextManager.getText("self.first.text")
+        val imageUrl = "${URL_TO_NOTIFICATION}self-${sex.name.lowercase()}.png"
         return PushNotification(
             appId = ONESIGNAL_APP_ID,
             name = name,
@@ -115,7 +118,9 @@ object NotificationDefinition {
             contents = MultipleLangString(cs = text, en = text),
             includeExternalUserIds = accounts.map { it.uid },
             scheduleTimeOfDay = EVENING_TIME_TO_NOTIFY,
-            data = NotificationData(screen = "self")
+            data = NotificationData(screen = "self"),
+            largeImage = imageUrl,
+            iosAttachments = NotificationAttachment(image = imageUrl)
         )
     }
 
@@ -123,6 +128,7 @@ object NotificationDefinition {
         val name = "Self-exam notification"
         val title = notificationTextManager.getText("self.common.title")
         val text = notificationTextManager.getText("self.common.text", sex)
+        val imageUrl = "${URL_TO_NOTIFICATION}self-${sex.name.lowercase()}.png"
         return PushNotification(
             appId = ONESIGNAL_APP_ID,
             name = name,
@@ -130,7 +136,9 @@ object NotificationDefinition {
             contents = MultipleLangString(cs = text, en = text),
             includeExternalUserIds = accounts.map { it.uid },
             scheduleTimeOfDay = EVENING_TIME_TO_NOTIFY,
-            data = NotificationData(screen = "self")
+            data = NotificationData(screen = "self"),
+            largeImage = imageUrl,
+            iosAttachments = NotificationAttachment(image = imageUrl)
         )
     }
 
