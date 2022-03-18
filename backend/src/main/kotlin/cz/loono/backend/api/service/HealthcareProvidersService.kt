@@ -285,8 +285,8 @@ class HealthcareProvidersService(
             website = website ?: correctedWebsite,
             ico = ico,
             category = category.map(HealthcareCategory::value)
-                .ifEmpty { correctedCategory.map { HealthcareCategory::value } }
-                .filter { !removedCategories.contains(it) } as List<String>,
+                .ifEmpty { correctedCategory.map(HealthcareCategory::value) }
+                .filterNot(removedCategories::contains),
             specialization = specialization,
             careForm = careForm,
             careType = careType,
