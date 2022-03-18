@@ -262,7 +262,7 @@ class HealthcareProvidersService(
             postalCode = postalCode,
             category = category.map(HealthcareCategory::value)
                 .ifEmpty { correctedCategory.map(HealthcareCategory::value) }
-                .filterNot(removedCategories::contains)
+                .filterNot(removedCategories::contains),
             specialization = specialization,
             lat = lat ?: correctedLat!!,
             lng = lng ?: correctedLng!!
