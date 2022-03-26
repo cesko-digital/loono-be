@@ -1,5 +1,7 @@
+CREATE SEQUENCE account_seq;
+
 CREATE TABLE account (
-                                id bigint PRIMARY KEY,
+                                id bigint PRIMARY KEY DEFAULT nextval('account_seq'),
                                 appointment_reminder_emails_opt_in boolean NOT NULL,
                                 birthdate date NOT NULL,
                                 leaderboard_anonymization_opt_in boolean NOT NULL,
@@ -20,8 +22,10 @@ CREATE TABLE badge (
                               level integer NOT NULL
 );
 
+CREATE SEQUENCE examination_record_seq;
+
 CREATE TABLE examination_record (
-                                           id bigint PRIMARY KEY,
+                                           id bigint PRIMARY KEY DEFAULT nextval('examination_record_seq'),
                                            first_exam boolean NOT NULL,
                                            planned_date timestamp without time zone,
                                            status text NOT NULL,
@@ -30,8 +34,10 @@ CREATE TABLE examination_record (
                                            account_id bigint NOT NULL
 );
 
+CREATE SEQUENCE healthcare_category_seq;
+
 CREATE TABLE healthcare_category (
-                                            id bigint PRIMARY KEY,
+                                            id bigint PRIMARY KEY DEFAULT nextval('healthcare_category_seq'),
                                             value text NOT NULL
 );
 
@@ -99,8 +105,10 @@ CREATE TABLE revinfo (
                                 revtstmp bigint
 );
 
+CREATE SEQUENCE selfexamination_record_seq;
+
 CREATE TABLE selfexamination_record (
-                                               id bigint PRIMARY KEY,
+                                               id bigint PRIMARY KEY DEFAULT nextval('healthcare_category_seq'),
                                                due_date date,
                                                result text,
                                                status text NOT NULL,

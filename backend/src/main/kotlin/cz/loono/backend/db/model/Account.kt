@@ -18,7 +18,7 @@ import javax.persistence.Table
 data class Account(
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
     @Column(nullable = false, columnDefinition = "TEXT", unique = true)
