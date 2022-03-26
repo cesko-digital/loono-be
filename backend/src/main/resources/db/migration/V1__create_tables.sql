@@ -1,4 +1,9 @@
-CREATE SEQUENCE account_seq;
+CREATE SEQUENCE account_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
 CREATE TABLE account (
                                 id bigint PRIMARY KEY DEFAULT nextval('account_seq'),
@@ -22,7 +27,12 @@ CREATE TABLE badge (
                               level integer NOT NULL
 );
 
-CREATE SEQUENCE examination_record_seq;
+CREATE SEQUENCE examination_record_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
 CREATE TABLE examination_record (
                                            id bigint PRIMARY KEY DEFAULT nextval('examination_record_seq'),
@@ -34,7 +44,12 @@ CREATE TABLE examination_record (
                                            account_id bigint NOT NULL
 );
 
-CREATE SEQUENCE healthcare_category_seq;
+CREATE SEQUENCE healthcare_category_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
 
 CREATE TABLE healthcare_category (
                                             id bigint PRIMARY KEY DEFAULT nextval('healthcare_category_seq'),
@@ -105,7 +120,13 @@ CREATE TABLE revinfo (
                                 revtstmp bigint
 );
 
-CREATE SEQUENCE selfexamination_record_seq;
+CREATE SEQUENCE selfexamination_record_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+;
 
 CREATE TABLE selfexamination_record (
                                                id bigint PRIMARY KEY DEFAULT nextval('healthcare_category_seq'),

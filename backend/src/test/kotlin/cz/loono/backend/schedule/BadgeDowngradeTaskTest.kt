@@ -12,8 +12,11 @@ import cz.loono.backend.createAccount
 import cz.loono.backend.db.model.Badge
 import cz.loono.backend.db.model.ExaminationRecord
 import cz.loono.backend.db.repository.AccountRepository
+import cz.loono.backend.utils.SequenceResetExtension
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import org.springframework.boot.test.context.SpringBootTest
@@ -36,10 +39,16 @@ import java.time.LocalDateTime
     ExaminationRecordService::class
 )
 @Transactional
+@ExtendWith(SequenceResetExtension::class)
 class BadgeDowngradeTaskTest(
     private val badgeDowngradeTask: BadgeDowngradeTask,
     private val accountRepository: AccountRepository
 ) {
+
+    @AfterEach
+    fun setUp() {
+        accountRepository.deleteAll()
+    }
 
     @Test
     fun `Should correctly downgrade badges`() {
