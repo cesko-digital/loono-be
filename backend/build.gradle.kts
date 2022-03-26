@@ -47,6 +47,7 @@ dependencies {
     implementation("org.hibernate:hibernate-entitymanager:$hibernateVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.flywaydb:flyway-core:8.5.1")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.2.1")
 
     testRuntimeOnly("com.h2database:h2")
 
