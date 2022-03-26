@@ -6,7 +6,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest(properties = ["spring.profiles.active=test"])
-
 @Transactional
 class ServerPropertiesRepositoryTest(
     private val serverPropsRepo: ServerPropertiesRepository
