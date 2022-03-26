@@ -9,7 +9,8 @@ CREATE TABLE account (
                                 preferred_email text NOT NULL,
                                 profile_image_url text,
                                 sex text NOT NULL,
-                                uid text NOT NULL
+                                uid text NOT NULL,
+                                created date NOT NULL
 );
 
 CREATE TABLE badge (
@@ -71,7 +72,13 @@ CREATE TABLE healthcare_provider (
                                             street text,
                                             substitute text,
                                             title text NOT NULL,
-                                            website text
+                                            website text,
+                                            corrected_lat           double precision,
+                                            corrected_lng           double precision,
+                                            corrected_phone_number  text,
+                                            corrected_website       text,
+                                            last_update             timestamp,
+                                            last_updated            timestamp
 );
 
 CREATE TABLE healthcare_provider_category (
@@ -110,10 +117,15 @@ CREATE TABLE server_properties (
                                           super_user_password text NOT NULL
 );
 
+CREATE TABLE corrected_healthcare_provider_category
+(
+    institution_id bigint not null,
+    location_id    bigint not null,
+    id             bigint not null
+);
 
 ALTER TABLE ONLY badge
     ADD CONSTRAINT pkey_badge PRIMARY KEY (account_id, type);
-
 
 ALTER TABLE ONLY healthcare_provider_category
     ADD CONSTRAINT pkey_healthcare_provider_category PRIMARY KEY (institution_id, location_id, id);
@@ -144,3 +156,9 @@ ALTER TABLE ONLY healthcare_provider_category
 
 ALTER TABLE ONLY healthcare_provider_category
     ADD CONSTRAINT fk_healthcare_provider_category_hc_prov FOREIGN KEY (institution_id, location_id) REFERENCES healthcare_provider(institution_id, location_id);
+
+ALTER TABLE ONLY corrected_healthcare_provider_category
+    ADD CONSTRAINT pkey_corrected_healthcare_provider_category PRIMARY KEY(institution_id, location_id);
+
+ALTER TABLE ONLY corrected_healthcare_provider_category
+    ADD CONSTRAINT fkey_corrected_healthcare_provider_category FOREIGN KEY (institution_id, location_id) REFERENCES healthcare_provider(institution_id, location_id);

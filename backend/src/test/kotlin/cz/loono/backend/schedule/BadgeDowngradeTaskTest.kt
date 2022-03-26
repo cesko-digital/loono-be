@@ -3,6 +3,9 @@ package cz.loono.backend.schedule
 import cz.loono.backend.api.dto.BadgeTypeDto
 import cz.loono.backend.api.dto.ExaminationStatusDto
 import cz.loono.backend.api.dto.ExaminationTypeDto
+import cz.loono.backend.api.service.AccountService
+import cz.loono.backend.api.service.ExaminationRecordService
+import cz.loono.backend.api.service.FirebaseAuthService
 import cz.loono.backend.api.service.PreventionService
 import cz.loono.backend.configuration.ClockConfiguration
 import cz.loono.backend.createAccount
@@ -24,12 +27,18 @@ import java.time.Instant
 import java.time.LocalDateTime
 
 @SpringBootTest(properties = ["spring.profiles.active=test"])
-
-@Import(BadgeDowngradeTask::class, PreventionService::class, ClockConfiguration::class)
+@Import(
+    BadgeDowngradeTask::class,
+    PreventionService::class,
+    ClockConfiguration::class,
+    AccountService::class,
+    FirebaseAuthService::class,
+    ExaminationRecordService::class
+)
 @Transactional
 class BadgeDowngradeTaskTest(
     private val badgeDowngradeTask: BadgeDowngradeTask,
-    private val accountRepository: AccountRepository,
+    private val accountRepository: AccountRepository
 ) {
 
     @Test

@@ -11,7 +11,8 @@ CREATE TABLE account_aud (
                              preferred_email text,
                              profile_image_url text,
                              sex text,
-                             uid text
+                             uid text,
+                             created date
 );
 
 CREATE TABLE badge_aud (
@@ -81,7 +82,13 @@ CREATE TABLE healthcare_provider_aud (
                                          street text,
                                          substitute text,
                                          title text,
-                                         website text
+                                         website text,
+                                         corrected_lat           double precision,
+                                         corrected_lng           double precision,
+                                         corrected_phone_number  text,
+                                         corrected_website       text,
+                                         last_update             timestamp,
+                                         last_updated            timestamp
 );
 
 CREATE TABLE healthcare_provider_category_aud (
@@ -104,6 +111,19 @@ CREATE TABLE selfexamination_record_aud (
                                             waiting_to date,
                                             account_id bigint
 );
+
+
+CREATE TABLE corrected_healthcare_provider_category_aud
+(
+    rev            integer not null,
+    institution_id bigint  not null,
+    location_id    bigint  not null,
+    id             bigint  not null,
+    revtype        smallint
+);
+
+ALTER TABLE ONLY corrected_healthcare_provider_category_aud
+    ADD CONSTRAINT pkey_corrected_healthcare_provider_category_aud PRIMARY KEY(rev, institution_id, location_id, id);
 
 ALTER TABLE ONLY account_aud
     ADD CONSTRAINT pkey_account_aud PRIMARY KEY (id, rev);
