@@ -210,9 +210,9 @@ class ExaminationRecordService(
             selfExaminationRecordRepository.findAllByAccountAndTypeOrderByDueDateDesc(account, type)
                 .filter { it.status == SelfExaminationStatusDto.WAITING_FOR_RESULT }
         examWaitingForResult.ifEmpty {
-           examWaitingForResult =
-               selfExaminationRecordRepository.findAllByAccountAndTypeOrderByDueDateDesc(account, type)
-               .filter { it.status == SelfExaminationStatusDto.WAITING_FOR_CHECKUP }
+            examWaitingForResult =
+                selfExaminationRecordRepository.findAllByAccountAndTypeOrderByDueDateDesc(account, type)
+                    .filter { it.status == SelfExaminationStatusDto.WAITING_FOR_CHECKUP }
         }
         examWaitingForResult.ifEmpty {
             throw throw LoonoBackendException(
@@ -294,7 +294,11 @@ class ExaminationRecordService(
             }
         }
 
-    private fun plannedDateInAcceptedInterval(date: LocalDateTime, account: Account, record: ExaminationRecordDto): Boolean {
+    private fun plannedDateInAcceptedInterval(
+        date: LocalDateTime,
+        account: Account,
+        record: ExaminationRecordDto
+    ): Boolean {
         val interval =
             preventionService.getExaminationRequests(account).first { it.examinationType == record.type }
         val lastConfirmed = examinationRecordRepository.findAllByAccountOrderByPlannedDateDesc(account)
