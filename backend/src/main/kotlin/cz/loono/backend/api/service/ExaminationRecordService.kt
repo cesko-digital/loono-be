@@ -206,19 +206,31 @@ class ExaminationRecordService(
         uid: String
     ): SelfExaminationFindingResponseDto {
         val account = prerequisitesValidation(uid, type)
-        val examWaitingForResult =
+        var examWaitingForResult =
             selfExaminationRecordRepository.findAllByAccountAndTypeOrderByDueDateDesc(account, type)
-                .first { it.status == SelfExaminationStatusDto.WAITING_FOR_RESULT }
+                .filter { it.status == SelfExaminationStatusDto.WAITING_FOR_RESULT }
+        examWaitingForResult.ifEmpty {
+           examWaitingForResult =
+               selfExaminationRecordRepository.findAllByAccountAndTypeOrderByDueDateDesc(account, type)
+               .filter { it.status == SelfExaminationStatusDto.WAITING_FOR_CHECKUP }
+        }
+        examWaitingForResult.ifEmpty {
+            throw throw LoonoBackendException(
+                HttpStatus.CONFLICT,
+                "400",
+                "Result cannot be processed."
+            )
+        }
         when (result.result) {
             SelfExaminationResultDto.Result.OK -> {
-                completeSelfExamAsOK(examWaitingForResult)
+                completeSelfExamAsOK(examWaitingForResult.first())
                 return SelfExaminationFindingResponseDto(
                     message = "Result completed as OK."
                 )
             }
             SelfExaminationResultDto.Result.NOT_OK -> {
                 selfExaminationRecordRepository.save(
-                    examWaitingForResult.copy(
+                    examWaitingForResult.first().copy(
                         result = SelfExaminationResultDto.Result.NOT_OK,
                         status = SelfExaminationStatusDto.COMPLETED
                     )
