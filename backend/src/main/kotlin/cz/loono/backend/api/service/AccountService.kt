@@ -158,4 +158,22 @@ class AccountService(
             page = accountsPage.nextPageable()
         } while (accountsPage.hasNext())
     }
+
+    fun login(uid: String) {
+        val account = accountRepository.findByUid(uid) ?: throw LoonoBackendException(
+            status = HttpStatus.NOT_FOUND,
+            errorCode = "404",
+            errorMessage = "The account not found."
+        )
+        accountRepository.save(account.copy(active = true))
+    }
+
+    fun logout(uid: String) {
+        val account = accountRepository.findByUid(uid) ?: throw LoonoBackendException(
+            status = HttpStatus.NOT_FOUND,
+            errorCode = "404",
+            errorMessage = "The account not found."
+        )
+        accountRepository.save(account.copy(active = false))
+    }
 }

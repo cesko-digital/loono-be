@@ -60,7 +60,13 @@ data class Account(
     val badges: Set<Badge> = mutableSetOf(),
 
     @Column(nullable = false)
-    val created: LocalDate = LocalDate.now()
+    val created: LocalDate = LocalDate.now(),
+
+    @Column(nullable = false)
+    val active: Boolean = true,
+
+    @Column(nullable = false)
+    val notify: Boolean = true,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
