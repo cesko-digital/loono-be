@@ -160,12 +160,18 @@ class AccountService(
     }
 
     fun login(uid: String) {
-        val account = accountRepository.findByUid(uid) ?: throw LoonoBackendException(
+    fun login(uid: String) =
+        accountRepository.findByUid(uid)?.let {
+            accountRepository.save(it.copy(active = true))
+        } ?: throw404() 
+        
+    private fun throw404(): Nothing {
+        throw LoonoBackendException(
             status = HttpStatus.NOT_FOUND,
             errorCode = "404",
             errorMessage = "The account not found."
         )
-        accountRepository.save(account.copy(active = true))
+    }
     }
 
     fun logout(uid: String) {
