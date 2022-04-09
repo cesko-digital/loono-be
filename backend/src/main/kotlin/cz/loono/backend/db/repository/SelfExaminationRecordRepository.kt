@@ -13,4 +13,6 @@ interface SelfExaminationRecordRepository : CrudRepository<SelfExaminationRecord
     fun findAllByAccount(account: Account): Set<SelfExaminationRecord>
     fun findAllByAccountAndTypeOrderByDueDateDesc(account: Account, type: SelfExaminationTypeDto): List<SelfExaminationRecord>
     fun deleteAllByAccount(account: Account)
+
+    fun findFirstByAccountAndTypeOrderByDueDateDesc(account: Account, type: SelfExaminationTypeDto): SelfExaminationRecord
 }

@@ -24,6 +24,7 @@ import kotlin.io.path.getLastModifiedTime
 
 @SpringBootTest(properties = ["spring.profiles.active=test"])
 @Transactional
+@Disabled
 class HealthcareProvidersServiceTest(
     private val healthcareProviderRepository: HealthcareProviderRepository,
     private val healthcareCategoryRepository: HealthcareCategoryRepository,

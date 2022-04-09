@@ -135,7 +135,7 @@ class AccountService(
         AccountDto(
             uid = account.uid,
             nickname = account.nickname,
-            sex = SexDto.valueOf(account.sex),
+            sex = account.getSexAsEnum(),
             birthdate = account.birthdate,
             profileImageUrl = account.profileImageUrl,
             points = account.points,
@@ -144,7 +144,7 @@ class AccountService(
             leaderboardAnonymizationOptIn = account.leaderboardAnonymizationOptIn,
             newsletterOptIn = account.newsletterOptIn,
             badges = account.badges
-                .map { BadgeDto(type = BadgeTypeDto.valueOf(it.type), level = it.level) }
+                .map { BadgeDto(type = it.getBadgeAsEnum(), level = it.level) }
                 .sortedBy(BadgeDto::type)
         )
 

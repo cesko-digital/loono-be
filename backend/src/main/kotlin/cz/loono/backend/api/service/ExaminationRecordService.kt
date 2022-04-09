@@ -117,7 +117,7 @@ class ExaminationRecordService(
                 }
             }
         }
-        val reward = BadgesPointsProvider.getBadgesAndPoints(type, SexDto.valueOf(account.sex))
+        val reward = BadgesPointsProvider.getSelfExaminationBadgesAndPoints(type)
             ?: throw LoonoBackendException(HttpStatus.BAD_REQUEST)
         selfExams.forEach exams@{
             when (it.status) {
@@ -368,7 +368,7 @@ class ExaminationRecordService(
         val exam = examinationRecordRepository.findByUuidAndAccount(examUuid, account)
         exam.status = state
         val badgeToPoints =
-            BadgesPointsProvider.getBadgesAndPoints(exam.type, SexDto.valueOf(account.sex))
+            BadgesPointsProvider.getGeneralBadgesAndPoints(exam.type, account.getSexAsEnum())
         val updatedAccount = updateWithBadgeAndPoints(badgeToPoints, account)
         accountRepository.save(updatedAccount)
 
@@ -398,7 +398,7 @@ class ExaminationRecordService(
         if (isEligibleForReward(examinationRecordDto)) {
             // Null validation done before this function called, thus using double-bang operator
             val acc = accountRepository.findByUid(accountUuid)!!
-            val reward = BadgesPointsProvider.getBadgesAndPoints(examinationRecordDto.type, SexDto.valueOf(acc.sex))
+            val reward = BadgesPointsProvider.getGeneralBadgesAndPoints(examinationRecordDto.type, acc.getSexAsEnum())
             val updatedAccount = updateWithBadgeAndPoints(reward, acc)
             accountRepository.save(updatedAccount)
         }
