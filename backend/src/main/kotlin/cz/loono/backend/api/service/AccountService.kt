@@ -4,7 +4,6 @@ import cz.loono.backend.api.dto.AccountDto
 import cz.loono.backend.api.dto.AccountOnboardingDto
 import cz.loono.backend.api.dto.AccountUpdateDto
 import cz.loono.backend.api.dto.BadgeDto
-import cz.loono.backend.api.dto.BadgeTypeDto
 import cz.loono.backend.api.dto.ExaminationTypeDto
 import cz.loono.backend.api.dto.SexDto
 import cz.loono.backend.api.exception.LoonoBackendException
