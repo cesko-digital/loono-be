@@ -159,20 +159,10 @@ class AccountService(
         } while (accountsPage.hasNext())
     }
 
-    fun login(uid: String) {
     fun login(uid: String) =
         accountRepository.findByUid(uid)?.let {
             accountRepository.save(it.copy(active = true))
-        } ?: throw404() 
-        
-    private fun throw404(): Nothing {
-        throw LoonoBackendException(
-            status = HttpStatus.NOT_FOUND,
-            errorCode = "404",
-            errorMessage = "The account not found."
-        )
-    }
-    }
+        } ?: throw404()
 
     fun logout(uid: String) =
         accountRepository.findByUid(uid)?.let {
