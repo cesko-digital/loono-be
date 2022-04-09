@@ -10,6 +10,7 @@ import cz.loono.backend.db.repository.HealthcareCategoryRepository
 import cz.loono.backend.db.repository.HealthcareProviderRepository
 import cz.loono.backend.db.repository.ServerPropertiesRepository
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.boot.test.context.SpringBootTest

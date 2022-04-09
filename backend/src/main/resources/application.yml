@@ -3,14 +3,14 @@ spring:
   # Database
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://127.0.0.1:5432/postgres
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://${POSTGRE_URL}
+    username: ${POSTGRE_USER}
+    password: ${POSTGRE_PWD}
   # JPA properties
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: true
+    show-sql: false
     database: postgresql
     generate-ddl: true
     open-in-view: true
