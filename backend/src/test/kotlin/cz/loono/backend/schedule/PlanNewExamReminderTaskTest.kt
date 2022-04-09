@@ -5,9 +5,9 @@ import cz.loono.backend.api.dto.ExaminationPreventionStatusDto
 import cz.loono.backend.api.dto.ExaminationStatusDto
 import cz.loono.backend.api.dto.ExaminationTypeDto
 import cz.loono.backend.api.dto.PreventionStatusDto
-import cz.loono.backend.api.service.AccountService
-import cz.loono.backend.api.service.PreventionService
-import cz.loono.backend.api.service.PushNotificationService
+import cz.loono.backend.api.v1.service.AccountServiceV1
+import cz.loono.backend.api.v1.service.PreventionServiceV1
+import cz.loono.backend.api.v1.service.PushNotificationServiceV1
 import cz.loono.backend.createAccount
 import cz.loono.backend.db.model.Account
 import org.junit.jupiter.api.Test
@@ -20,9 +20,9 @@ import java.time.LocalDateTime
 
 class PlanNewExamReminderTaskTest {
 
-    private val accountService: AccountService = mock()
-    private val preventionService: PreventionService = mock()
-    private val notificationService: PushNotificationService = mock()
+    private val accountService: AccountServiceV1 = mock()
+    private val preventionService: PreventionServiceV1 = mock()
+    private val notificationService: PushNotificationServiceV1 = mock()
 
     @Test
     fun `two months ahead notification`() {

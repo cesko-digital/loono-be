@@ -1,7 +1,7 @@
 package cz.loono.backend.schedule
 
-import cz.loono.backend.api.service.PreventionService
-import cz.loono.backend.api.service.PushNotificationService
+import cz.loono.backend.api.v1.service.PreventionServiceV1
+import cz.loono.backend.api.v1.service.PushNotificationServiceV1
 import cz.loono.backend.db.model.Account
 import cz.loono.backend.db.repository.AccountRepository
 import org.springframework.stereotype.Component
@@ -10,8 +10,8 @@ import java.time.LocalDate
 @Component
 class SelfExamReminderTask(
     private val accountRepository: AccountRepository,
-    private val preventionService: PreventionService,
-    private val notificationService: PushNotificationService
+    private val preventionService: PreventionServiceV1,
+    private val notificationService: PushNotificationServiceV1
 ) : DailySchedulerTask {
 
     override fun run() {

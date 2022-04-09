@@ -1,7 +1,7 @@
 package cz.loono.backend.api
 
 import cz.loono.backend.api.exception.LoonoBackendException
-import cz.loono.backend.api.service.JwtAuthService
+import cz.loono.backend.api.v1.service.JwtAuthServiceV1
 import cz.loono.backend.security.BearerTokenAuthenticator
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -70,7 +70,7 @@ class BearerTokenAuthenticatorTest {
     fun `AuthService error reason is reported back with 401`() {
         val response = mock<HttpServletResponse>(defaultAnswer = { fail("Shouldn't touch the response.") })
         val expectedReason = "Failure reason"
-        val authenticator = BearerTokenAuthenticator { JwtAuthService.VerificationResult.Error(expectedReason) }
+        val authenticator = BearerTokenAuthenticator { JwtAuthServiceV1.VerificationResult.Error(expectedReason) }
         val request = MockHttpServletRequest().apply {
             addHeader("Authorization", "Bearer token")
         }
@@ -88,7 +88,7 @@ class BearerTokenAuthenticatorTest {
     fun `valid token saves basic user data to attributes`() {
         val decodedUser = BasicUser("uid", "email@example.com", "Zilvar z chudobince", URL("https://example.com/"))
         val authenticator = BearerTokenAuthenticator {
-            JwtAuthService.VerificationResult.Success(decodedUser)
+            JwtAuthServiceV1.VerificationResult.Success(decodedUser)
         }
         val request = MockHttpServletRequest().apply {
             addHeader("Authorization", "Bearer token")

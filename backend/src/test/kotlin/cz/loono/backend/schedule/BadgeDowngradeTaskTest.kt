@@ -5,10 +5,10 @@ import cz.loono.backend.api.dto.ExaminationStatusDto
 import cz.loono.backend.api.dto.ExaminationTypeDto
 import cz.loono.backend.api.dto.SelfExaminationResultDto
 import cz.loono.backend.api.dto.SelfExaminationTypeDto
-import cz.loono.backend.api.service.AccountService
-import cz.loono.backend.api.service.ExaminationRecordService
-import cz.loono.backend.api.service.FirebaseAuthService
-import cz.loono.backend.api.service.PreventionService
+import cz.loono.backend.api.v1.service.AccountServiceV1
+import cz.loono.backend.api.v1.service.ExaminationRecordServiceV1
+import cz.loono.backend.api.v1.service.FirebaseAuthServiceV1
+import cz.loono.backend.api.v1.service.PreventionServiceV1
 import cz.loono.backend.configuration.ClockConfiguration
 import cz.loono.backend.createAccount
 import cz.loono.backend.db.model.Badge
@@ -37,18 +37,18 @@ import java.time.LocalDateTime
 @SpringBootTest(properties = ["spring.profiles.active=test"])
 @Import(
     BadgeDowngradeTask::class,
-    PreventionService::class,
+    PreventionServiceV1::class,
     ClockConfiguration::class,
-    AccountService::class,
-    FirebaseAuthService::class,
-    ExaminationRecordService::class
+    AccountServiceV1::class,
+    FirebaseAuthServiceV1::class,
+    ExaminationRecordServiceV1::class
 )
 @Transactional
 @ExtendWith(SequenceResetExtension::class)
 class BadgeDowngradeTaskTest(
     private val badgeDowngradeTask: BadgeDowngradeTask,
     private val accountRepository: AccountRepository,
-    private val examinationRecordService: ExaminationRecordService,
+    private val examinationRecordService: ExaminationRecordServiceV1,
     private val selfExaminationRecordRepository: SelfExaminationRecordRepository,
 ) {
 

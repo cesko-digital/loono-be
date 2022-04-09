@@ -1,7 +1,7 @@
 package cz.loono.backend.schedule
 
 import cz.loono.backend.api.dto.SelfExaminationStatusDto
-import cz.loono.backend.api.service.PushNotificationService
+import cz.loono.backend.api.v1.service.PushNotificationServiceV1
 import cz.loono.backend.db.repository.SelfExaminationRecordRepository
 import org.springframework.stereotype.Component
 import java.time.LocalDate
@@ -9,7 +9,7 @@ import java.time.LocalDate
 @Component
 class SelfExaminationWaitingTask(
     private val selfExaminationRecordRepository: SelfExaminationRecordRepository,
-    private val notificationService: PushNotificationService
+    private val notificationService: PushNotificationServiceV1
 ) : DailySchedulerTask {
 
     override fun run() {

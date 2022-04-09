@@ -1,16 +1,16 @@
 package cz.loono.backend.schedule
 
 import cz.loono.backend.api.dto.ExaminationStatusDto
-import cz.loono.backend.api.service.ExaminationRecordService
-import cz.loono.backend.api.service.PreventionService
+import cz.loono.backend.api.v1.service.ExaminationRecordServiceV1
+import cz.loono.backend.api.v1.service.PreventionServiceV1
 import cz.loono.backend.db.repository.ExaminationRecordRepository
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
 @Component
 class ExaminationCancellationTask(
-    private val preventionService: PreventionService,
-    private val examinationRecordService: ExaminationRecordService,
+    private val preventionService: PreventionServiceV1,
+    private val examinationRecordService: ExaminationRecordServiceV1,
     private val examinationRecordRepository: ExaminationRecordRepository
 ) : DailySchedulerTask {
 

@@ -2,7 +2,7 @@ package cz.loono.backend.schedule
 
 import cz.loono.backend.api.dto.SelfExaminationStatusDto
 import cz.loono.backend.api.dto.SelfExaminationTypeDto
-import cz.loono.backend.api.service.PushNotificationService
+import cz.loono.backend.api.v1.service.PushNotificationServiceV1
 import cz.loono.backend.createAccount
 import cz.loono.backend.db.model.SelfExaminationRecord
 import cz.loono.backend.db.repository.SelfExaminationRecordRepository
@@ -17,7 +17,7 @@ import java.time.LocalDate
 class SelfExaminationWaitingTaskTest {
 
     private var selfExaminationRecordRepository: SelfExaminationRecordRepository = mock()
-    private val notificationService: PushNotificationService = mock()
+    private val notificationService: PushNotificationServiceV1 = mock()
 
     @Test
     fun `still waiting`() {
