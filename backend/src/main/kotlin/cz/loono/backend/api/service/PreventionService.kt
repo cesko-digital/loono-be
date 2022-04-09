@@ -115,7 +115,7 @@ class PreventionService(
         SelfExaminationTypeDto.values().forEach { type ->
             val filteredExams =
                 selfExams.filter { exam -> exam.type == type && exam.result != SelfExaminationResultDto.Result.NOT_OK }
-            val rewards = BadgesPointsProvider.getSelfExaminationBadgesAndPoints(type)
+            val rewards = BadgesPointsProvider.getSelfExaminationBadgesAndPoints(type, account.getSexAsEnum())
             when {
                 filteredExams.isNotEmpty() && rewards != null -> {
                     val activeExam =

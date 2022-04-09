@@ -27,9 +27,11 @@ object BadgesPointsProvider {
             )
         }
 
-    fun getSelfExaminationBadgesAndPoints(selfExamType: SelfExaminationTypeDto): Pair<BadgeTypeDto, Int>? =
-        selfExamType.takeIf { it in listOf(SelfExaminationTypeDto.BREAST, SelfExaminationTypeDto.TESTICULAR) }?.let {
-            BadgeTypeDto.SHIELD to 50
+    fun getSelfExaminationBadgesAndPoints(selfExamType: SelfExaminationTypeDto, sex: SexDto): Pair<BadgeTypeDto, Int>? =
+        when {
+            selfExamType == SelfExaminationTypeDto.BREAST && sex == SexDto.FEMALE -> BadgeTypeDto.SHIELD to 50
+            selfExamType == SelfExaminationTypeDto.TESTICULAR && sex == SexDto.MALE -> BadgeTypeDto.SHIELD to 50
+            else -> null
         }
 
     fun getSelfExaminationType(badgeTypeDto: BadgeTypeDto, sex: SexDto) =

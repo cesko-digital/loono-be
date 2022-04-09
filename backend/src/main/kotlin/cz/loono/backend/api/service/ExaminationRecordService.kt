@@ -116,7 +116,7 @@ class ExaminationRecordService(
                 }
             }
         }
-        val reward = BadgesPointsProvider.getSelfExaminationBadgesAndPoints(type)
+        val reward = BadgesPointsProvider.getSelfExaminationBadgesAndPoints(type, account.getSexAsEnum())
             ?: throw LoonoBackendException(HttpStatus.BAD_REQUEST)
         selfExams.forEach exams@{
             when (it.status) {
