@@ -20,7 +20,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 class PreventionServiceTest {
 

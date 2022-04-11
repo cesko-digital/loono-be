@@ -405,7 +405,7 @@ class ExaminationRecordService(
 
     private fun isEligibleForReward(isFirstOrStatusChanged: Boolean, erd: ExaminationRecordDto) =
         now().let { now ->
-            (erd.status in setOf(ExaminationStatusDto.CONFIRMED, ExaminationStatusDto.UNKNOWN)) &&
+            isFirstOrStatusChanged && (erd.status in setOf(ExaminationStatusDto.CONFIRMED, ExaminationStatusDto.UNKNOWN)) &&
                 (erd.plannedDate?.isBefore(now) ?: false && ChronoUnit.YEARS.between(now, erd.plannedDate) < 2)
         }
 

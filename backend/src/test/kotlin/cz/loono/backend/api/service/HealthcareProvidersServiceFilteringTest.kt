@@ -14,7 +14,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
-import java.util.*
+import java.util.Optional
 
 class HealthcareProvidersServiceFilteringTest {
 

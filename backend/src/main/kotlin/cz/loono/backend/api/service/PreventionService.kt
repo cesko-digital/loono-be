@@ -92,10 +92,7 @@ class PreventionService(
         val totalCountOfConfirmedExams = confirmedExamsOfCurrentType.size
 
         val rewards =
-            BadgesPointsProvider.getGeneralBadgesAndPoints(
-                examinationInterval.examinationType,
-                account.getSexAsEnum()
-            )
+            BadgesPointsProvider.getGeneralBadgesAndPoints(examinationInterval.examinationType, account.getSexAsEnum())
 
         ExaminationPreventionStatusDto(
             uuid = sortedExamsOfType[0].uuid,
