@@ -10,14 +10,14 @@ class ExaminationIntervalProviderTest {
     fun `female 19`() {
         Assertions.assertEquals(
             listOf(
-                ExaminationIntervalV1(ExaminationTypeDto.GENERAL_PRACTITIONER, 2, 1),
-                ExaminationIntervalV1(ExaminationTypeDto.GYNECOLOGIST, 1, 3),
-                ExaminationIntervalV1(ExaminationTypeDto.DERMATOLOGIST, 1, 6),
-                ExaminationIntervalV1(ExaminationTypeDto.ULTRASOUND_BREAST, 2, 7),
-                ExaminationIntervalV1(ExaminationTypeDto.DENTIST, 1, 8),
-                ExaminationIntervalV1(ExaminationTypeDto.OPHTHALMOLOGIST, 2, 9),
+                ExaminationInterval(ExaminationTypeDto.GENERAL_PRACTITIONER, 2, 1),
+                ExaminationInterval(ExaminationTypeDto.GYNECOLOGIST, 1, 3),
+                ExaminationInterval(ExaminationTypeDto.DERMATOLOGIST, 1, 6),
+                ExaminationInterval(ExaminationTypeDto.ULTRASOUND_BREAST, 2, 7),
+                ExaminationInterval(ExaminationTypeDto.DENTIST, 1, 8),
+                ExaminationInterval(ExaminationTypeDto.OPHTHALMOLOGIST, 2, 9),
             ),
-            ExaminationIntervalProviderV1.findExaminationRequests(PatientV1(19, SexDto.FEMALE)),
+            ExaminationIntervalProvider.findExaminationRequests(Patient(19, SexDto.FEMALE)),
         )
     }
 
@@ -25,15 +25,15 @@ class ExaminationIntervalProviderTest {
     fun `female 50`() {
         Assertions.assertEquals(
             listOf(
-                ExaminationIntervalV1(ExaminationTypeDto.GENERAL_PRACTITIONER, 2, 1),
-                ExaminationIntervalV1(ExaminationTypeDto.MAMMOGRAM, 2, 2),
-                ExaminationIntervalV1(ExaminationTypeDto.GYNECOLOGIST, 1, 3),
-                ExaminationIntervalV1(ExaminationTypeDto.COLONOSCOPY, 10, 4),
-                ExaminationIntervalV1(ExaminationTypeDto.DERMATOLOGIST, 1, 6),
-                ExaminationIntervalV1(ExaminationTypeDto.DENTIST, 1, 8),
-                ExaminationIntervalV1(ExaminationTypeDto.OPHTHALMOLOGIST, 4, 9),
+                ExaminationInterval(ExaminationTypeDto.GENERAL_PRACTITIONER, 2, 1),
+                ExaminationInterval(ExaminationTypeDto.MAMMOGRAM, 2, 2),
+                ExaminationInterval(ExaminationTypeDto.GYNECOLOGIST, 1, 3),
+                ExaminationInterval(ExaminationTypeDto.COLONOSCOPY, 10, 4),
+                ExaminationInterval(ExaminationTypeDto.DERMATOLOGIST, 1, 6),
+                ExaminationInterval(ExaminationTypeDto.DENTIST, 1, 8),
+                ExaminationInterval(ExaminationTypeDto.OPHTHALMOLOGIST, 4, 9),
             ),
-            ExaminationIntervalProviderV1.findExaminationRequests(PatientV1(50, SexDto.FEMALE)),
+            ExaminationIntervalProvider.findExaminationRequests(Patient(50, SexDto.FEMALE)),
         )
     }
 
@@ -41,12 +41,12 @@ class ExaminationIntervalProviderTest {
     fun `male 19`() {
         Assertions.assertEquals(
             listOf(
-                ExaminationIntervalV1(ExaminationTypeDto.GENERAL_PRACTITIONER, 2, 1),
-                ExaminationIntervalV1(ExaminationTypeDto.DERMATOLOGIST, 1, 6),
-                ExaminationIntervalV1(ExaminationTypeDto.DENTIST, 1, 8),
-                ExaminationIntervalV1(ExaminationTypeDto.OPHTHALMOLOGIST, 2, 9),
+                ExaminationInterval(ExaminationTypeDto.GENERAL_PRACTITIONER, 2, 1),
+                ExaminationInterval(ExaminationTypeDto.DERMATOLOGIST, 1, 6),
+                ExaminationInterval(ExaminationTypeDto.DENTIST, 1, 8),
+                ExaminationInterval(ExaminationTypeDto.OPHTHALMOLOGIST, 2, 9),
             ),
-            ExaminationIntervalProviderV1.findExaminationRequests(PatientV1(19, SexDto.MALE)),
+            ExaminationIntervalProvider.findExaminationRequests(Patient(19, SexDto.MALE)),
         )
     }
 
@@ -54,14 +54,14 @@ class ExaminationIntervalProviderTest {
     fun `male 70`() {
         Assertions.assertEquals(
             listOf(
-                ExaminationIntervalV1(ExaminationTypeDto.GENERAL_PRACTITIONER, 2, 1),
-                ExaminationIntervalV1(ExaminationTypeDto.COLONOSCOPY, 10, 4),
-                ExaminationIntervalV1(ExaminationTypeDto.UROLOGIST, 1, 5),
-                ExaminationIntervalV1(ExaminationTypeDto.DERMATOLOGIST, 1, 6),
-                ExaminationIntervalV1(ExaminationTypeDto.DENTIST, 1, 8),
-                ExaminationIntervalV1(ExaminationTypeDto.OPHTHALMOLOGIST, 2, 9),
+                ExaminationInterval(ExaminationTypeDto.GENERAL_PRACTITIONER, 2, 1),
+                ExaminationInterval(ExaminationTypeDto.COLONOSCOPY, 10, 4),
+                ExaminationInterval(ExaminationTypeDto.UROLOGIST, 1, 5),
+                ExaminationInterval(ExaminationTypeDto.DERMATOLOGIST, 1, 6),
+                ExaminationInterval(ExaminationTypeDto.DENTIST, 1, 8),
+                ExaminationInterval(ExaminationTypeDto.OPHTHALMOLOGIST, 2, 9),
             ),
-            ExaminationIntervalProviderV1.findExaminationRequests(PatientV1(70, SexDto.MALE)),
+            ExaminationIntervalProvider.findExaminationRequests(Patient(70, SexDto.MALE)),
         )
     }
 }

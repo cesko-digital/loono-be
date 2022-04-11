@@ -5,7 +5,7 @@ import cz.loono.backend.api.dto.SelfExaminationTypeDto
 import cz.loono.backend.api.service.AccountService
 import cz.loono.backend.api.service.BadgesPointsProvider.GENERAL_BADGES_TO_EXAMS
 import cz.loono.backend.api.service.BadgesPointsProvider.getSelfExaminationType
-import cz.loono.backend.api.service.ExaminationIntervalV1
+import cz.loono.backend.api.service.ExaminationInterval
 import cz.loono.backend.api.service.PreventionService
 import cz.loono.backend.db.model.Account
 import cz.loono.backend.db.model.Badge
@@ -80,7 +80,7 @@ class BadgeDowngradeTask(
     private fun downgradeGeneralBadge(
         account: Account,
         candidate: Badge,
-        examsRequests: List<ExaminationIntervalV1>,
+        examsRequests: List<ExaminationInterval>,
         now: LocalDateTime
     ): Badge {
         val examType = GENERAL_BADGES_TO_EXAMS.getValue(candidate.getBadgeAsEnum())

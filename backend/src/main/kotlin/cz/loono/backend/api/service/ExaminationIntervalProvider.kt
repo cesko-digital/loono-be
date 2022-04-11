@@ -7,9 +7,9 @@ import cz.loono.backend.api.dto.SexDto
  * This object in fact wraps the provided excel with code, so it's a statical set of rules
  * that return collection of required Examinations and their requested intervals.
  */
-object ExaminationIntervalProviderV1 {
+object ExaminationIntervalProvider {
 
-    fun findExaminationRequests(patient: PatientV1): List<ExaminationIntervalV1> =
+    fun findExaminationRequests(patient: Patient): List<ExaminationInterval> =
         rules.mapNotNull { preventionRule ->
             val intervals = when (patient.sex) {
                 SexDto.MALE -> preventionRule.intervalsMale
@@ -22,7 +22,7 @@ object ExaminationIntervalProviderV1 {
             }
 
             if (validInterval != null) {
-                ExaminationIntervalV1(
+                ExaminationInterval(
                     preventionRule.examinationType,
                     validInterval.intervalYears,
                     preventionRule.priority
@@ -31,94 +31,94 @@ object ExaminationIntervalProviderV1 {
         }
 
     private val rules = listOf(
-        PreventionRuleV1(
+        PreventionRule(
             examinationType = ExaminationTypeDto.GENERAL_PRACTITIONER,
-            intervalsMale = listOf(AgeIntervalV1(fromAge = 19, intervalYears = 2)),
-            intervalsFemale = listOf(AgeIntervalV1(fromAge = 19, intervalYears = 2)),
+            intervalsMale = listOf(AgeInterval(fromAge = 19, intervalYears = 2)),
+            intervalsFemale = listOf(AgeInterval(fromAge = 19, intervalYears = 2)),
             priority = 1
         ),
-        PreventionRuleV1(
+        PreventionRule(
             examinationType = ExaminationTypeDto.MAMMOGRAM,
             intervalsMale = listOf(),
-            intervalsFemale = listOf(AgeIntervalV1(fromAge = 45, intervalYears = 2)),
+            intervalsFemale = listOf(AgeInterval(fromAge = 45, intervalYears = 2)),
             priority = 2
         ),
-        PreventionRuleV1(
+        PreventionRule(
             examinationType = ExaminationTypeDto.GYNECOLOGIST,
             intervalsMale = listOf(),
-            intervalsFemale = listOf(AgeIntervalV1(fromAge = 15, intervalYears = 1)),
+            intervalsFemale = listOf(AgeInterval(fromAge = 15, intervalYears = 1)),
             priority = 3
         ),
-        PreventionRuleV1(
+        PreventionRule(
             examinationType = ExaminationTypeDto.COLONOSCOPY,
-            intervalsMale = listOf(AgeIntervalV1(fromAge = 50, intervalYears = 10)),
-            intervalsFemale = listOf(AgeIntervalV1(fromAge = 50, intervalYears = 10)),
+            intervalsMale = listOf(AgeInterval(fromAge = 50, intervalYears = 10)),
+            intervalsFemale = listOf(AgeInterval(fromAge = 50, intervalYears = 10)),
             priority = 4
         ),
-        PreventionRuleV1(
+        PreventionRule(
             examinationType = ExaminationTypeDto.UROLOGIST,
-            intervalsMale = listOf(AgeIntervalV1(fromAge = 50, intervalYears = 1)),
+            intervalsMale = listOf(AgeInterval(fromAge = 50, intervalYears = 1)),
             intervalsFemale = listOf(),
             priority = 5
         ),
-        PreventionRuleV1(
+        PreventionRule(
             examinationType = ExaminationTypeDto.DERMATOLOGIST,
-            intervalsMale = listOf(AgeIntervalV1(fromAge = 19, intervalYears = 1)),
-            intervalsFemale = listOf(AgeIntervalV1(fromAge = 19, intervalYears = 1)),
+            intervalsMale = listOf(AgeInterval(fromAge = 19, intervalYears = 1)),
+            intervalsFemale = listOf(AgeInterval(fromAge = 19, intervalYears = 1)),
             priority = 6
         ),
-        PreventionRuleV1(
+        PreventionRule(
             examinationType = ExaminationTypeDto.ULTRASOUND_BREAST,
             intervalsMale = listOf(),
-            intervalsFemale = listOf(AgeIntervalV1(fromAge = 19, toAge = 44, intervalYears = 2)),
+            intervalsFemale = listOf(AgeInterval(fromAge = 19, toAge = 44, intervalYears = 2)),
             priority = 7
         ),
-        PreventionRuleV1(
+        PreventionRule(
             examinationType = ExaminationTypeDto.DENTIST,
             intervalsMale = listOf(
-                AgeIntervalV1(fromAge = 19, intervalYears = 1)
+                AgeInterval(fromAge = 19, intervalYears = 1)
             ),
             intervalsFemale = listOf(
-                AgeIntervalV1(fromAge = 19, intervalYears = 1)
+                AgeInterval(fromAge = 19, intervalYears = 1)
             ),
             priority = 8
         ),
-        PreventionRuleV1(
+        PreventionRule(
             examinationType = ExaminationTypeDto.OPHTHALMOLOGIST,
             intervalsMale = listOf(
-                AgeIntervalV1(fromAge = 19, toAge = 44, intervalYears = 2),
-                AgeIntervalV1(fromAge = 45, toAge = 61, intervalYears = 4),
-                AgeIntervalV1(fromAge = 62, intervalYears = 2)
+                AgeInterval(fromAge = 19, toAge = 44, intervalYears = 2),
+                AgeInterval(fromAge = 45, toAge = 61, intervalYears = 4),
+                AgeInterval(fromAge = 62, intervalYears = 2)
             ),
             intervalsFemale = listOf(
-                AgeIntervalV1(fromAge = 19, toAge = 44, intervalYears = 2),
-                AgeIntervalV1(fromAge = 45, toAge = 61, intervalYears = 4),
-                AgeIntervalV1(fromAge = 62, intervalYears = 2)
+                AgeInterval(fromAge = 19, toAge = 44, intervalYears = 2),
+                AgeInterval(fromAge = 45, toAge = 61, intervalYears = 4),
+                AgeInterval(fromAge = 62, intervalYears = 2)
             ),
             priority = 9
         )
     )
 }
 
-data class ExaminationIntervalV1(
+data class ExaminationInterval(
     val examinationType: ExaminationTypeDto,
     val intervalYears: Int,
     val priority: Int
 )
 
-data class PatientV1(
+data class Patient(
     val age: Int,
     val sex: SexDto,
 )
 
-data class PreventionRuleV1(
+data class PreventionRule(
     val examinationType: ExaminationTypeDto,
-    val intervalsMale: List<AgeIntervalV1>,
-    val intervalsFemale: List<AgeIntervalV1>,
+    val intervalsMale: List<AgeInterval>,
+    val intervalsFemale: List<AgeInterval>,
     val priority: Int
 )
 
-data class AgeIntervalV1(
+data class AgeInterval(
     val fromAge: Int,
     val toAge: Int? = null,
     val intervalYears: Int

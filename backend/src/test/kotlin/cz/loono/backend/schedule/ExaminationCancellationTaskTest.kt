@@ -3,7 +3,7 @@ package cz.loono.backend.schedule
 import cz.loono.backend.api.dto.ExaminationStatusDto
 import cz.loono.backend.api.dto.ExaminationTypeDto
 import cz.loono.backend.api.dto.SexDto
-import cz.loono.backend.api.service.ExaminationIntervalV1
+import cz.loono.backend.api.service.ExaminationInterval
 import cz.loono.backend.api.service.ExaminationRecordService
 import cz.loono.backend.api.service.PreventionService
 import cz.loono.backend.createAccount
@@ -113,10 +113,10 @@ class ExaminationCancellationTaskTest {
         verify(examinationRecordService, times(0)).cancelExam("1", "2")
     }
 
-    private fun definitionList(): List<ExaminationIntervalV1> =
+    private fun definitionList(): List<ExaminationInterval> =
         listOf(
-            ExaminationIntervalV1(ExaminationTypeDto.GENERAL_PRACTITIONER, 2, 1),
-            ExaminationIntervalV1(ExaminationTypeDto.DENTIST, 1, 9)
+            ExaminationInterval(ExaminationTypeDto.GENERAL_PRACTITIONER, 2, 1),
+            ExaminationInterval(ExaminationTypeDto.DENTIST, 1, 9)
         )
 
     private fun getAccount(): Account =

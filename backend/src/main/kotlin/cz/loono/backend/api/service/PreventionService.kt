@@ -28,12 +28,12 @@ class PreventionService(
     private val accountRepository: AccountRepository
 ) {
 
-    fun getExaminationRequests(account: Account): List<ExaminationIntervalV1> {
+    fun getExaminationRequests(account: Account): List<ExaminationInterval> {
 
         val age = ChronoUnit.YEARS.between(account.birthdate, LocalDate.now()).toInt()
 
-        return ExaminationIntervalProviderV1.findExaminationRequests(
-            PatientV1(age, account.getSexAsEnum())
+        return ExaminationIntervalProvider.findExaminationRequests(
+            Patient(age, account.getSexAsEnum())
         )
     }
 
@@ -62,7 +62,7 @@ class PreventionService(
     }
 
     private fun prepareExaminationStatuses(
-        examinationRequests: List<ExaminationIntervalV1>,
+        examinationRequests: List<ExaminationInterval>,
         examinationTypesToRecords: Map<ExaminationTypeDto, List<ExaminationRecord>>,
         account: Account
     ): List<ExaminationPreventionStatusDto> = examinationRequests.map { examinationInterval ->
