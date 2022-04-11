@@ -277,13 +277,10 @@ class ExaminationRecordService(
         record: ExaminationRecordDto,
         account: Account
     ) =
-        record.plannedDate?.let planned@{
-            record.firstExam?.let { isFirstExam ->
-                if (isFirstExam) {
-                    return@planned
-                }
+        record.plannedDate?.let { plannedDate ->
+            record.firstExam?.takeUnless(Boolean::not)?.let {
                 val today = now()
-                if (it.isBefore(today) || plannedDateInAcceptedInterval(it, account, record)) {
+                if (plannedDate.isBefore(today) || plannedDateInAcceptedInterval(plannedDate, account, record)) {
                     throw LoonoBackendException(
                         HttpStatus.BAD_REQUEST,
                         "400",
@@ -405,7 +402,10 @@ class ExaminationRecordService(
 
     private fun isEligibleForReward(isFirstOrStatusChanged: Boolean, erd: ExaminationRecordDto) =
         now().let { now ->
-            isFirstOrStatusChanged && (erd.status in setOf(ExaminationStatusDto.CONFIRMED, ExaminationStatusDto.UNKNOWN)) &&
+            isFirstOrStatusChanged && (erd.status in setOf(
+                ExaminationStatusDto.CONFIRMED,
+                ExaminationStatusDto.UNKNOWN
+            )) &&
                 (erd.plannedDate?.isBefore(now) ?: false && ChronoUnit.YEARS.between(now, erd.plannedDate) < 2)
         }
 
