@@ -80,7 +80,7 @@ class HealthcareProvidersService(
         CategoryValues.PARAMEDIC.value,
         CategoryValues.AERO_MEDICINE.value,
         CategoryValues.SOCIAL_WORKER.value,
-        CategoryValues.BEHAVIORAL_ANALYST.value,
+         CategoryValues.BEHAVIORAL_ANALYST.value,
         CategoryValues.PUBLIC_HEALTHCARE.value,
         CategoryValues.RADIOLOGICAL_PHYSICIST.value,
         CategoryValues.BIOMEDICAL_TECHNICIAN.value
