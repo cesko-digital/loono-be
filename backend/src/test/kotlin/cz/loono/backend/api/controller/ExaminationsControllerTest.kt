@@ -42,7 +42,7 @@ class ExaminationsControllerTest(
         var existingAccount = createAccount(birthday = LocalDate.of(1970, 1, 1))
         val examinationRecord = ExaminationRecordDto(
             type = ExaminationTypeDto.DENTIST,
-            date = LocalDateTime.now().minusYears(3)
+            plannedDate = LocalDateTime.now().minusYears(3)
         )
         // This is done to get assigned ID by the DB
         existingAccount = repo.save(existingAccount)
@@ -56,7 +56,7 @@ class ExaminationsControllerTest(
         assertThat(actual.points).isEqualTo(300)
 
         controller.updateOrCreate(
-            basicUser, examinationRecord.copy(date = LocalDateTime.now().minusYears(1))
+            basicUser, examinationRecord.copy(plannedDate = LocalDateTime.now().minusYears(1))
         ).uuid!!
 
         // Making sure that level upgraded and points increased

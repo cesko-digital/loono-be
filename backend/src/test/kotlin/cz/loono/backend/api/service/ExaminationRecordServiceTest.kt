@@ -415,7 +415,7 @@ class ExaminationRecordServiceTest(
         accountRepository.save(createAccount(uid = "101", sex = SexDto.MALE.name, points = 150))
         val exam = ExaminationRecordDto(
             type = ExaminationTypeDto.GENERAL_PRACTITIONER,
-            date = LocalDateTime.now().minusYears(2)
+            plannedDate = LocalDateTime.now().minusYears(2)
         )
 
         val examRecord = examinationRecordService.createOrUpdateExam(exam, "101")
@@ -429,11 +429,11 @@ class ExaminationRecordServiceTest(
         accountRepository.save(createAccount(uid = "101", sex = SexDto.MALE.name, points = 150))
         val exam = ExaminationRecordDto(
             type = ExaminationTypeDto.DERMATOLOGIST,
-            date = LocalDateTime.now().minusYears(3)
+            plannedDate = LocalDateTime.now().minusYears(3)
         )
 
         val examRecord = examinationRecordService.createOrUpdateExam(exam, "101")
-        examinationRecordService.createOrUpdateExam(examRecord.copy(date = examRecord.date?.plusYears(1)), "101")
+        examinationRecordService.createOrUpdateExam(examRecord.copy(plannedDate = examRecord.plannedDate?.plusYears(1)), "101")
 
         assertThat(accountRepository.findByUid("101")?.badges?.first()?.level).isEqualTo(1)
     }
