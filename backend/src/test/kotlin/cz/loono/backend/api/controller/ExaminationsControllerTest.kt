@@ -57,7 +57,7 @@ class ExaminationsControllerTest(
 
         controller.updateOrCreate(
             basicUser, examinationRecord.copy(plannedDate = LocalDateTime.now().minusYears(1))
-        ).uuid!!
+        )
 
         // Making sure that level upgraded and points increased
         actual = repo.findByUid("uid")!!
