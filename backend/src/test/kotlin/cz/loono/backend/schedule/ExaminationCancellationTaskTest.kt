@@ -3,9 +3,9 @@ package cz.loono.backend.schedule
 import cz.loono.backend.api.dto.ExaminationStatusDto
 import cz.loono.backend.api.dto.ExaminationTypeDto
 import cz.loono.backend.api.dto.SexDto
-import cz.loono.backend.api.v1.service.ExaminationIntervalV1
-import cz.loono.backend.api.v1.service.ExaminationRecordServiceV1
-import cz.loono.backend.api.v1.service.PreventionServiceV1
+import cz.loono.backend.api.service.ExaminationIntervalV1
+import cz.loono.backend.api.service.ExaminationRecordService
+import cz.loono.backend.api.service.PreventionService
 import cz.loono.backend.createAccount
 import cz.loono.backend.db.model.Account
 import cz.loono.backend.db.model.ExaminationRecord
@@ -21,9 +21,9 @@ import java.time.LocalDateTime
 
 class ExaminationCancellationTaskTest {
 
-    private var preventionService: PreventionServiceV1 = mock()
+    private var preventionService: PreventionService = mock()
 
-    private var examinationRecordService: ExaminationRecordServiceV1 = mock()
+    private var examinationRecordService: ExaminationRecordService = mock()
 
     private var examinationRecordRepository: ExaminationRecordRepository = mock()
 

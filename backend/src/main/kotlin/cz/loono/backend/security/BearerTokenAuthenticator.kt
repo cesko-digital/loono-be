@@ -2,7 +2,7 @@ package cz.loono.backend.security
 
 import cz.loono.backend.api.Attributes
 import cz.loono.backend.api.exception.LoonoBackendException
-import cz.loono.backend.api.v1.service.JwtAuthServiceV1
+import cz.loono.backend.api.service.JwtAuthService
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse
 
 @Component
 class BearerTokenAuthenticator(
-    private val authService: JwtAuthServiceV1,
+    private val authService: JwtAuthService,
 ) : HandlerInterceptor {
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
@@ -25,11 +25,11 @@ class BearerTokenAuthenticator(
         val token = parseToken(authorizationHeader)
 
         when (val result = authService.verifyToken(token)) {
-            is JwtAuthServiceV1.VerificationResult.Success -> {
+            is JwtAuthService.VerificationResult.Success -> {
                 request.setAttribute(Attributes.ATTR_BASIC_USER, result.basicUser)
                 return true
             }
-            is JwtAuthServiceV1.VerificationResult.Error -> {
+            is JwtAuthService.VerificationResult.Error -> {
                 throw LoonoBackendException(
                     HttpStatus.UNAUTHORIZED,
                     errorCode = null,

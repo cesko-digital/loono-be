@@ -5,8 +5,8 @@ import cz.loono.backend.api.dto.PreventionStatusDto
 import cz.loono.backend.api.dto.SelfExaminationPreventionStatusDto
 import cz.loono.backend.api.dto.SelfExaminationStatusDto
 import cz.loono.backend.api.dto.SelfExaminationTypeDto
-import cz.loono.backend.api.v1.service.PreventionServiceV1
-import cz.loono.backend.api.v1.service.PushNotificationServiceV1
+import cz.loono.backend.api.service.PreventionService
+import cz.loono.backend.api.service.PushNotificationService
 import cz.loono.backend.createAccount
 import cz.loono.backend.db.repository.AccountRepository
 import org.junit.jupiter.api.Test
@@ -20,8 +20,8 @@ import java.time.LocalDate
 class SelfExamReminderTaskTest {
 
     private val accountRepository: AccountRepository = mock()
-    private val preventionService: PreventionServiceV1 = mock()
-    private val notificationService: PushNotificationServiceV1 = mock()
+    private val preventionService: PreventionService = mock()
+    private val notificationService: PushNotificationService = mock()
 
     @Test
     fun `first self-exam`() {

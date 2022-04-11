@@ -1,7 +1,7 @@
 package cz.loono.backend.schedule
 
 import cz.loono.backend.api.dto.ExaminationStatusDto
-import cz.loono.backend.api.v1.service.PushNotificationServiceV1
+import cz.loono.backend.api.service.PushNotificationService
 import cz.loono.backend.db.repository.ExaminationRecordRepository
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -10,7 +10,7 @@ import java.time.temporal.ChronoUnit
 @Component
 class ComingAndPassedExamNotificationTask(
     private val examinationRecordRepository: ExaminationRecordRepository,
-    private val notificationService: PushNotificationServiceV1
+    private val notificationService: PushNotificationService
 ) : DailySchedulerTask {
 
     override fun run() {

@@ -1,7 +1,7 @@
 package cz.loono.backend
 
 import cz.loono.backend.api.exception.LoonoBackendException
-import cz.loono.backend.api.v1.service.HealthcareProvidersServiceV1
+import cz.loono.backend.api.service.HealthcareProvidersService
 import cz.loono.backend.db.model.ServerProperties
 import cz.loono.backend.db.repository.ServerPropertiesRepository
 import org.slf4j.LoggerFactory
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional
 @Profile("!test")
 class DataLoader(
     private val serverPropertiesRepository: ServerPropertiesRepository,
-    private val healthcareProvidersService: HealthcareProvidersServiceV1
+    private val healthcareProvidersService: HealthcareProvidersService
 ) : ApplicationRunner {
 
     private val logger = LoggerFactory.getLogger(javaClass)

@@ -2,11 +2,11 @@ package cz.loono.backend.schedule
 
 import cz.loono.backend.api.dto.ExaminationTypeDto
 import cz.loono.backend.api.dto.SelfExaminationTypeDto
-import cz.loono.backend.api.v1.service.AccountServiceV1
-import cz.loono.backend.api.v1.service.BadgesPointsProviderV1.GENERAL_BADGES_TO_EXAMS
-import cz.loono.backend.api.v1.service.BadgesPointsProviderV1.getSelfExaminationType
-import cz.loono.backend.api.v1.service.ExaminationIntervalV1
-import cz.loono.backend.api.v1.service.PreventionServiceV1
+import cz.loono.backend.api.service.AccountService
+import cz.loono.backend.api.service.BadgesPointsProvider.GENERAL_BADGES_TO_EXAMS
+import cz.loono.backend.api.service.BadgesPointsProvider.getSelfExaminationType
+import cz.loono.backend.api.service.ExaminationIntervalV1
+import cz.loono.backend.api.service.PreventionService
 import cz.loono.backend.db.model.Account
 import cz.loono.backend.db.model.Badge
 import cz.loono.backend.db.model.ExaminationRecord
@@ -26,8 +26,8 @@ class BadgeDowngradeTask(
     @Value("\${task.badge-downgrade.page-size}")
     private val pageSize: Int,
     private val accountRepository: AccountRepository,
-    private val accountService: AccountServiceV1,
-    private val preventionService: PreventionServiceV1,
+    private val accountService: AccountService,
+    private val preventionService: PreventionService,
     private val clock: Clock,
     private val selfExaminationRecordRepo: SelfExaminationRecordRepository
 ) : DailySchedulerTask {
