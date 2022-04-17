@@ -98,6 +98,7 @@ resource "aws_ecs_task_definition" "backend" {
     postgre-pwd            = var.database-password,
     google-app-credentials = var.google-app-credentials,
     onesignal-api-key      = var.onesignal-api-key,
+    onesignal-app-id       = var.onesignal-app-id,
     container-name         = "${var.codename}-backend",
   })
   network_mode          = "awsvpc"

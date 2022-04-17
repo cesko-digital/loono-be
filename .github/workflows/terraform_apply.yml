@@ -12,6 +12,7 @@ env:
   TF_VAR_certificate-arn: ${{ secrets.CERTIFICATE_ARN }}
   TF_VAR_google-app-credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
   TF_VAR_onesignal-api-key: ${{ secrets.ONESIGNAL_API_KEY }}
+  TF_VAR_onesignal-app-id: ${{ secrets.ONESIGNAL_APP_ID }}
 jobs:
   terraform:
     name: 'Terraform'

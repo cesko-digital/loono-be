@@ -35,3 +35,7 @@ variable "google-app-credentials" {
 variable "onesignal-api-key" {
   type = string
 }
+
+variable "onesignal-app-id" {
+  type = string
+}
