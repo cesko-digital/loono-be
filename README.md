@@ -1,5 +1,10 @@
 [![Build](https://github.com/cesko-digital/loono-be/actions/workflows/build_and_test_check.yml/badge.svg)](https://github.com/cesko-digital/loono-be/actions/workflows/build_and_test_check.yml)
 
+-----
+
+**Repozitář se zdrojovým kódem byl přesunut na https://github.com/Loono-cz/loono-be**
+
+-----
 <h1 align="center"><img src="https://www.loono.cz/files/logo-loono-colour-01.svg" alt="Logo" width="120"> Backend</h1>
 <p align="justify">
 The Loono backend covers all purposes for the Loono mobile application like user accounts, examinations or a doctor search.
